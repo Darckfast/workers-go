@@ -5,7 +5,7 @@ import (
 	"database/sql/driver"
 	"syscall/js"
 
-	"github.com/syumai/workers/cloudflare/internal/cfruntimecontext"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type Connector struct {
@@ -19,7 +19,7 @@ var (
 // OpenConnector returns Connector of D1.
 // This method checks DB existence. If DB was not found, this function returns error.
 func OpenConnector(name string) (driver.Connector, error) {
-	v := cfruntimecontext.MustGetRuntimeContextEnv().Get(name)
+	v := jsutil.RuntimeEnv.Get(name)
 	if v.IsUndefined() {
 		return nil, ErrDatabaseNotFound
 	}

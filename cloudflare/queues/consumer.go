@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // Consumer is a function that received a batch of messages from Cloudflare Queues.
@@ -14,22 +14,22 @@ import (
 // acknowledgment until the task is completed witout blocking the queue consumption.
 type Consumer func(batch *MessageBatch) error
 
-var consumer Consumer
+var consumer Consumer = func(batch *MessageBatch) error {
+	return fmt.Errorf("no consumer implemented")
+}
 
 func init() {
 	handleBatchCallback := js.FuncOf(func(this js.Value, args []js.Value) any {
 		batch := args[0]
+		envObj := args[1]
+		ctxObj := args[2]
 		var cb js.Func
 		cb = js.FuncOf(func(_ js.Value, pArgs []js.Value) any {
 			defer cb.Release()
 			resolve := pArgs[0]
 			reject := pArgs[1]
 			go func() {
-				if len(args) > 1 {
-					reject.Invoke(jsutil.Errorf("too many args given to handleQueueMessageBatch: %d", len(args)))
-					return
-				}
-				err := consumeBatch(batch)
+				err := consumeBatch(batch, envObj, ctxObj)
 				if err != nil {
 					reject.Invoke(jsutil.Error(err.Error()))
 					return
@@ -40,10 +40,13 @@ func init() {
 		})
 		return jsutil.NewPromise(cb)
 	})
-	jsutil.Binding.Set("handleQueueMessageBatch", handleBatchCallback)
+	js.Global().Get("cf").Set("queue", handleBatchCallback)
 }
 
-func consumeBatch(batch js.Value) error {
+func consumeBatch(batch, envObj, ctxObj js.Value) error {
+	jsutil.RuntimeEnv = envObj
+	jsutil.RuntimeExcutionContext = ctxObj
+
 	b, err := newMessageBatch(batch)
 	if err != nil {
 		return fmt.Errorf("failed to parse message batch: %v", err)
@@ -53,19 +56,6 @@ func consumeBatch(batch js.Value) error {
 		return err
 	}
 	return nil
-}
-
-//go:wasmimport workers ready
-func ready()
-
-// Consume sets the Consumer function to receive batches of messages from Cloudflare Queues
-// NOTE: This function will block the current goroutine and is intented to be used as long as the
-// only worker's purpose is to be the consumer of a Cloudflare Queue.
-// In case the worker has other purposes (e.g. handling HTTP requests), use ConsumeNonBlock instead.
-func Consume(f Consumer) {
-	consumer = f
-	ready()
-	select {}
 }
 
 // ConsumeNonBlock sets the Consumer function to receive batches of messages from Cloudflare Queues.

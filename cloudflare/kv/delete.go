@@ -1,8 +1,6 @@
 package kv
 
-import (
-	"github.com/syumai/workers/internal/jsutil"
-)
+import jsutil "github.com/syumai/workers/internal/utils"
 
 // Delete deletes key-value pair specified by the key.
 //   - if a network error happens, returns error.

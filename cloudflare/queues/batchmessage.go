@@ -3,7 +3,7 @@ package queues
 import (
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // MessageSendRequest is a wrapper type used for sending message batches.

@@ -6,8 +6,7 @@ import (
 	"syscall/js"
 	"time"
 
-	"github.com/syumai/workers/cloudflare/internal/cfruntimecontext"
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type SecureTransport string
@@ -30,10 +29,7 @@ type SocketOptions struct {
 const defaultDeadline = 999999 * time.Hour
 
 func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, error) {
-	connect, err := cfruntimecontext.GetRuntimeContextValue("connect")
-	if err != nil {
-		return nil, err
-	}
+	connect := jsutil.RuntimeConnect
 	optionsObj := jsutil.NewObject()
 	if opts != nil {
 		if opts.AllowHalfOpen {
