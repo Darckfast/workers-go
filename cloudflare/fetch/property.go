@@ -5,8 +5,8 @@ import (
 	"errors"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
-	"github.com/syumai/workers/internal/runtimecontext"
+	jsruntime "github.com/syumai/workers/internal/runtime"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // RedirectMode represents the redirect mode of a fetch() request.
@@ -173,7 +173,7 @@ type IncomingProperties struct {
 }
 
 func NewIncomingProperties(ctx context.Context) (*IncomingProperties, error) {
-	obj := runtimecontext.MustExtractTriggerObj(ctx)
+	obj := jsruntime.MustExtractTriggerObj(ctx)
 	cf := obj.Get("cf")
 	if cf.IsUndefined() {
 		return nil, errors.New("runtime is not cloudflare")
