@@ -1,28 +1,19 @@
 package cron
 
 import (
-	"context"
-	"errors"
+	"syscall/js"
 	"time"
-
-	runtimecontext "github.com/syumai/workers/internal/runtime"
 )
 
-// Event represents information about the Cron that invoked this worker.
-type Event struct {
+type CronEvent struct {
 	Cron          string
 	ScheduledTime time.Time
 }
 
-func NewEvent(ctx context.Context) (*Event, error) {
-	obj := runtimecontext.MustExtractTriggerObj(ctx)
-	if obj.IsUndefined() {
-		return nil, errors.New("event is null")
-	}
-
+func NewEvent(obj js.Value) *CronEvent {
 	scheduledTimeVal := obj.Get("scheduledTime").Float()
-	return &Event{
+	return &CronEvent{
 		Cron:          obj.Get("cron").String(),
 		ScheduledTime: time.Unix(int64(scheduledTimeVal)/1000, 0).UTC(),
-	}, nil
+	}
 }
