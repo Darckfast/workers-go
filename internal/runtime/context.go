@@ -1,4 +1,4 @@
-package runtimecontext
+package jsruntime
 
 import (
 	"context"

@@ -1,0 +1,101 @@
+package jsconv
+
+import (
+	"strconv"
+	"syscall/js"
+	"time"
+
+	jsclass "github.com/syumai/workers/internal/class"
+)
+
+func ArrayFrom(v js.Value) js.Value {
+	return jsclass.Array.Call("from", v)
+}
+
+// TODO: redo this for map[string]any
+func StrRecordToMap(v js.Value) map[string]string {
+	if v.IsUndefined() || v.IsNull() {
+		return map[string]string{}
+	}
+	entries := jsclass.Object.Call("entries", v)
+	entriesLen := entries.Get("length").Int()
+	result := make(map[string]string, entriesLen)
+	for i := range entriesLen {
+		entry := entries.Index(i)
+		key := entry.Index(0).String()
+		value := entry.Index(1).String()
+		result[key] = value
+	}
+	return result
+}
+
+func MaybeStringList(v js.Value) []string {
+	if v.Truthy() {
+		list := []string{}
+		for i := range v.Length() {
+
+			list = append(list, v.Index(i).String())
+		}
+
+		return list
+	}
+
+	return []string{}
+}
+
+func MaybeString(v js.Value) string {
+	if v.IsUndefined() {
+		return ""
+	}
+	return v.String()
+}
+
+func MaybeBool(v js.Value) bool {
+	return v.Truthy()
+}
+
+func MaybeInt(v js.Value) int {
+	if v.IsUndefined() {
+		return 0
+	}
+	return v.Int()
+}
+
+func MaybeInt64(v js.Value) int64 {
+	if v.Truthy() {
+		vn := jsclass.Number.New(v)
+		vs := vn.Call("toString")
+		vi, _ := strconv.ParseInt(vs.String(), 10, 64)
+
+		return vi
+	}
+
+	return 0
+}
+
+func MaybeDate(v js.Value) (time.Time, error) {
+	if v.IsUndefined() {
+		return time.Time{}, nil
+	}
+	return DateToTime(v)
+}
+
+func DateToTimestamp(v js.Value) int64 {
+	if v.InstanceOf(jsclass.Date) {
+		ms := MaybeInt64(v.Call("getTime"))
+
+		return ms
+	}
+
+	return -1
+}
+
+// TODO: check if needs to be float
+func DateToTime(v js.Value) (time.Time, error) {
+	milli := v.Call("getTime").Float() // why?
+	return time.UnixMilli(int64(milli)), nil
+}
+
+func TimeToDate(t time.Time) js.Value {
+	return jsclass.Date.New(t.UnixMilli())
+}

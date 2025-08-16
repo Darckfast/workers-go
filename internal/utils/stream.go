@@ -15,56 +15,62 @@ type RawJSBodyGetter interface {
 	GetRawJSBody() js.Value
 }
 
-// readableStreamToReadCloser implements io.Reader sourced from ReadableStreamDefaultReader.
+// ReadableStream implements io.Reader sourced from ReadableStreamDefaultReader.
 //   - ReadableStreamDefaultReader: https://developer.mozilla.org/en-US/docs/Web/API/ReadableStreamDefaultReader
 //   - This implementation is based on: https://deno.land/std@0.139.0/streams/conversion.ts#L76
-type readableStreamToReadCloser struct {
-	buf          bytes.Buffer
-	stream       js.Value
-	streamReader *js.Value
+type ReadableStream struct {
+	buf    bytes.Buffer
+	stream js.Value
+	reader *js.Value
 }
 
 var (
-	_ io.ReadCloser   = (*readableStreamToReadCloser)(nil)
-	_ io.WriterTo     = (*readableStreamToReadCloser)(nil)
-	_ RawJSBodyGetter = (*readableStreamToReadCloser)(nil)
+	_ io.ReadCloser   = (*ReadableStream)(nil)
+	_ io.WriterTo     = (*ReadableStream)(nil)
+	_ RawJSBodyGetter = (*ReadableStream)(nil)
 )
 
 // Read reads bytes from ReadableStreamDefaultReader.
-func (sr *readableStreamToReadCloser) Read(p []byte) (n int, err error) {
-	if sr.streamReader == nil {
-		r := sr.stream.Call("getReader")
-		sr.streamReader = &r
+func (rs *ReadableStream) Read(p []byte) (n int, err error) {
+	if rs.reader == nil {
+		r := rs.stream.Call("getReader")
+		rs.reader = &r
 	}
-	if sr.buf.Len() == 0 {
+	if rs.buf.Len() == 0 {
 		resultCh := make(chan js.Value)
 		errCh := make(chan error)
-		promise := sr.streamReader.Call("read")
+
+		promise := rs.reader.Call("read")
+
 		var then, catch js.Func
+
 		then = js.FuncOf(func(_ js.Value, args []js.Value) any {
 			defer then.Release()
 			result := args[0]
 			if result.Get("done").Bool() {
 				errCh <- io.EOF
-				return js.Undefined()
+				return nil
 			}
 			resultCh <- result.Get("value")
-			return js.Undefined()
+			return nil
 		})
+
 		catch = js.FuncOf(func(_ js.Value, args []js.Value) any {
 			defer catch.Release()
 			result := args[0]
 			errCh <- fmt.Errorf("JavaScript error on read: %s", result.Call("toString").String())
-			return js.Undefined()
+			return nil
 		})
+
 		promise.Call("then", then).Call("catch", catch)
+
 		select {
 		case result := <-resultCh:
 			chunk := make([]byte, result.Get("byteLength").Int())
 			_ = js.CopyBytesToGo(chunk, result)
 			// The length written is always the same as the length of chunk, so it can be discarded.
 			//   - https://pkg.go.dev/bytes#Buffer.Write
-			_, err := sr.buf.Write(chunk)
+			_, err := rs.buf.Write(chunk)
 			if err != nil {
 				return 0, err
 			}
@@ -72,14 +78,14 @@ func (sr *readableStreamToReadCloser) Read(p []byte) (n int, err error) {
 			return 0, err
 		}
 	}
-	return sr.buf.Read(p)
+	return rs.buf.Read(p)
 }
 
-func (sr *readableStreamToReadCloser) Close() error {
-	if sr.streamReader == nil {
+func (sr *ReadableStream) Close() error {
+	if sr.reader == nil {
 		return nil
 	}
-	sr.streamReader.Call("cancel")
+	sr.reader.Call("cancel")
 	return nil
 }
 
@@ -88,7 +94,7 @@ type readerWrapper struct {
 	io.Reader
 }
 
-func (sr *readableStreamToReadCloser) WriteTo(w io.Writer) (n int64, err error) {
+func (sr *ReadableStream) WriteTo(w io.Writer) (n int64, err error) {
 	if w, ok := w.(RawJSBodyWriter); ok {
 		w.WriteRawJSBody(sr.stream)
 		return 0, nil
@@ -96,13 +102,12 @@ func (sr *readableStreamToReadCloser) WriteTo(w io.Writer) (n int64, err error) 
 	return io.Copy(w, &readerWrapper{sr})
 }
 
-func (sr *readableStreamToReadCloser) GetRawJSBody() js.Value {
+func (sr *ReadableStream) GetRawJSBody() js.Value {
 	return sr.stream
 }
 
-// ConvertReadableStreamToReadCloser converts ReadableStream to io.ReadCloser.
-func ConvertReadableStreamToReadCloser(stream js.Value) io.ReadCloser {
-	return &readableStreamToReadCloser{
+func ReadableStreamToReadCloser(stream js.Value) io.ReadCloser {
+	return &ReadableStream{
 		stream: stream,
 	}
 }
@@ -111,6 +116,7 @@ func ConvertReadableStreamToReadCloser(stream js.Value) io.ReadCloser {
 //   - ReadableStream: https://developer.mozilla.org/docs/Web/API/ReadableStream
 //   - This implementation is based on: https://deno.land/std@0.139.0/streams/conversion.ts#L230
 type readerToReadableStream struct {
+	size        int64
 	initialized bool
 	reader      io.ReadCloser
 	chunkBuf    []byte
@@ -127,6 +133,7 @@ func (rs *readerToReadableStream) Pull(controller js.Value) error {
 	}
 	n, err := rs.reader.Read(rs.chunkBuf)
 	if n != 0 {
+		rs.size += int64(n)
 		ua := NewUint8Array(n)
 		js.CopyBytesToJS(ua, rs.chunkBuf[:n])
 		controller.Call("enqueue", ua)
@@ -159,8 +166,7 @@ func (rs *readerToReadableStream) Cancel() error {
 // https://deno.land/std@0.139.0/streams/conversion.ts#L5
 const defaultChunkSize = 16_640
 
-// ConvertReaderToReadableStream converts io.ReadCloser to ReadableStream.
-func ConvertReaderToReadableStream(reader io.ReadCloser) js.Value {
+func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
 	stream := &readerToReadableStream{
 		reader:   reader,
 		chunkBuf: make([]byte, defaultChunkSize),
@@ -181,7 +187,7 @@ func ConvertReaderToReadableStream(reader io.ReadCloser) js.Value {
 				}
 				resolve.Invoke()
 			}()
-			return js.Undefined()
+			return nil
 		})
 		return NewPromise(cb)
 	}))
@@ -199,7 +205,7 @@ func ConvertReaderToReadableStream(reader io.ReadCloser) js.Value {
 				}
 				resolve.Invoke()
 			}()
-			return js.Undefined()
+			return nil
 		})
 		return NewPromise(cb)
 	}))

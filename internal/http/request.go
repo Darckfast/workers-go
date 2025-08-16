@@ -9,25 +9,20 @@ import (
 	"strings"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
-// ToBody converts JavaScript sides ReadableStream (can be null) to io.ReadCloser.
-//   - ReadableStream: https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream
-func ToBody(streamOrNull js.Value) io.ReadCloser {
-	if streamOrNull.IsNull() {
+func ToBody(stream js.Value) io.ReadCloser {
+	if stream.IsNull() || stream.IsUndefined() {
 		return io.NopCloser(bytes.NewReader([]byte{}))
 	}
-	return jsutil.ConvertReadableStreamToReadCloser(streamOrNull)
+	return jsutil.ReadableStreamToReadCloser(stream)
 }
 
 // ToRequest converts JavaScript sides Request to *http.Request.
 //   - Request: https://developer.mozilla.org/docs/Web/API/Request
-func ToRequest(req js.Value) (*http.Request, error) {
-	reqUrl, err := url.Parse(req.Get("url").String())
-	if err != nil {
-		return nil, err
-	}
+func ToRequest(req js.Value) *http.Request {
+	reqUrl, _ := url.Parse(req.Get("url").String())
 	header := ToHeader(req.Get("headers"))
 
 	// ignore err
@@ -40,7 +35,7 @@ func ToRequest(req js.Value) (*http.Request, error) {
 		ContentLength:    contentLength,
 		TransferEncoding: strings.Split(header.Get("Transfer-Encoding"), ","),
 		Host:             header.Get("Host"),
-	}, nil
+	}
 }
 
 // ToJSRequest converts *http.Request to JavaScript sides Request.
@@ -50,8 +45,8 @@ func ToJSRequest(req *http.Request) js.Value {
 	jsReqOptions.Set("method", req.Method)
 	jsReqOptions.Set("headers", ToJSHeader(req.Header))
 	jsReqBody := js.Undefined()
-	if req.Body != nil {
-		jsReqBody = jsutil.ConvertReaderToReadableStream(req.Body)
+	if req.Body != nil && req.Method != http.MethodGet {
+		jsReqBody = jsutil.ReadCloserToReadableStream(req.Body)
 	}
 	jsReqOptions.Set("body", jsReqBody)
 	jsReq := jsutil.RequestClass.New(req.URL.String(), jsReqOptions)

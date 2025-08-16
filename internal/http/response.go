@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 func toResponse(res js.Value, body io.ReadCloser) (*http.Response, error) {
@@ -26,7 +26,7 @@ func toResponse(res js.Value, body io.ReadCloser) (*http.Response, error) {
 // ToResponse converts JavaScript sides Response to *http.Response.
 //   - Response: https://developer.mozilla.org/docs/Web/API/Response
 func ToResponse(res js.Value) (*http.Response, error) {
-	body := jsutil.ConvertReadableStreamToReadCloser(res.Get("body"))
+	body := jsutil.ReadableStreamToReadCloser(res.Get("body"))
 	return toResponse(res, body)
 }
 
@@ -59,7 +59,7 @@ func newJSResponse(statusCode int, headers http.Header, contentLength int64, bod
 		if !jsutil.MaybeFixedLengthStreamClass.IsUndefined() && contentLength > 0 {
 			return jsutil.ConvertReaderToFixedLengthStream(body, contentLength)
 		}
-		return jsutil.ConvertReaderToReadableStream(body)
+		return jsutil.ReadCloserToReadableStream(body)
 	}()
 	return jsutil.ResponseClass.New(readableStream, respInit)
 }
