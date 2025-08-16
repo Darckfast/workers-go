@@ -5,8 +5,7 @@ import (
 	"io"
 	"syscall/js"
 
-	"github.com/syumai/workers/cloudflare/internal/cfruntimecontext"
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // Bucket represents interface of Cloudflare Worker's R2 Bucket instance.
@@ -22,7 +21,7 @@ type Bucket struct {
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewBucket(varName string) (*Bucket, error) {
-	inst := cfruntimecontext.MustGetRuntimeContextEnv().Get(varName)
+	inst := jsutil.RuntimeEnv.Get(varName)
 	if inst.IsUndefined() {
 		return nil, fmt.Errorf("%s is undefined", varName)
 	}
@@ -96,16 +95,9 @@ func (opts *PutOptions) toJS() js.Value {
 //   - This method copies all bytes into memory for implementation restriction.
 //   - Body field of *Object is always nil for Put call.
 //   - if a network error happens, returns error.
-func (r *Bucket) Put(key string, value io.ReadCloser, opts *PutOptions) (*Object, error) {
-	// fetch body cannot be ReadableStream. see: https://github.com/whatwg/fetch/issues/1438
-	b, err := io.ReadAll(value)
-	if err != nil {
-		return nil, err
-	}
-	defer value.Close()
-	ua := jsutil.NewUint8Array(len(b))
-	js.CopyBytesToJS(ua, b)
-	p := r.instance.Call("put", key, ua.Get("buffer"), opts.toJS())
+func (r *Bucket) Put(key string, value io.ReadCloser, size int64, opts *PutOptions) (*Object, error) {
+	readable := jsutil.ConvertReaderToFixedLengthStream(value, size)
+	p := r.instance.Call("put", key, readable, opts.toJS())
 	v, err := jsutil.AwaitPromise(p)
 	if err != nil {
 		return nil, err

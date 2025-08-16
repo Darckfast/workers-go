@@ -1,42 +1,33 @@
-name: ci
-
-on:
-  pull_request:
+name: PR
+on: [pull_request]
 
 jobs:
   ci:
     strategy:
       matrix:
-        go-version: [ 1.21.3 ]
+        go-version: [ 1.24 ]
         os: [ ubuntu-latest ]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Golang
-        uses: actions/setup-go@v4
+      - uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
 
-      - name: Test
-        shell: bash
-        run: |
-          PATH=$PWD/misc/wasm:$PATH GOOS=js GOARCH=wasm go test ./...
-
-  examples:
-    name: Build examples
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Golang
-        uses: actions/setup-go@v4
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
         with:
-          go-version: ${{ matrix.go-version }}
+          version: 10
 
-      - name: Build examples
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test Go
         shell: bash
-        run: make build-examples
+        run: PATH='$PATH:$(go env GOROOT)/lib/wasm' pnpm run test:go
 
+      - name: Test Worker
+        shell: bash
+        run: pnpm run test:ci

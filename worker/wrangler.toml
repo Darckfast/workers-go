@@ -1,0 +1,46 @@
+name = "workers-go"
+main = "./main.ts"
+compatibility_date = "2025-08-12"
+
+[triggers]
+crons = ["* * * * *"]
+
+[[kv_namespaces]]
+binding = "TEST_NAMESPACE"
+id = "0"
+
+[[r2_buckets]]
+binding = 'TEST_BUCKET'
+bucket_name = '0123'
+
+[[d1_databases]]
+binding = "DB"
+database_name = "prd"
+database_id = "0"
+
+[[queues.producers]]
+queue = "TEST-QUEUE"
+binding = "TEST_QUEUE"
+
+[[queues.consumers]]
+queue = "TEST-QUEUE"
+max_batch_size = 10
+max_batch_timeout = 5
+
+[[containers]]
+name = "go-container"
+class_name = "GoContainer"
+image = "./Dockerfile"
+max_instances = 3
+
+[[durable_objects.bindings]]
+class_name = "GoContainer"
+name = "GO_CONTAINER"
+
+[[durable_objects.bindings]]
+class_name = "TestDurableObject"
+name = "TEST_DO"
+
+[[migrations]]
+new_sqlite_classes = ["GoContainer", "TestDurableObject"]
+tag = "v1"

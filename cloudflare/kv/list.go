@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // ListOptions represents Cloudflare KV namespace list options.

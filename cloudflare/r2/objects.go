@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // Objects represents Cloudflare R2 objects.

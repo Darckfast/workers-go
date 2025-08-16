@@ -1,6 +1,0 @@
-name = "pages-functions"
-main = "./build/worker.mjs"
-compatibility_date = "2023-04-30"
-
-[build]
-command = "make build"

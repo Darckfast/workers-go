@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
-	"github.com/syumai/workers/cloudflare/internal/cfruntimecontext"
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type Producer struct {
@@ -18,7 +17,7 @@ type Producer struct {
 // In Cloudflare API documentation, this object represents the Queue.
 //   - https://developers.cloudflare.com/queues/configuration/javascript-apis/#producer
 func NewProducer(queueName string) (*Producer, error) {
-	inst := cfruntimecontext.MustGetRuntimeContextEnv().Get(queueName)
+	inst := jsutil.RuntimeEnv.Get(queueName)
 	if inst.IsUndefined() {
 		return nil, fmt.Errorf("%s is undefined", queueName)
 	}

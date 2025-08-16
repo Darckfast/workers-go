@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
-	"github.com/syumai/workers/cloudflare/internal/cfruntimecontext"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // Namespace represents interface of Cloudflare Worker's KV namespace instance.
@@ -19,7 +19,7 @@ type Namespace struct {
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewNamespace(varName string) (*Namespace, error) {
-	inst := cfruntimecontext.MustGetRuntimeContextEnv().Get(varName)
+	inst := jsutil.RuntimeEnv.Get(varName)
 	if inst.IsUndefined() {
 		return nil, fmt.Errorf("%s is undefined", varName)
 	}

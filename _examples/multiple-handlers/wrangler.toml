@@ -1,9 +1,0 @@
-name = "multiple-handlers"
-main = "./build/worker.mjs"
-compatibility_date = "2023-02-24"
-
-[triggers]
-crons = ["* * * * *"]
-
-[build]
-command = "make build"

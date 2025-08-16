@@ -4,7 +4,7 @@ import (
 	"io"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // GetOptions represents Cloudflare KV namespace get options.
@@ -44,5 +44,5 @@ func (ns *Namespace) GetReader(key string, opts *GetOptions) (io.Reader, error) 
 	if err != nil {
 		return nil, err
 	}
-	return jsutil.ConvertReadableStreamToReadCloser(v), nil
+	return jsutil.ReadableStreamToReadCloser(v), nil
 }

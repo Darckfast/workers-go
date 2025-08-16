@@ -1,6 +1,0 @@
-name = "stream-large-file"
-main = "./build/worker.mjs"
-compatibility_date = "2023-12-01"
-
-[build]
-command = "make build"

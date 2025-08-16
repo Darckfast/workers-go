@@ -7,7 +7,7 @@ import (
 	"syscall/js"
 	"time"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // Object represents Cloudflare R2 object.
@@ -54,7 +54,7 @@ func toObject(v js.Value) (*Object, error) {
 	bodyVal := v.Get("body")
 	var body io.Reader
 	if !bodyVal.IsUndefined() {
-		body = jsutil.ConvertReadableStreamToReadCloser(v.Get("body"))
+		body = jsutil.ReadableStreamToReadCloser(v.Get("body"))
 	}
 	return &Object{
 		instance:       v,
@@ -77,6 +77,7 @@ type HTTPMetadata struct {
 	ContentLanguage    string
 	ContentDisposition string
 	ContentEncoding    string
+	ContentLength      int64
 	CacheControl       string
 	CacheExpiry        time.Time
 }
@@ -94,6 +95,7 @@ func toHTTPMetadata(v js.Value) (HTTPMetadata, error) {
 		ContentLanguage:    jsutil.MaybeString(v.Get("contentLanguage")),
 		ContentDisposition: jsutil.MaybeString(v.Get("contentDisposition")),
 		ContentEncoding:    jsutil.MaybeString(v.Get("contentEncoding")),
+		ContentLength:      jsutil.MaybeInt64(v.Get("contentLength")),
 		CacheControl:       jsutil.MaybeString(v.Get("cacheControl")),
 		CacheExpiry:        cacheExpiry,
 	}, nil
@@ -101,9 +103,10 @@ func toHTTPMetadata(v js.Value) (HTTPMetadata, error) {
 
 func (md *HTTPMetadata) toJS() js.Value {
 	obj := jsutil.NewObject()
-	kv := map[string]string{
+	kv := map[string]any{
 		"contentType":        md.ContentType,
 		"contentLanguage":    md.ContentLanguage,
+		"contentLength":      md.ContentLength,
 		"contentDisposition": md.ContentDisposition,
 		"contentEncoding":    md.ContentEncoding,
 		"cacheControl":       md.CacheControl,

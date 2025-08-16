@@ -8,7 +8,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jsutil"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type rows struct {

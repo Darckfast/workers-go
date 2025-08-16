@@ -5,15 +5,15 @@ import (
 	"net/http"
 	"syscall/js"
 
-	"github.com/syumai/workers/internal/jshttp"
-	"github.com/syumai/workers/internal/jsutil"
+	jshttp "github.com/syumai/workers/internal/http"
+	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // fetch is a function that reproduces cloudflare fetch.
 // Docs: https://developers.cloudflare.com/workers/runtime-apis/fetch/
 func fetch(namespace js.Value, req *http.Request, init *RequestInit) (*http.Response, error) {
 	if namespace.IsUndefined() {
-		return nil, errors.New("fetch function not found")
+		return nil, errors.New("js namespace not set, fetch function not found")
 	}
 	fetchFunc := namespace.Get("fetch")
 	promise := fetchFunc.Invoke(

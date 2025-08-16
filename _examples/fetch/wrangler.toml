@@ -1,6 +1,0 @@
-name = "fetch"
-main = "./build/worker.mjs"
-compatibility_date = "2023-02-24"
-
-[build]
-command = "make build"

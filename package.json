@@ -1,0 +1,38 @@
+{
+  "name": "workers-go",
+  "version": "0.0.1",
+  "description": "",
+  "main": "worker.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "test": "pnpm run test:build && vitest",
+    "test:go": "GOOS=js GOARCH=wasm go test ./...",
+    "test:build": "GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ./worker/bin/app.wasm ./worker/pkg/main.go",
+    "test:ci": "pnpm run test:build && vitest run",
+    "compress": "tar -czvf dist/worker.tar.gz worker"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.11.5",
+    "@cloudflare/vitest-pool-workers": "^0.8.64",
+    "@eslint/js": "^9.33.0",
+    "@faker-js/faker": "^9.9.0",
+    "@types/node": "^24.3.0",
+    "eslint": "^9.33.0",
+    "eslint-plugin-prefer-let": "^4.0.0",
+    "globals": "^16.3.0",
+    "jiti": "^2.5.1",
+    "typescript-eslint": "^8.39.1",
+    "vite": "^7.1.2",
+    "vite-plugin-watch": "^0.3.1",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.30.0"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "^0.0.25"
+  }
+}
