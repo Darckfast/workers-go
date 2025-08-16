@@ -1,8 +1,0 @@
-{
-  "name": "<TBD>",
-  "main": "./build/worker.mjs",
-  "compatibility_date": "<TBD>",
-  "build": {
-    "command": "npm run build"
-  }
-}

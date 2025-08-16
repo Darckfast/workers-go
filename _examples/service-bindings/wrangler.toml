@@ -1,9 +1,0 @@
-name = "service-bindings"
-main = "./build/worker.mjs"
-compatibility_date = "2023-02-24"
-services = [
-    { binding = "hello", service = "hello" }
-]
-
-[build]
-command = "make build"
