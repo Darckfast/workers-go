@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/syumai/workers/internal/runtimecontext"
+	runtimecontext "github.com/syumai/workers/internal/runtime"
 )
 
 // Event represents information about the Cron that invoked this worker.
