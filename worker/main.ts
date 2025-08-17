@@ -9,6 +9,26 @@ globalThis.cf = {
   connect
 }
 
+globalThis.tryCatch = (fn) => {
+  try {
+    return {
+      result: fn(),
+    };
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      if (error instanceof Object) {
+        error = JSON.stringify(error)
+      }
+
+      error = new Error(error || 'no error message')
+    }
+    return {
+      error,
+    };
+  }
+
+}
+
 const go = new Go()
 go.run(new WebAssembly.Instance(app, go.importObject))
 
