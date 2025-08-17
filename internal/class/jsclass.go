@@ -8,9 +8,11 @@ import (
 var (
 	Object            = js.Global().Get("Object")
 	Promise           = js.Global().Get("Promise")
+	JSON              = js.Global().Get("JSON")
 	Request           = js.Global().Get("Request")
 	Response          = js.Global().Get("Response")
 	Headers           = js.Global().Get("Headers")
+	String            = js.Global().Get("String")
 	Array             = js.Global().Get("Array")
 	Number            = js.Global().Get("Number")
 	Uint8Array        = js.Global().Get("Uint8Array")

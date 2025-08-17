@@ -1,6 +1,7 @@
 package jsconv
 
 import (
+	"encoding/json"
 	"strconv"
 	"syscall/js"
 	"time"
@@ -27,6 +28,18 @@ func StrRecordToMap(v js.Value) map[string]string {
 		result[key] = value
 	}
 	return result
+}
+
+func ObjToMap(v js.Value) map[string]any {
+	obj := map[string]any{}
+	if !v.Truthy() {
+		return obj
+	}
+
+	jsonStr := jsclass.JSON.Call("stringify", v).String()
+	json.Unmarshal([]byte(jsonStr), &obj)
+
+	return obj
 }
 
 func MaybeStringList(v js.Value) []string {
@@ -63,8 +76,7 @@ func MaybeInt(v js.Value) int {
 
 func MaybeInt64(v js.Value) int64 {
 	if v.Truthy() {
-		vn := jsclass.Number.New(v)
-		vs := vn.Call("toString")
+		vs := jsclass.String.Invoke(v)
 		vi, _ := strconv.ParseInt(vs.String(), 10, 64)
 
 		return vi
