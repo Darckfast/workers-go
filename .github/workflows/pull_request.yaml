@@ -22,6 +22,8 @@ jobs:
         with:
           node-version: 22
       - run: echo "$(go env GOROOT)/lib/wasm" >> $GITHUB_PATH
+      - run: pnpm i
+
       - name: Test Go
         shell: bash
         run: pnpm run test:go
