@@ -114,7 +114,7 @@ func (t *TailEvent) WailUntil(task func() error) {
 		if err == nil {
 			resolve.Invoke(true)
 		} else {
-			reject.Invoke(jsclass.Error(err))
+			reject.Invoke(jsclass.ToJSError(err))
 		}
 
 		return nil

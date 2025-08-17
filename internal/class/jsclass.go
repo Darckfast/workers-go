@@ -21,8 +21,16 @@ func (j *JSONWrap) Parse(args ...any) (js.Value, error) {
 	}))
 }
 
+type ObjectWrap struct {
+	js.Value
+}
+
+func (o *ObjectWrap) FromEntries(args ...any) js.Value {
+	return o.Call("fromEntries", args...)
+}
+
 var (
-	Object            = js.Global().Get("Object")
+	Object            = ObjectWrap{js.Global().Get("Object")}
 	Promise           = js.Global().Get("Promise")
 	JSON              = JSONWrap{js.Global().Get("JSON")}
 	Request           = js.Global().Get("Request")
@@ -64,7 +72,7 @@ func Await(promise js.Value) (js.Value, error) {
 	catch := js.FuncOf(func(_ js.Value, args []js.Value) any {
 		jsErr := args[0]
 		if !jsErr.InstanceOf(Error) {
-			if jsErr.InstanceOf(Object) {
+			if jsErr.InstanceOf(Object.Value) {
 				jsErr = JSON.Stringify(jsErr)
 			}
 

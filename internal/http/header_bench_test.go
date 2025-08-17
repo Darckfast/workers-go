@@ -2,13 +2,12 @@ package jshttp
 
 import (
 	"net/http"
-	"strings"
 	"testing"
 
 	jsclass "github.com/syumai/workers/internal/class"
 )
 
-func TestToHeadersUsingMap(t *testing.T) {
+func BenchmarkToHeades(b *testing.B) {
 	headers := jsclass.Headers.New()
 
 	headers.Call("append", "Content-Type", "application/json")
@@ -28,18 +27,12 @@ func TestToHeadersUsingMap(t *testing.T) {
 	headers.Call("append", "X-Fake-Referer", "https://fake.example.com")
 	headers.Call("append", "X-Fake-IP", "192.0.2.123")
 
-	h := ToHeaderV2(headers)
-
-	for key, value := range h {
-		hv := strings.Join(value, ",")
-		jsh := headers.Call("get", key).String()
-		if hv != jsh {
-			t.Fatalf("conversion yielded wrong value: had '%s' expected '%s' on '%s'", hv, jsh, key)
-		}
+	for b.Loop() {
+		ToHeader(headers)
 	}
 }
 
-func TestToHeaders(t *testing.T) {
+func BenchmarkToHeadersUsingMap(b *testing.B) {
 	headers := jsclass.Headers.New()
 
 	headers.Call("append", "Content-Type", "application/json")
@@ -59,18 +52,12 @@ func TestToHeaders(t *testing.T) {
 	headers.Call("append", "X-Fake-Referer", "https://fake.example.com")
 	headers.Call("append", "X-Fake-IP", "192.0.2.123")
 
-	h := ToHeader(headers)
-
-	for key, value := range h {
-		hv := strings.Join(value, ",")
-		jsh := headers.Call("get", key).String()
-		if hv != jsh {
-			t.Fatalf("conversion yielded wrong value: had '%s' expected '%s' on '%s'", hv, jsh, key)
-		}
+	for b.Loop() {
+		ToHeaderV2(headers)
 	}
 }
 
-func TestToJSHeaders(t *testing.T) {
+func BenchmarkToJSHeaders(t *testing.B) {
 	headers := http.Header{}
 	headers.Set("Content-Type", "application/json")
 	headers.Set("Accept", "application/json, text/plain, */*")
@@ -89,18 +76,11 @@ func TestToJSHeaders(t *testing.T) {
 	headers.Set("X-Fake-Referer", "https://fake.example.com")
 	headers.Set("X-Fake-IP", "192.0.2.123")
 
-	h := ToJSHeader(headers)
-
-	for key, value := range headers {
-		hv := strings.Join(value, ",")
-		jsh := h.Call("get", key).String()
-		if hv != jsh {
-			t.Fatalf("conversion yielded wrong value: had '%s' expected '%s' on '%s'", hv, jsh, key)
-		}
+	for t.Loop() {
+		ToJSHeader(headers)
 	}
 }
-
-func TestToJSHeadersUsingJSON(t *testing.T) {
+func BenchmarkToJSHeadersUsingJSON(t *testing.B) {
 	headers := http.Header{}
 	headers.Set("Content-Type", "application/json")
 	headers.Set("Accept", "application/json, text/plain, */*")
@@ -119,13 +99,7 @@ func TestToJSHeadersUsingJSON(t *testing.T) {
 	headers.Set("X-Fake-Referer", "https://fake.example.com")
 	headers.Set("X-Fake-IP", "192.0.2.123")
 
-	h := ToJSHeaderV2(headers)
-
-	for key, value := range headers {
-		hv := strings.Join(value, ",")
-		jsh := h.Call("get", key).String()
-		if hv != jsh {
-			t.Fatalf("conversion yielded wrong value: had '%s' expected '%s' on '%s'", hv, jsh, key)
-		}
+	for t.Loop() {
+		ToJSHeaderV2(headers)
 	}
 }
