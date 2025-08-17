@@ -98,7 +98,6 @@ func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
 		// if it tries to convert a ReadCloser that came from a Response
 		return jsclass.Promise.New(js.FuncOf(func(_ js.Value, pargs []js.Value) any {
 			go func() {
-
 				resolve := pargs[0]
 				controller := args[0]
 				chunk := make([]byte, defaultChunkSize)

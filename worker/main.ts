@@ -31,7 +31,7 @@ globalThis.tryCatch = (fn) => {
 
 function init() {
   const go = new Go()
-  go.run(new WebAssembly.Instance(app, go.importObject)).catch(console.log).then(console.log)
+  go.run(new WebAssembly.Instance(app, go.importObject))
 }
 
 async function fetch(req: Request, env: Env, ctx: ExecutionContext) {
