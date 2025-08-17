@@ -1,7 +1,6 @@
 package cronhandler
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/syumai/workers/cloudflare/cron"
@@ -9,7 +8,7 @@ import (
 )
 
 func New() {
-	cron.ScheduleTaskNonBlock(func(ctx context.Context) error {
+	cron.ScheduleTaskNonBlock(func(ctx *cron.CronEvent) error {
 		fmt.Println("cronjob executed")
 
 		cloudflare.WaitUntil(func() {
