@@ -58,6 +58,7 @@ func (w *ResponseWriter) Flush() {
 }
 
 func (w *ResponseWriter) ToJSResponse() js.Value {
+	// JSON.parse would be faster
 	respInit := jsclass.Object.New()
 	respInit.Set("status", w.StatusCode)
 	respInit.Set("statusText", http.StatusText(w.StatusCode))
