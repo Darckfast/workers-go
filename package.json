@@ -1,8 +1,9 @@
 {
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "workers-go",
   "version": "0.0.1",
   "description": "",
-  "main": "worker.ts",
+  "main": "./worker/main.ts",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,6 +17,10 @@
   },
   "keywords": [],
   "author": "",
+  "engines": {
+    "node": "22"
+  },
+  "engineStrict": true,
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {
