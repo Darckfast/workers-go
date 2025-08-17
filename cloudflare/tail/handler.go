@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"syscall/js"
 
+	"github.com/syumai/workers/cloudflare/env"
 	jstail "github.com/syumai/workers/internal/tail"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
@@ -49,6 +50,7 @@ func handler(eventsObj, envObj, ctxObj js.Value) error {
 	jsutil.RuntimeEnv = envObj
 	jsutil.RuntimeExcutionContext = ctxObj
 
+	env.LoadEnvs()
 	events := jstail.NewEvents(eventsObj)
 
 	return consumer(events)

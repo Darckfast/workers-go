@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
@@ -253,5 +254,12 @@ func New() {
 		})
 	})
 
+	http.HandleFunc("GET /env", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		json.NewEncoder(w).Encode(map[string]any{
+			"result": os.Environ(),
+		})
+	})
 	fetch.ServeNonBlock(nil)
 }

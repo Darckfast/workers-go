@@ -6,6 +6,7 @@ import (
 	"syscall/js"
 
 	jshttp "github.com/syumai/workers/internal/http"
+	jsstream "github.com/syumai/workers/internal/stream"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -40,7 +41,7 @@ func (f *ForwardableEmailMessage) Reply(emailMsg *EmailMessage) error {
 	emlMsgObj := jsutil.NewObject()
 	emlMsgObj.Set("from", emailMsg.From)
 	emlMsgObj.Set("to", emailMsg.To)
-	readableStream := jsutil.ReadCloserToReadableStream(emailMsg.Raw)
+	readableStream := jsstream.ReadCloserToReadableStream(emailMsg.Raw)
 	emlMsgObj.Set("raw", readableStream)
 
 	promise := f.self.Call("reply", emlMsgObj)

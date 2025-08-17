@@ -7,7 +7,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsstream "github.com/syumai/workers/internal/stream"
 )
 
 type ResponseWriter struct {
@@ -21,9 +21,9 @@ type ResponseWriter struct {
 }
 
 var (
-	_ http.ResponseWriter    = (*ResponseWriter)(nil)
-	_ jsutil.RawJSBodyWriter = (*ResponseWriter)(nil)
-	_ http.Flusher           = (*ResponseWriter)(nil)
+	_ http.ResponseWriter      = (*ResponseWriter)(nil)
+	_ jsstream.RawJSBodyWriter = (*ResponseWriter)(nil)
+	_ http.Flusher             = (*ResponseWriter)(nil)
 )
 
 // Ready indicates that ResponseWriter is ready to be converted to Response.

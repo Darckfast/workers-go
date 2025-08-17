@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"syscall/js"
 
+	jsclass "github.com/syumai/workers/internal/class"
 	jshttp "github.com/syumai/workers/internal/http"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // fetch is a function that reproduces cloudflare fetch.
@@ -25,10 +25,10 @@ func fetch(namespace js.Value, req *http.Request, init *RequestInit) (*http.Resp
 		init.ToJS(),
 	)
 
-	jsRes, err := jsutil.AwaitPromise(promise)
+	jsRes, err := jsclass.Await(promise)
 	if err != nil {
 		return nil, err
 	}
 
-	return jshttp.ToResponse(jsRes)
+	return jshttp.ToResponse(jsRes), nil
 }

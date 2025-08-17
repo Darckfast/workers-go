@@ -5,11 +5,16 @@ import (
 	"strconv"
 	"syscall/js"
 	"time"
+
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 func init() {
 	if js.Global().Get("cf").IsUndefined() {
-		js.Global().Set("cf", ObjectClass.New())
+		cfObj, _ := jsclass.JSON.Parse(`{"ctx":{},"env":{},"handlers":{},"connect":{}}`)
+		js.Global().Set("cf", cfObj)
+
+		return
 	}
 
 	RuntimeEnv = js.Global().Get("cf").Get("env")

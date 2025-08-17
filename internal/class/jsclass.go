@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jstry "github.com/syumai/workers/internal/try"
 )
 
 type JSONWrap struct {
@@ -16,7 +16,7 @@ func (j *JSONWrap) Stringify(args ...any) js.Value {
 }
 
 func (j *JSONWrap) Parse(args ...any) (js.Value, error) {
-	return jsutil.TryCatch(js.FuncOf(func(_ js.Value, _ []js.Value) any {
+	return jstry.TryCatch(js.FuncOf(func(_ js.Value, _ []js.Value) any {
 		return j.Call("parse", args...)
 	}))
 }

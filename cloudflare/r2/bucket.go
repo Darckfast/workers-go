@@ -5,6 +5,7 @@ import (
 	"io"
 	"syscall/js"
 
+	jsstream "github.com/syumai/workers/internal/stream"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -96,7 +97,7 @@ func (opts *PutOptions) toJS() js.Value {
 //   - Body field of *Object is always nil for Put call.
 //   - if a network error happens, returns error.
 func (r *Bucket) Put(key string, value io.ReadCloser, size int64, opts *PutOptions) (*Object, error) {
-	readable := jsutil.ConvertReaderToFixedLengthStream(value, size)
+	readable := jsstream.ReadCloserToFixedLengthStream(value, size)
 	p := r.instance.Call("put", key, readable, opts.toJS())
 	v, err := jsutil.AwaitPromise(p)
 	if err != nil {

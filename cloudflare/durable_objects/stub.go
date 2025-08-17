@@ -7,6 +7,7 @@ import (
 
 	jsclass "github.com/syumai/workers/internal/class"
 	jshttp "github.com/syumai/workers/internal/http"
+	jstry "github.com/syumai/workers/internal/try"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -28,7 +29,7 @@ func (ns *DurableObjectNamespace) IdFromName(name string) *DurableObjectId {
 }
 
 func (ns *DurableObjectNamespace) IdFromString(id string) (*DurableObjectId, error) {
-	idStr, err := jsutil.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
+	idStr, err := jstry.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
 		return ns.instance.Call("idFromString", id)
 	}))
 
@@ -74,7 +75,7 @@ func (s *DurableObjectStub) Fetch(req *http.Request) (*http.Response, error) {
 		return nil, err
 	}
 
-	return jshttp.ToResponse(jsRes)
+	return jshttp.ToResponse(jsRes), nil
 }
 
 func (s *DurableObjectStub) Call(funcName string) (any, error) {

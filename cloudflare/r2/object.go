@@ -7,6 +7,7 @@ import (
 	"syscall/js"
 	"time"
 
+	jsstream "github.com/syumai/workers/internal/stream"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -54,7 +55,7 @@ func toObject(v js.Value) (*Object, error) {
 	bodyVal := v.Get("body")
 	var body io.Reader
 	if !bodyVal.IsUndefined() {
-		body = jsutil.ReadableStreamToReadCloser(v.Get("body"))
+		body = jsstream.ReadableStreamToReadCloser(v.Get("body"))
 	}
 	return &Object{
 		instance:       v,

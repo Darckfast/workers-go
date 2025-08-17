@@ -21,7 +21,7 @@ func (s *Container) ContainerFetch(req *http.Request) (*http.Response, error) {
 		return nil, err
 	}
 
-	return jshttp.ToResponse(jsRes)
+	return jshttp.ToResponse(jsRes), nil
 }
 
 func GetContainer(binding string, id string) (*Container, error) {

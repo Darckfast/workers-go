@@ -8,6 +8,7 @@ import (
 	"syscall/js"
 	"time"
 
+	jsstream "github.com/syumai/workers/internal/stream"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -15,7 +16,7 @@ func newSocket(ctx context.Context, sockVal js.Value, readDeadline, writeDeadlin
 	ctx, cancel := context.WithCancel(ctx)
 	writerVal := sockVal.Get("writable").Call("getWriter")
 	readerVal := sockVal.Get("readable")
-	readCloser := jsutil.ReadableStreamToReadCloser(readerVal)
+	readCloser := jsstream.ReadableStreamToReadCloser(readerVal)
 	return &Socket{
 		ctx:    ctx,
 		cancel: cancel,

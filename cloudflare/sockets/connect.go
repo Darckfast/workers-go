@@ -6,6 +6,7 @@ import (
 	"syscall/js"
 	"time"
 
+	jstry "github.com/syumai/workers/internal/try"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -39,7 +40,7 @@ func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, e
 			optionsObj.Set("secureTransport", string(opts.SecureTransport))
 		}
 	}
-	sockVal, err := jsutil.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
+	sockVal, err := jstry.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
 		return connect.Invoke(addr, optionsObj)
 	}))
 	if err != nil {

@@ -4,6 +4,7 @@ import (
 	"io"
 	"syscall/js"
 
+	jsstream "github.com/syumai/workers/internal/stream"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -44,5 +45,5 @@ func (ns *Namespace) GetReader(key string, opts *GetOptions) (io.Reader, error) 
 	if err != nil {
 		return nil, err
 	}
-	return jsutil.ReadableStreamToReadCloser(v), nil
+	return jsstream.ReadableStreamToReadCloser(v), nil
 }
