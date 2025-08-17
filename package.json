@@ -8,6 +8,7 @@
     "dev": "vite",
     "test": "pnpm run test:build && vitest",
     "test:go": "GOOS=js GOARCH=wasm go test ./...",
+    "bench:go": "GOOS=js GOARCH=wasm go test -bench=. ./...",
     "test:build": "GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ./worker/bin/app.wasm ./worker/pkg/main.go",
     "test:ci": "pnpm run test:build && vitest run",
     "compress": "tar -czvf dist/worker.tar.gz worker"
