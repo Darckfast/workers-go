@@ -1,7 +1,6 @@
 package jsclass
 
 import (
-	"fmt"
 	"syscall/js"
 
 	jstry "github.com/syumai/workers/internal/try"
@@ -78,7 +77,7 @@ func Await(promise js.Value) (js.Value, error) {
 
 			jsErr = Error.New(jsErr)
 		}
-		errCh <- fmt.Errorf("failed on promise: %s", jsErr.Call("toString").String())
+		errCh <- js.Error{Value: jsErr}
 		return nil
 	})
 	defer catch.Release()

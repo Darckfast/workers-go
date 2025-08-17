@@ -3,7 +3,7 @@
 package tail
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
 	"github.com/syumai/workers/cloudflare/env"
@@ -14,7 +14,7 @@ import (
 type TailConsumer func(f *[]jstail.TailEvent) error
 
 var consumer TailConsumer = func(_ *[]jstail.TailEvent) error {
-	return fmt.Errorf("no consumer implemented")
+	return errors.New("no consumer implemented")
 }
 
 func init() {

@@ -3,7 +3,7 @@
 package email
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
 	"github.com/syumai/workers/cloudflare/env"
@@ -15,7 +15,7 @@ import (
 type EmailConsumer func(f *jsemail.ForwardableEmailMessage) error
 
 var consumer EmailConsumer = func(_ *jsemail.ForwardableEmailMessage) error {
-	return fmt.Errorf("no consumer implemented")
+	return errors.New("no consumer implemented")
 }
 
 func init() {

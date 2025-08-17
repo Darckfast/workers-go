@@ -2,7 +2,6 @@ package r2
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"syscall/js"
 	"time"
@@ -46,11 +45,11 @@ func (o *Object) BodyUsed() (bool, error) {
 func toObject(v js.Value) (*Object, error) {
 	uploaded, err := jsutil.DateToTime(v.Get("uploaded"))
 	if err != nil {
-		return nil, fmt.Errorf("error converting uploaded: %w", err)
+		return nil, errors.New("error converting uploaded: " + err.Error())
 	}
 	r2Meta, err := toHTTPMetadata(v.Get("httpMetadata"))
 	if err != nil {
-		return nil, fmt.Errorf("error converting httpMetadata: %w", err)
+		return nil, errors.New("error converting httpMetadata: " + err.Error())
 	}
 	bodyVal := v.Get("body")
 	var body io.Reader
@@ -89,7 +88,7 @@ func toHTTPMetadata(v js.Value) (HTTPMetadata, error) {
 	}
 	cacheExpiry, err := jsutil.MaybeDate(v.Get("cacheExpiry"))
 	if err != nil {
-		return HTTPMetadata{}, fmt.Errorf("error converting cacheExpiry: %w", err)
+		return HTTPMetadata{}, errors.New("error converting cacheExpiry: " + err.Error())
 	}
 	return HTTPMetadata{
 		ContentType:        jsutil.MaybeString(v.Get("contentType")),

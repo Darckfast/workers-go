@@ -1,7 +1,7 @@
 package kv
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
 	jsutil "github.com/syumai/workers/internal/utils"
@@ -72,7 +72,7 @@ func toListResult(v js.Value) (*ListResult, error) {
 	for i := 0; i < len(keys); i++ {
 		key, err := toListKey(keysVal.Index(i))
 		if err != nil {
-			return nil, fmt.Errorf("error converting to ListKey: %w", err)
+			return nil, errors.New("error converting to ListKey: " + err.Error())
 		}
 		keys[i] = key
 	}

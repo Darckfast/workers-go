@@ -1,7 +1,7 @@
 package queues
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
 	jsutil "github.com/syumai/workers/internal/utils"
@@ -19,7 +19,7 @@ type Producer struct {
 func NewProducer(queueName string) (*Producer, error) {
 	inst := jsutil.RuntimeEnv.Get(queueName)
 	if inst.IsUndefined() {
-		return nil, fmt.Errorf("%s is undefined", queueName)
+		return nil, errors.New(queueName + " is undefined")
 	}
 	return &Producer{queue: inst}, nil
 }

@@ -1,7 +1,7 @@
 package cron
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
 	"github.com/syumai/workers/cloudflare/env"
@@ -11,7 +11,7 @@ import (
 type Task func(evt *CronEvent) error
 
 var scheduledTask Task = func(_ *CronEvent) error {
-	return fmt.Errorf("no scheduled implemented")
+	return errors.New("no scheduled implemented")
 }
 
 func runScheduler(eventObj js.Value, envObj js.Value, ctxObj js.Value) error {

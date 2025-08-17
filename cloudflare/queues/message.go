@@ -1,7 +1,7 @@
 package queues
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 	"time"
 
@@ -27,7 +27,7 @@ type Message struct {
 func newMessage(obj js.Value) (*Message, error) {
 	timestamp, err := jsutil.DateToTime(obj.Get("timestamp"))
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse message timestamp: %v", err)
+		return nil, errors.New("failed to parse message timestamp: " + err.Error())
 	}
 
 	return &Message{
@@ -61,7 +61,7 @@ func (m *Message) Retry(opts ...RetryOption) {
 
 func (m *Message) StringBody() (string, error) {
 	if m.Body.Type() != js.TypeString {
-		return "", fmt.Errorf("message body is not a string: %v", m.Body)
+		return "", errors.New("message body is not a string: " + m.Body.Type().String())
 	}
 	return m.Body.String(), nil
 }
@@ -69,7 +69,7 @@ func (m *Message) StringBody() (string, error) {
 func (m *Message) BytesBody() ([]byte, error) {
 	if m.Body.Type() != js.TypeObject ||
 		!(m.Body.InstanceOf(jsutil.Uint8ArrayClass) || m.Body.InstanceOf(jsutil.Uint8ClampedArrayClass)) {
-		return nil, fmt.Errorf("message body is not a byte array: %v", m.Body)
+		return nil, errors.New("message body is not a byte array: " + m.Body.Type().String())
 	}
 	b := make([]byte, m.Body.Get("byteLength").Int())
 	js.CopyBytesToGo(b, m.Body)

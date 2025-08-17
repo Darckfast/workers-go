@@ -1,7 +1,7 @@
 package durableobjects
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"syscall/js"
 
@@ -18,7 +18,7 @@ type DurableObjectNamespace struct {
 func NewDurableObjectNamespace(varName string) (*DurableObjectNamespace, error) {
 	inst := jsutil.RuntimeEnv.Get(varName)
 	if inst.IsUndefined() {
-		return nil, fmt.Errorf("%s is undefined", varName)
+		return nil, errors.New("%s is undefined" + varName)
 	}
 	return &DurableObjectNamespace{instance: inst}, nil
 }
@@ -52,7 +52,7 @@ func (ns *DurableObjectNamespace) Jurisdiction(jur string) *DurableObjectNamespa
 
 func (ns *DurableObjectNamespace) Get(id *DurableObjectId) (*DurableObjectStub, error) {
 	if id == nil || id.val.IsUndefined() {
-		return nil, fmt.Errorf("invalid UniqueGlobalId")
+		return nil, errors.New("invalid UniqueGlobalId")
 	}
 	stub := ns.instance.Call("get", id.val)
 	return &DurableObjectStub{val: stub}, nil

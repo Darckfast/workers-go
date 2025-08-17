@@ -1,7 +1,7 @@
 package r2
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
 	jsutil "github.com/syumai/workers/internal/utils"
@@ -26,7 +26,7 @@ func toObjects(v js.Value) (*Objects, error) {
 	for i := 0; i < len(objects); i++ {
 		obj, err := toObject(objectsVal.Index(i))
 		if err != nil {
-			return nil, fmt.Errorf("error converting to Object: %w", err)
+			return nil, errors.New("error converting to Object: " + err.Error())
 		}
 		objects[i] = obj
 	}

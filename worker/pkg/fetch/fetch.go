@@ -6,7 +6,6 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -136,7 +135,7 @@ func New() {
 	http.HandleFunc("GET /cache", func(w http.ResponseWriter, r *http.Request) {
 		c := cache.New()
 
-		res, err := c.Match(r, nil)
+		res, _ := c.Match(r, nil)
 
 		xcache := "miss"
 		if res == nil {
@@ -151,11 +150,7 @@ func New() {
 					"cache-control": []string{"max-age=1500"}},
 				Body: io.NopCloser(tee),
 			}
-			err = c.Put(r, &dummyR)
-
-			if err != nil {
-				fmt.Println(err)
-			}
+			_ = c.Put(r, &dummyR)
 		} else {
 			xcache = "hit"
 			w.Header().Add("x-cache", xcache)
@@ -169,7 +164,6 @@ func New() {
 		db, _ := sql.Open("d1", "DB")
 
 		result := db.QueryRow("SELECT current_timestamp")
-		fmt.Println(result)
 
 		var a any
 		result.Scan(&a)
@@ -193,7 +187,6 @@ func New() {
 
 	http.HandleFunc("POST /queue", func(w http.ResponseWriter, r *http.Request) {
 		q, err := queues.NewProducer("TEST_QUEUE")
-		fmt.Println("queue", err, q)
 		content, _ := io.ReadAll(r.Body)
 		err = q.SendText(string(content))
 

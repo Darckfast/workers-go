@@ -1,7 +1,7 @@
 package kv
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
 	jsutil "github.com/syumai/workers/internal/utils"
@@ -21,7 +21,7 @@ type Namespace struct {
 func NewNamespace(varName string) (*Namespace, error) {
 	inst := jsutil.RuntimeEnv.Get(varName)
 	if inst.IsUndefined() {
-		return nil, fmt.Errorf("%s is undefined", varName)
+		return nil, errors.New(varName + " is undefined")
 	}
 	return &Namespace{instance: inst}, nil
 }

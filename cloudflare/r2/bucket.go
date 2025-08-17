@@ -1,7 +1,7 @@
 package r2
 
 import (
-	"fmt"
+	"errors"
 	"io"
 	"syscall/js"
 
@@ -24,7 +24,7 @@ type Bucket struct {
 func NewBucket(varName string) (*Bucket, error) {
 	inst := jsutil.RuntimeEnv.Get(varName)
 	if inst.IsUndefined() {
-		return nil, fmt.Errorf("%s is undefined", varName)
+		return nil, errors.New("%s is undefined" + varName)
 	}
 	return &Bucket{instance: inst}, nil
 }

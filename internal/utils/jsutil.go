@@ -1,7 +1,6 @@
 package jsutil
 
 import (
-	"fmt"
 	"strconv"
 	"syscall/js"
 	"time"
@@ -65,9 +64,9 @@ func Error(msg string) js.Value {
 	return ErrorClass.New(msg)
 }
 
-func Errorf(format string, args ...any) js.Value {
-	return ErrorClass.New(fmt.Sprintf(format, args...))
-}
+// func Errorf(format string, args ...any) js.Value {
+// 	return ErrorClass.New(fmt.Sprintf(format, args...))
+// }
 
 // ArrayFrom calls Array.from to given argument and returns result Array.
 func ArrayFrom(v js.Value) js.Value {
@@ -88,7 +87,7 @@ func AwaitPromise(promise js.Value) (js.Value, error) {
 	defer close(errCh)
 
 	catch := js.FuncOf(func(_ js.Value, args []js.Value) any {
-		errCh <- fmt.Errorf("failed on promise: %s", args[0].Call("toString").String())
+		errCh <- js.Error{Value: args[0]}
 		return nil
 	})
 	defer catch.Release()

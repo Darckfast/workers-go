@@ -1,7 +1,7 @@
 package queues
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
 	"github.com/syumai/workers/cloudflare/env"
@@ -16,7 +16,7 @@ import (
 type Consumer func(batch *MessageBatch) error
 
 var consumer Consumer = func(batch *MessageBatch) error {
-	return fmt.Errorf("no consumer implemented")
+	return errors.New("no consumer implemented")
 }
 
 func init() {
@@ -51,7 +51,7 @@ func consumeBatch(batch, envObj, ctxObj js.Value) error {
 	env.LoadEnvs()
 	b, err := newMessageBatch(batch)
 	if err != nil {
-		return fmt.Errorf("failed to parse message batch: %v", err)
+		return errors.New("failed to parse message batch: " + err.Error())
 	}
 
 	if err := consumer(b); err != nil {
