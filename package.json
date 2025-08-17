@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "wd": "pnpm run test:build && wrangler -c ./worker/wrangler.toml dev",
     "test": "pnpm run test:build && vitest",
     "test:go": "GOOS=js GOARCH=wasm go test ./...",
     "bench:go": "GOOS=js GOARCH=wasm go test -bench=. ./...",
