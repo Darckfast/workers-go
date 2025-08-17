@@ -1,11 +1,12 @@
 package jshttp
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 func ToHeader(headers js.Value) http.Header {
@@ -13,26 +14,28 @@ func ToHeader(headers js.Value) http.Header {
 		return http.Header{}
 	}
 
-	entries := jsutil.ArrayFrom(headers.Call("entries"))
-	headerLen := entries.Length()
+	hObj := jsclass.Object.FromEntries(headers.Call("entries"))
+	hStr := jsclass.JSON.Stringify(hObj).String()
+	var hMap map[string]string
+
+	json.Unmarshal([]byte(hStr), &hMap)
+
 	h := http.Header{}
-	for i := range headerLen {
-		entry := entries.Index(i)
-		key := entry.Index(0).String()
-		values := entry.Index(1).String()
+	for i := range hMap {
+		values := hMap[i]
 		for value := range strings.SplitSeq(values, ",") {
-			h.Add(key, value)
+			h.Add(i, value)
 		}
 	}
 	return h
 }
 
 func ToJSHeader(header http.Header) js.Value {
-	h := jsutil.HeadersClass.New()
-	for key, values := range header {
-		for _, value := range values {
-			h.Call("append", key, value)
-		}
-	}
+	hBytes, _ := json.Marshal(header)
+	hObj, _ := jsclass.JSON.Parse(string(hBytes))
+	// Returning as an object is faster, but it has problems with Get(key)
+	// on some headers keys
+	h := jsclass.Headers.New(hObj)
+
 	return h
 }

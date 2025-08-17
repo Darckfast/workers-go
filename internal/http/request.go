@@ -9,23 +9,22 @@ import (
 	"strings"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
+	jsstream "github.com/syumai/workers/internal/stream"
 )
 
-func ToBody(stream js.Value) io.ReadCloser {
-	if stream.IsNull() || stream.IsUndefined() {
+func ToBody(body js.Value) io.ReadCloser {
+	if !body.Truthy() {
 		return io.NopCloser(bytes.NewReader([]byte{}))
 	}
-	return jsutil.ReadableStreamToReadCloser(stream)
+
+	return jsstream.ReadableStreamToReadCloser(body)
 }
 
-// ToRequest converts JavaScript sides Request to *http.Request.
-//   - Request: https://developer.mozilla.org/docs/Web/API/Request
 func ToRequest(req js.Value) *http.Request {
 	reqUrl, _ := url.Parse(req.Get("url").String())
 	header := ToHeader(req.Get("headers"))
 
-	// ignore err
 	contentLength, _ := strconv.ParseInt(header.Get("Content-Length"), 10, 64)
 	return &http.Request{
 		Method:           req.Get("method").String(),
@@ -38,17 +37,16 @@ func ToRequest(req js.Value) *http.Request {
 	}
 }
 
-// ToJSRequest converts *http.Request to JavaScript sides Request.
-//   - Request: https://developer.mozilla.org/docs/Web/API/Request
 func ToJSRequest(req *http.Request) js.Value {
-	jsReqOptions := jsutil.NewObject()
+	jsReqOptions := jsclass.Object.New()
 	jsReqOptions.Set("method", req.Method)
 	jsReqOptions.Set("headers", ToJSHeader(req.Header))
 	jsReqBody := js.Undefined()
 	if req.Body != nil && req.Method != http.MethodGet {
-		jsReqBody = jsutil.ReadCloserToReadableStream(req.Body)
+		jsReqBody = jsstream.ReadCloserToReadableStream(req.Body)
+		jsReqOptions.Set("duplex", "half")
 	}
 	jsReqOptions.Set("body", jsReqBody)
-	jsReq := jsutil.RequestClass.New(req.URL.String(), jsReqOptions)
+	jsReq := jsclass.Request.New(req.URL.String(), jsReqOptions)
 	return jsReq
 }

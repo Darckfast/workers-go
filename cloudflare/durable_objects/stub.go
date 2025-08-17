@@ -1,13 +1,13 @@
 package durableobjects
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 	"syscall/js"
 
 	jsclass "github.com/syumai/workers/internal/class"
 	jshttp "github.com/syumai/workers/internal/http"
-	jsutil "github.com/syumai/workers/internal/utils"
+	jstry "github.com/syumai/workers/internal/try"
 )
 
 type DurableObjectNamespace struct {
@@ -15,9 +15,9 @@ type DurableObjectNamespace struct {
 }
 
 func NewDurableObjectNamespace(varName string) (*DurableObjectNamespace, error) {
-	inst := jsutil.RuntimeEnv.Get(varName)
+	inst := jsclass.Env.Get(varName)
 	if inst.IsUndefined() {
-		return nil, fmt.Errorf("%s is undefined", varName)
+		return nil, errors.New("%s is undefined" + varName)
 	}
 	return &DurableObjectNamespace{instance: inst}, nil
 }
@@ -28,7 +28,7 @@ func (ns *DurableObjectNamespace) IdFromName(name string) *DurableObjectId {
 }
 
 func (ns *DurableObjectNamespace) IdFromString(id string) (*DurableObjectId, error) {
-	idStr, err := jsutil.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
+	idStr, err := jstry.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
 		return ns.instance.Call("idFromString", id)
 	}))
 
@@ -51,7 +51,7 @@ func (ns *DurableObjectNamespace) Jurisdiction(jur string) *DurableObjectNamespa
 
 func (ns *DurableObjectNamespace) Get(id *DurableObjectId) (*DurableObjectStub, error) {
 	if id == nil || id.val.IsUndefined() {
-		return nil, fmt.Errorf("invalid UniqueGlobalId")
+		return nil, errors.New("invalid UniqueGlobalId")
 	}
 	stub := ns.instance.Call("get", id.val)
 	return &DurableObjectStub{val: stub}, nil
@@ -74,7 +74,7 @@ func (s *DurableObjectStub) Fetch(req *http.Request) (*http.Response, error) {
 		return nil, err
 	}
 
-	return jshttp.ToResponse(jsRes)
+	return jshttp.ToResponse(jsRes), nil
 }
 
 func (s *DurableObjectStub) Call(funcName string) (any, error) {

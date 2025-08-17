@@ -1,7 +1,8 @@
+//go:build js && wasm
+
 package jstail
 
 import (
-	"fmt"
 	"net/http"
 	"syscall/js"
 
@@ -114,7 +115,7 @@ func (t *TailEvent) WailUntil(task func() error) {
 		if err == nil {
 			resolve.Invoke(true)
 		} else {
-			reject.Invoke(jsclass.Error(err))
+			reject.Invoke(jsclass.ToJSError(err))
 		}
 
 		return nil
@@ -130,7 +131,6 @@ func parseTailItems(tracesJs js.Value) *[]TailItem {
 
 	for j := range tracesJs.Length() {
 		traceJs := tracesJs.Index(j)
-		fmt.Println(traceJs)
 		tailItem := TailItem{
 			ScriptName:               traceJs.Get("scriptName").String(),
 			Entrypoint:               traceJs.Get("entrypoint").String(),

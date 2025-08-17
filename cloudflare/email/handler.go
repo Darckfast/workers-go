@@ -3,17 +3,19 @@
 package email
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
+	"github.com/syumai/workers/cloudflare/env"
+	_ "github.com/syumai/workers/cloudflare/env"
+	jsclass "github.com/syumai/workers/internal/class"
 	jsemail "github.com/syumai/workers/internal/email"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type EmailConsumer func(f *jsemail.ForwardableEmailMessage) error
 
 var consumer EmailConsumer = func(_ *jsemail.ForwardableEmailMessage) error {
-	return fmt.Errorf("no consumer implemented")
+	return errors.New("no consumer implemented")
 }
 
 func init() {
@@ -30,7 +32,7 @@ func init() {
 			go func() {
 				err := handler(fwrMsgObj, envObj, ctxObj)
 				if err != nil {
-					reject.Invoke(jsutil.Error(err.Error()))
+					reject.Invoke(jsclass.ToJSError(err))
 				} else {
 					resolve.Invoke(true)
 				}
@@ -39,16 +41,17 @@ func init() {
 			return nil
 		})
 
-		return jsutil.NewPromise(cb)
+		return jsclass.Promise.New(cb)
 	})
 
 	js.Global().Get("cf").Set("email", handleRequestPromise)
 }
 
 func handler(emailObj, envObj, ctxObj js.Value) error {
-	jsutil.RuntimeEnv = envObj
-	jsutil.RuntimeExcutionContext = ctxObj
+	jsclass.Env = envObj
+	jsclass.ExcutionContext = ctxObj
 
+	env.LoadEnvs()
 	email := jsemail.NewForwardableEmailMessage(emailObj)
 	defer email.Raw.Close()
 

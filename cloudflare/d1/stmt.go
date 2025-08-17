@@ -6,7 +6,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 type stmt struct {
@@ -39,7 +39,7 @@ func (s *stmt) ExecContext(_ context.Context, args []driver.NamedValue) (driver.
 	argValues := make([]any, len(args))
 	for i, arg := range args {
 		if src, ok := arg.Value.([]byte); ok {
-			dst := jsutil.Uint8ArrayClass.New(len(src))
+			dst := jsclass.Uint8Array.New(len(src))
 			if n := js.CopyBytesToJS(dst, src); n != len(src) {
 				return nil, errors.New("incomplete copy into Uint8Array")
 			}
@@ -49,7 +49,7 @@ func (s *stmt) ExecContext(_ context.Context, args []driver.NamedValue) (driver.
 		}
 	}
 	resultPromise := s.stmtObj.Call("bind", argValues...).Call("run")
-	resultObj, err := jsutil.AwaitPromise(resultPromise)
+	resultObj, err := jsclass.Await(resultPromise)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (s *stmt) QueryContext(_ context.Context, args []driver.NamedValue) (driver
 	argValues := make([]any, len(args))
 	for i, arg := range args {
 		if src, ok := arg.Value.([]byte); ok {
-			dst := jsutil.Uint8ArrayClass.New(len(src))
+			dst := jsclass.Uint8Array.New(len(src))
 			if n := js.CopyBytesToJS(dst, src); n != len(src) {
 				return nil, errors.New("incomplete copy into Uint8Array")
 			}
@@ -76,7 +76,7 @@ func (s *stmt) QueryContext(_ context.Context, args []driver.NamedValue) (driver
 		}
 	}
 	resultPromise := s.stmtObj.Call("bind", argValues...).Call("raw", map[string]any{"columnNames": true})
-	rowsArray, err := jsutil.AwaitPromise(resultPromise)
+	rowsArray, err := jsclass.Await(resultPromise)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (s *stmt) QueryContext(_ context.Context, args []driver.NamedValue) (driver
 	colsArray := rowsArray.Call("shift")
 	colsLen := colsArray.Length()
 	cols := make([]string, colsLen)
-	for i := 0; i < colsLen; i++ {
+	for i := range colsLen {
 		cols[i] = colsArray.Index(i).String()
 	}
 	return &rows{

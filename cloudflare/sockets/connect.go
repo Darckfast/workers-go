@@ -6,7 +6,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
+	jstry "github.com/syumai/workers/internal/try"
 )
 
 type SecureTransport string
@@ -29,8 +30,8 @@ type SocketOptions struct {
 const defaultDeadline = 999999 * time.Hour
 
 func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, error) {
-	connect := jsutil.RuntimeConnect
-	optionsObj := jsutil.NewObject()
+	connect := jsclass.Connect
+	optionsObj := jsclass.Object.New()
 	if opts != nil {
 		if opts.AllowHalfOpen {
 			optionsObj.Set("allowHalfOpen", true)
@@ -39,7 +40,7 @@ func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, e
 			optionsObj.Set("secureTransport", string(opts.SecureTransport))
 		}
 	}
-	sockVal, err := jsutil.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
+	sockVal, err := jstry.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
 		return connect.Invoke(addr, optionsObj)
 	}))
 	if err != nil {

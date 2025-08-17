@@ -1,11 +1,12 @@
 package r2
 
 import (
-	"fmt"
+	"errors"
 	"io"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
+	jsstream "github.com/syumai/workers/internal/stream"
 )
 
 // Bucket represents interface of Cloudflare Worker's R2 Bucket instance.
@@ -21,9 +22,9 @@ type Bucket struct {
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewBucket(varName string) (*Bucket, error) {
-	inst := jsutil.RuntimeEnv.Get(varName)
+	inst := jsclass.Env.Get(varName)
 	if inst.IsUndefined() {
-		return nil, fmt.Errorf("%s is undefined", varName)
+		return nil, errors.New("%s is undefined" + varName)
 	}
 	return &Bucket{instance: inst}, nil
 }
@@ -34,7 +35,7 @@ func NewBucket(varName string) (*Bucket, error) {
 //   - if a network error happens, returns error.
 func (r *Bucket) Head(key string) (*Object, error) {
 	p := r.instance.Call("head", key)
-	v, err := jsutil.AwaitPromise(p)
+	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +50,7 @@ func (r *Bucket) Head(key string) (*Object, error) {
 //   - if a network error happens, returns error.
 func (r *Bucket) Get(key string) (*Object, error) {
 	p := r.instance.Call("get", key)
-	v, err := jsutil.AwaitPromise(p)
+	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +72,7 @@ func (opts *PutOptions) toJS() js.Value {
 	if opts == nil {
 		return js.Undefined()
 	}
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	if opts.HTTPMetadata != (HTTPMetadata{}) {
 		obj.Set("httpMetadata", opts.HTTPMetadata.toJS())
 	}
@@ -96,9 +97,9 @@ func (opts *PutOptions) toJS() js.Value {
 //   - Body field of *Object is always nil for Put call.
 //   - if a network error happens, returns error.
 func (r *Bucket) Put(key string, value io.ReadCloser, size int64, opts *PutOptions) (*Object, error) {
-	readable := jsutil.ConvertReaderToFixedLengthStream(value, size)
+	readable := jsstream.ReadCloserToFixedLengthStream(value, size)
 	p := r.instance.Call("put", key, readable, opts.toJS())
-	v, err := jsutil.AwaitPromise(p)
+	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +110,7 @@ func (r *Bucket) Put(key string, value io.ReadCloser, size int64, opts *PutOptio
 //   - if a network error happens, returns error.
 func (r *Bucket) Delete(key string) error {
 	p := r.instance.Call("delete", key)
-	if _, err := jsutil.AwaitPromise(p); err != nil {
+	if _, err := jsclass.Await(p); err != nil {
 		return err
 	}
 	return nil
@@ -119,7 +120,7 @@ func (r *Bucket) Delete(key string) error {
 //   - if a network error happens, returns error.
 func (r *Bucket) List() (*Objects, error) {
 	p := r.instance.Call("list")
-	v, err := jsutil.AwaitPromise(p)
+	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
 	}

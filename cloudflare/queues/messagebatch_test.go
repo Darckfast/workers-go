@@ -5,12 +5,13 @@ import (
 	"testing"
 	"time"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
+	jsconv "github.com/syumai/workers/internal/conv"
 )
 
 func TestNewConsumerMessageBatch(t *testing.T) {
 	ts := time.Now()
-	jsTs := jsutil.TimeToDate(ts)
+	jsTs := jsconv.TimeToDate(ts)
 	id := "some-message-id"
 	m := map[string]any{
 		"queue": "some-queue",
@@ -57,7 +58,7 @@ func TestNewConsumerMessageBatch(t *testing.T) {
 
 func TestConsumerMessageBatch_AckAll(t *testing.T) {
 	ackAllCalled := false
-	jsObj := jsutil.NewObject()
+	jsObj := jsclass.Object.New()
 	jsObj.Set("ackAll", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		ackAllCalled = true
 		return nil
@@ -75,7 +76,7 @@ func TestConsumerMessageBatch_AckAll(t *testing.T) {
 
 func TestConsumerMessageBatch_RetryAll(t *testing.T) {
 	retryAllCalled := false
-	jsObj := jsutil.NewObject()
+	jsObj := jsclass.Object.New()
 	jsObj.Set("retryAll", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		retryAllCalled = true
 		return nil
@@ -93,7 +94,7 @@ func TestConsumerMessageBatch_RetryAll(t *testing.T) {
 
 func TestConsumerMessageBatch_RetryAllWithRetryOption(t *testing.T) {
 	retryAllCalled := false
-	jsObj := jsutil.NewObject()
+	jsObj := jsclass.Object.New()
 	jsObj.Set("retryAll", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		retryAllCalled = true
 		if len(args) != 1 {

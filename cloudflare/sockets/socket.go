@@ -8,14 +8,15 @@ import (
 	"syscall/js"
 	"time"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
+	jsstream "github.com/syumai/workers/internal/stream"
 )
 
 func newSocket(ctx context.Context, sockVal js.Value, readDeadline, writeDeadline time.Time) *Socket {
 	ctx, cancel := context.WithCancel(ctx)
 	writerVal := sockVal.Get("writable").Call("getWriter")
 	readerVal := sockVal.Get("readable")
-	readCloser := jsutil.ReadableStreamToReadCloser(readerVal)
+	readCloser := jsstream.ReadableStreamToReadCloser(readerVal)
 	return &Socket{
 		ctx:    ctx,
 		cancel: cancel,
@@ -78,9 +79,9 @@ func (t *Socket) Write(b []byte) (n int, err error) {
 	defer cancel()
 	done := make(chan struct{})
 	go func() {
-		arr := jsutil.NewUint8Array(len(b))
+		arr := jsclass.Uint8Array.New(len(b))
 		js.CopyBytesToJS(arr, b)
-		_, err = jsutil.AwaitPromise(t.writerVal.Call("write", arr))
+		_, err = jsclass.Await(t.writerVal.Call("write", arr))
 		// TODO: handle error
 		if err == nil {
 			n = len(b)

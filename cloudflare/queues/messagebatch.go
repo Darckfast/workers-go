@@ -1,7 +1,7 @@
 package queues
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 )
 
@@ -26,7 +26,7 @@ func newMessageBatch(obj js.Value) (*MessageBatch, error) {
 	for i := 0; i < msgArr.Length(); i++ {
 		m, err := newMessage(msgArr.Index(i))
 		if err != nil {
-			return nil, fmt.Errorf("failed to parse message %d: %v", i, err)
+			return nil, errors.New("failed to parse message " + err.Error())
 		}
 		messages[i] = m
 	}

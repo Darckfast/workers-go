@@ -1,8 +1,8 @@
 package emailhandler
 
 import (
-	"fmt"
 	"io"
+	"strconv"
 	"strings"
 
 	"github.com/syumai/workers/cloudflare/email"
@@ -19,7 +19,7 @@ func New() {
 			return err
 		}
 
-		emailBody := strings.NewReader(fmt.Sprintf("this is a test, and this email has %d", f.RawSize))
+		emailBody := strings.NewReader("this is a test, and this email has " + strconv.Itoa(f.RawSize))
 		reply := jsemail.EmailMessage{
 			From: "me",
 			To:   "you",

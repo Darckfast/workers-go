@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	emailhandler.New()
 	fetchhandler.New()
+	emailhandler.New()
 	cronhandler.New()
 	queuehandler.New()
 	tailhandler.New()

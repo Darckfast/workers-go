@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 // Client is an HTTP client.
@@ -23,7 +23,7 @@ func (c *Client) applyOptions(opts []ClientOption) {
 }
 
 func (c *Client) WithBinding(bindname string) *Client {
-	c.namespace = jsutil.RuntimeEnv.Get(bindname)
+	c.namespace = jsclass.Env.Get(bindname)
 	return c
 }
 

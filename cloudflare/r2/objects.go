@@ -1,10 +1,10 @@
 package r2
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsconv "github.com/syumai/workers/internal/conv"
 )
 
 // Objects represents Cloudflare R2 objects.
@@ -26,7 +26,7 @@ func toObjects(v js.Value) (*Objects, error) {
 	for i := 0; i < len(objects); i++ {
 		obj, err := toObject(objectsVal.Index(i))
 		if err != nil {
-			return nil, fmt.Errorf("error converting to Object: %w", err)
+			return nil, errors.New("error converting to Object: " + err.Error())
 		}
 		objects[i] = obj
 	}
@@ -38,7 +38,7 @@ func toObjects(v js.Value) (*Objects, error) {
 	return &Objects{
 		Objects:           objects,
 		Truncated:         v.Get("truncated").Bool(),
-		Cursor:            jsutil.MaybeString(v.Get("cursor")),
+		Cursor:            jsconv.MaybeString(v.Get("cursor")),
 		DelimitedPrefixes: prefixes,
 	}, nil
 }

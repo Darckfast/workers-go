@@ -1,65 +1,55 @@
 package jshttp
 
 import (
-	"io"
 	"net/http"
 	"strconv"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
+	jsstream "github.com/syumai/workers/internal/stream"
 )
 
-func toResponse(res js.Value, body io.ReadCloser) (*http.Response, error) {
+func ToResponse(res js.Value) *http.Response {
+	body := jsstream.ReadableStreamToReadCloser(res.Get("body"))
 	status := res.Get("status").Int()
 	header := ToHeader(res.Get("headers"))
 	contentLength, _ := strconv.ParseInt(header.Get("Content-Length"), 10, 64)
 
 	return &http.Response{
-		Status:        strconv.Itoa(status) + " " + res.Get("statusText").String(),
+		Status:        http.StatusText(status),
 		StatusCode:    status,
 		Header:        header,
 		Body:          body,
 		ContentLength: contentLength,
-	}, nil
+	}
 }
 
-// ToResponse converts JavaScript sides Response to *http.Response.
-//   - Response: https://developer.mozilla.org/docs/Web/API/Response
-func ToResponse(res js.Value) (*http.Response, error) {
-	body := jsutil.ReadableStreamToReadCloser(res.Get("body"))
-	return toResponse(res, body)
-}
-
-// ToJSResponse converts *http.Response to JavaScript sides Response class object.
 func ToJSResponse(res *http.Response) js.Value {
-	return newJSResponse(res.StatusCode, res.Header, res.ContentLength, res.Body, nil)
-}
-
-// newJSResponse creates JavaScript sides Response class object.
-//   - Response: https://developer.mozilla.org/docs/Web/API/Response
-func newJSResponse(statusCode int, headers http.Header, contentLength int64, body io.ReadCloser, rawBody *js.Value) js.Value {
-	status := statusCode
+	status := res.StatusCode
 	if status == 0 {
 		status = http.StatusOK
 	}
-	respInit := jsutil.NewObject()
+
+	respInit := jsclass.Object.New()
 	respInit.Set("status", status)
 	respInit.Set("statusText", http.StatusText(status))
-	respInit.Set("headers", ToJSHeader(headers))
+	respInit.Set("headers", ToJSHeader(res.Header))
+	readableStream := jsclass.Null
+
 	if status == http.StatusSwitchingProtocols ||
 		status == http.StatusNoContent ||
 		status == http.StatusResetContent ||
 		status == http.StatusNotModified {
-		return jsutil.ResponseClass.New(jsutil.Null, respInit)
+		return jsclass.Response.New(readableStream, respInit)
 	}
-	readableStream := func() js.Value {
-		if rawBody != nil {
-			return *rawBody
-		}
-		if !jsutil.MaybeFixedLengthStreamClass.IsUndefined() && contentLength > 0 {
-			return jsutil.ConvertReaderToFixedLengthStream(body, contentLength)
-		}
-		return jsutil.ReadCloserToReadableStream(body)
-	}()
-	return jsutil.ResponseClass.New(readableStream, respInit)
+
+	contentLength, _ := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
+	if jsclass.MaybeFixedLengthStream.Truthy() && contentLength > 0 {
+		readableStream = jsstream.ReadCloserToFixedLengthStream(res.Body, contentLength)
+	} else {
+		readableStream = jsstream.ReadCloserToReadableStream(res.Body)
+	}
+
+	return jsclass.Response.New(readableStream, respInit)
+
 }

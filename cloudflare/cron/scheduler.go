@@ -1,22 +1,24 @@
 package cron
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	"github.com/syumai/workers/cloudflare/env"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 type Task func(evt *CronEvent) error
 
 var scheduledTask Task = func(_ *CronEvent) error {
-	return fmt.Errorf("no scheduled implemented")
+	return errors.New("no scheduled implemented")
 }
 
-func runScheduler(eventObj js.Value, envObj js.Value, ctxObj js.Value) error {
-	jsutil.RuntimeEnv = envObj
-	jsutil.RuntimeExcutionContext = ctxObj
-	event := NewEvent(eventObj)
+func runScheduler(jsEvent js.Value, envObj js.Value, ctxObj js.Value) error {
+	jsclass.Env = envObj
+	jsclass.ExcutionContext = ctxObj
+	event := NewEvent(jsEvent)
+	env.LoadEnvs()
 
 	return scheduledTask(event)
 }
@@ -33,17 +35,19 @@ func init() {
 			resolve := pArgs[0]
 			reject := pArgs[1]
 
-			err := runScheduler(controllerObj, envObj, ctxObj)
+			go func() {
+				err := runScheduler(controllerObj, envObj, ctxObj)
 
-			if err != nil {
-				reject.Invoke(jsutil.Error(err.Error()))
-			} else {
-				resolve.Invoke(js.Undefined())
-			}
+				if err != nil {
+					reject.Invoke(jsclass.ToJSError(err))
+				} else {
+					resolve.Invoke(js.Undefined())
+				}
+			}()
 			return nil
 		})
 
-		return jsutil.NewPromise(cb)
+		return jsclass.Promise.New(cb)
 	})
 
 	js.Global().Get("cf").Set("scheduled", runSchedulerCallback)

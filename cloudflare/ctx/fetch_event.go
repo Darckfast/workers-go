@@ -3,15 +3,14 @@ package contx
 import (
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 // WaitUntil extends the lifetime of the "fetch" event.
 // It accepts an asynchronous task which the Workers runtime will execute before the handler terminates but without blocking the response.
 // see: https://developers.cloudflare.com/workers/runtime-apis/fetch-event/#waituntil
 func WaitUntil(task func()) {
-	exCtx := jsutil.RuntimeExcutionContext
-	exCtx.Call("waitUntil", jsutil.NewPromise(js.FuncOf(func(this js.Value, pArgs []js.Value) any {
+	jsclass.ExcutionContext.Call("waitUntil", jsclass.Promise.New(js.FuncOf(func(this js.Value, pArgs []js.Value) any {
 		resolve := pArgs[0]
 		go func() {
 			task()
@@ -25,11 +24,10 @@ func WaitUntil(task func()) {
 // Instead, the request forwards to the origin server as if it had not gone through the worker.
 // see: https://developers.cloudflare.com/workers/runtime-apis/fetch-event/#passthroughonexception
 func PassThroughOnException() {
-	exCtx := jsutil.RuntimeExcutionContext
-	jsutil.AwaitPromise(jsutil.NewPromise(js.FuncOf(func(this js.Value, pArgs []js.Value) any {
+	jsclass.Await(jsclass.Promise.New(js.FuncOf(func(this js.Value, pArgs []js.Value) any {
 		resolve := pArgs[0]
 		go func() {
-			exCtx.Call("passThroughOnException")
+			jsclass.ExcutionContext.Call("passThroughOnException")
 			resolve.Invoke(js.Undefined())
 		}()
 		return js.Undefined()

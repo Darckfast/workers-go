@@ -1,19 +1,26 @@
 {
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
   "name": "workers-go",
   "version": "0.0.1",
   "description": "",
-  "main": "worker.ts",
+  "main": "./worker/main.ts",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "wd": "pnpm run test:build && wrangler -c ./worker/wrangler.toml --port 5173 dev",
     "test": "pnpm run test:build && vitest",
     "test:go": "GOOS=js GOARCH=wasm go test ./...",
+    "bench:go": "GOOS=js GOARCH=wasm go test -bench=. ./...",
     "test:build": "GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ./worker/bin/app.wasm ./worker/pkg/main.go",
     "test:ci": "pnpm run test:build && vitest run",
     "compress": "tar -czvf dist/worker.tar.gz worker"
   },
   "keywords": [],
   "author": "",
+  "engines": {
+    "node": "22"
+  },
+  "engineStrict": true,
   "license": "ISC",
   "packageManager": "pnpm@10.14.0",
   "devDependencies": {

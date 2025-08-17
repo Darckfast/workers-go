@@ -1,10 +1,10 @@
 package kv
 
 import (
-	"fmt"
+	"errors"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 // Namespace represents interface of Cloudflare Worker's KV namespace instance.
@@ -19,9 +19,9 @@ type Namespace struct {
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewNamespace(varName string) (*Namespace, error) {
-	inst := jsutil.RuntimeEnv.Get(varName)
+	inst := jsclass.Env.Get(varName)
 	if inst.IsUndefined() {
-		return nil, fmt.Errorf("%s is undefined", varName)
+		return nil, errors.New(varName + " is undefined")
 	}
 	return &Namespace{instance: inst}, nil
 }
