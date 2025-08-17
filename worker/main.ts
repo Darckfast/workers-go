@@ -9,19 +9,6 @@ globalThis.cf = {
   connect
 }
 
-globalThis.tryCatch = (fn) => {
-  try {
-    return {
-      result: fn(),
-    };
-  } catch (e) {
-    return {
-      error: e,
-    };
-  }
-}
-
-
 const go = new Go()
 go.run(new WebAssembly.Instance(app, go.importObject))
 
