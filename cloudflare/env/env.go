@@ -1,24 +1,24 @@
-package cloudflare
+package env
 
 import (
 	"os"
 
+	jsconv "github.com/syumai/workers/internal/conv"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
-func init() {
+func LoadEnvs() {
 	if jsutil.RuntimeEnv.IsUndefined() {
 		return
 	}
 
-	envList := jsutil.ObjectClass.Call("entries", jsutil.RuntimeEnv)
-	for i := range envList.Length() {
-		envPair := envList.Index(i)
-		envKey := envPair.Index(0).String()
-		envValue := envPair.Index(1)
+	envs := jsconv.JSValueToMap(jsutil.RuntimeEnv)
 
-		if envValue.Type().String() == "string" {
-			os.Setenv(envKey, envValue.String())
+	for key := range envs {
+		envValue, ok := envs[key].(string)
+
+		if ok {
+			os.Setenv(key, envValue)
 		}
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
+	"github.com/syumai/workers/cloudflare/env"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -47,6 +48,7 @@ func consumeBatch(batch, envObj, ctxObj js.Value) error {
 	jsutil.RuntimeEnv = envObj
 	jsutil.RuntimeExcutionContext = ctxObj
 
+	env.LoadEnvs()
 	b, err := newMessageBatch(batch)
 	if err != nil {
 		return fmt.Errorf("failed to parse message batch: %v", err)

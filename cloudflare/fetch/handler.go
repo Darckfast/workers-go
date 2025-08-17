@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"syscall/js"
 
+	"github.com/syumai/workers/cloudflare/env"
+	_ "github.com/syumai/workers/cloudflare/env"
 	jshttp "github.com/syumai/workers/internal/http"
 	jsruntime "github.com/syumai/workers/internal/runtime"
 	jsutil "github.com/syumai/workers/internal/utils"
@@ -43,6 +45,7 @@ func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) js.Value {
 	jsutil.RuntimeEnv = envObj
 	jsutil.RuntimeExcutionContext = ctxObj
 
+	env.LoadEnvs()
 	req := jshttp.ToRequest(reqObj)
 	ctx := jsruntime.New(context.Background(), reqObj)
 	req = req.WithContext(ctx)

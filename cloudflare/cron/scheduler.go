@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"syscall/js"
 
+	"github.com/syumai/workers/cloudflare/env"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
 
@@ -17,6 +18,7 @@ func runScheduler(eventObj js.Value, envObj js.Value, ctxObj js.Value) error {
 	jsutil.RuntimeEnv = envObj
 	jsutil.RuntimeExcutionContext = ctxObj
 	event := NewEvent(eventObj)
+	env.LoadEnvs()
 
 	return scheduledTask(event)
 }

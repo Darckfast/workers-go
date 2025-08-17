@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"syscall/js"
 
+	"github.com/syumai/workers/cloudflare/env"
+	_ "github.com/syumai/workers/cloudflare/env"
 	jsemail "github.com/syumai/workers/internal/email"
 	jsutil "github.com/syumai/workers/internal/utils"
 )
@@ -49,6 +51,7 @@ func handler(emailObj, envObj, ctxObj js.Value) error {
 	jsutil.RuntimeEnv = envObj
 	jsutil.RuntimeExcutionContext = ctxObj
 
+	env.LoadEnvs()
 	email := jsemail.NewForwardableEmailMessage(emailObj)
 	defer email.Raw.Close()
 
