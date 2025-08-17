@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -250,6 +251,7 @@ func New() {
 	http.HandleFunc("GET /env", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
+		fmt.Println("1")
 		json.NewEncoder(w).Encode(map[string]any{
 			"result": os.Environ(),
 		})

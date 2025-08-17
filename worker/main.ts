@@ -29,11 +29,17 @@ globalThis.tryCatch = (fn) => {
 
 }
 
-const go = new Go()
-go.run(new WebAssembly.Instance(app, go.importObject))
+
+// const go = new Go()
+// const instance = new WebAssembly.Instance(app, go.importObject)
+// go.run(instance).then(console.log).catch(console.log)
 
 async function fetch(req: Request, env: Env, ctx: ExecutionContext) {
+  const go = new Go()
+  const instance = new WebAssembly.Instance(app, go.importObject)
+  go.run(instance).then(console.log).catch(console.log)
   return await globalThis.cf.fetch(req, env, ctx);
+  // return new Response()
 }
 
 async function email(message: ForwardableEmailMessage, env: Env, ctx: ExecutionContext) {

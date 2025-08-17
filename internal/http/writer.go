@@ -1,6 +1,7 @@
 package jshttp
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -63,5 +64,6 @@ func (w *ResponseWriter) Flush() {
 //   - Response: https://developer.mozilla.org/docs/Web/API/Response
 func (w *ResponseWriter) ToJSResponse() js.Value {
 	contentLength, _ := strconv.ParseInt(w.HeaderValue.Get("Content-Length"), 10, 64)
+	fmt.Println(w.RawJSBody, w.Reader)
 	return newJSResponse(w.StatusCode, w.HeaderValue, contentLength, w.Reader, w.RawJSBody)
 }
