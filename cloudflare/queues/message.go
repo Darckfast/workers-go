@@ -5,7 +5,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
+	jsconv "github.com/syumai/workers/internal/conv"
 )
 
 // Message represents a message of the batch received by the consumer.
@@ -25,7 +26,7 @@ type Message struct {
 }
 
 func newMessage(obj js.Value) (*Message, error) {
-	timestamp, err := jsutil.DateToTime(obj.Get("timestamp"))
+	timestamp, err := jsconv.DateToTime(obj.Get("timestamp"))
 	if err != nil {
 		return nil, errors.New("failed to parse message timestamp: " + err.Error())
 	}
@@ -68,7 +69,7 @@ func (m *Message) StringBody() (string, error) {
 
 func (m *Message) BytesBody() ([]byte, error) {
 	if m.Body.Type() != js.TypeObject ||
-		!(m.Body.InstanceOf(jsutil.Uint8ArrayClass) || m.Body.InstanceOf(jsutil.Uint8ClampedArrayClass)) {
+		!(m.Body.InstanceOf(jsclass.Uint8Array) || m.Body.InstanceOf(jsclass.Uint8ClampedArray)) {
 		return nil, errors.New("message body is not a byte array: " + m.Body.Type().String())
 	}
 	b := make([]byte, m.Body.Get("byteLength").Int())

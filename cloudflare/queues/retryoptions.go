@@ -4,7 +4,7 @@ import (
 	"syscall/js"
 	"time"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 type retryOptions struct {
@@ -16,7 +16,7 @@ func (o *retryOptions) toJS() js.Value {
 		return js.Undefined()
 	}
 
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	if o.delaySeconds != 0 {
 		obj.Set("delaySeconds", o.delaySeconds)
 	}

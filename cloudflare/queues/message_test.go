@@ -6,12 +6,13 @@ import (
 	"testing"
 	"time"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
+	jsconv "github.com/syumai/workers/internal/conv"
 )
 
 func TestNewConsumerMessage(t *testing.T) {
 	ts := time.Now()
-	jsTs := jsutil.TimeToDate(ts)
+	jsTs := jsconv.TimeToDate(ts)
 	id := "some-message-id"
 	m := map[string]any{
 		"body":      "hello",
@@ -44,7 +45,7 @@ func TestNewConsumerMessage(t *testing.T) {
 
 func TestConsumerMessage_Ack(t *testing.T) {
 	ackCalled := false
-	jsObj := jsutil.NewObject()
+	jsObj := jsclass.Object.New()
 	jsObj.Set("ack", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		ackCalled = true
 		return nil
@@ -62,7 +63,7 @@ func TestConsumerMessage_Ack(t *testing.T) {
 
 func TestConsumerMessage_Retry(t *testing.T) {
 	retryCalled := false
-	jsObj := jsutil.NewObject()
+	jsObj := jsclass.Object.New()
 	jsObj.Set("retry", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		retryCalled = true
 		return nil
@@ -80,7 +81,7 @@ func TestConsumerMessage_Retry(t *testing.T) {
 
 func TestConsumerMessage_RetryWithDelay(t *testing.T) {
 	retryCalled := false
-	jsObj := jsutil.NewObject()
+	jsObj := jsclass.Object.New()
 	jsObj.Set("retry", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 		retryCalled = true
 		if len(args) != 1 {
@@ -127,7 +128,7 @@ func TestNewConsumerMessage_StringBody(t *testing.T) {
 		{
 			name: "uint8 array",
 			body: func() js.Value {
-				v := jsutil.Uint8ArrayClass.New(3)
+				v := jsclass.Uint8Array.New(3)
 				js.CopyBytesToJS(v, []byte("foo"))
 				return v
 			},
@@ -177,7 +178,7 @@ func TestConsumerMessage_BytesBody(t *testing.T) {
 		{
 			name: "uint8 array",
 			body: func() js.Value {
-				v := jsutil.Uint8ArrayClass.New(3)
+				v := jsclass.Uint8Array.New(3)
 				js.CopyBytesToJS(v, []byte("foo"))
 				return v
 			},
@@ -186,7 +187,7 @@ func TestConsumerMessage_BytesBody(t *testing.T) {
 		{
 			name: "uint8 clamped array",
 			body: func() js.Value {
-				v := jsutil.Uint8ClampedArrayClass.New(3)
+				v := jsclass.Uint8ClampedArray.New(3)
 				js.CopyBytesToJS(v, []byte("bar"))
 				return v
 			},

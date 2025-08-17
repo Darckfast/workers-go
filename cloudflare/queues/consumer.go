@@ -5,7 +5,7 @@ import (
 	"syscall/js"
 
 	"github.com/syumai/workers/cloudflare/env"
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 // Consumer is a function that received a batch of messages from Cloudflare Queues.
@@ -32,21 +32,21 @@ func init() {
 			go func() {
 				err := consumeBatch(batch, envObj, ctxObj)
 				if err != nil {
-					reject.Invoke(jsutil.Error(err.Error()))
+					reject.Invoke(jsclass.ToJSError(err))
 					return
 				}
 				resolve.Invoke(js.Undefined())
 			}()
 			return js.Undefined()
 		})
-		return jsutil.NewPromise(cb)
+		return jsclass.Promise.New(cb)
 	})
 	js.Global().Get("cf").Set("queue", handleBatchCallback)
 }
 
 func consumeBatch(batch, envObj, ctxObj js.Value) error {
-	jsutil.RuntimeEnv = envObj
-	jsutil.RuntimeExcutionContext = ctxObj
+	jsclass.Env = envObj
+	jsclass.ExcutionContext = ctxObj
 
 	env.LoadEnvs()
 	b, err := newMessageBatch(batch)

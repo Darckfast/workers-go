@@ -7,8 +7,8 @@ import (
 	"syscall/js"
 
 	"github.com/syumai/workers/cloudflare/env"
+	jsclass "github.com/syumai/workers/internal/class"
 	jstail "github.com/syumai/workers/internal/tail"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type TailConsumer func(f *[]jstail.TailEvent) error
@@ -31,7 +31,7 @@ func init() {
 			go func() {
 				err := handler(events, jsenv, jsctx)
 				if err != nil {
-					reject.Invoke(jsutil.Error(err.Error()))
+					reject.Invoke(jsclass.ToJSError(err))
 				} else {
 					resolve.Invoke(true)
 				}
@@ -40,15 +40,15 @@ func init() {
 			return nil
 		})
 
-		return jsutil.NewPromise(cb)
+		return jsclass.Promise.New(cb)
 	})
 
 	js.Global().Get("cf").Set("tail", promise)
 }
 
 func handler(eventsObj, envObj, ctxObj js.Value) error {
-	jsutil.RuntimeEnv = envObj
-	jsutil.RuntimeExcutionContext = ctxObj
+	jsclass.Env = envObj
+	jsclass.ExcutionContext = ctxObj
 
 	env.LoadEnvs()
 	events := jstail.NewEvents(eventsObj)

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 type rows struct {
@@ -64,7 +64,7 @@ func convertRowColumnValueToAny(v js.Value) (driver.Value, error) {
 		return v.String(), nil
 	case js.TypeObject:
 		// handle BLOB type (ArrayBuffer).
-		src := jsutil.Uint8ArrayClass.New(v)
+		src := jsclass.Uint8Array.New(v)
 		dst := make([]byte, src.Length())
 		n := js.CopyBytesToGo(dst, src)
 		if n != len(dst) {

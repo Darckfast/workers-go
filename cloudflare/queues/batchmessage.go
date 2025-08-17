@@ -3,7 +3,7 @@ package queues
 import (
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 // MessageSendRequest is a wrapper type used for sending message batches.
@@ -45,7 +45,7 @@ func newMessageSendRequest(body js.Value, contentType contentType, opts ...SendO
 }
 
 func (m *MessageSendRequest) toJS() js.Value {
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	obj.Set("body", m.body)
 	obj.Set("options", m.options.toJS())
 	return obj

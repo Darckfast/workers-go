@@ -9,8 +9,8 @@ import (
 	"strings"
 	"syscall/js"
 
+	jsclass "github.com/syumai/workers/internal/class"
 	jsstream "github.com/syumai/workers/internal/stream"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 func ToBody(body js.Value) io.ReadCloser {
@@ -38,7 +38,7 @@ func ToRequest(req js.Value) *http.Request {
 }
 
 func ToJSRequest(req *http.Request) js.Value {
-	jsReqOptions := jsutil.NewObject()
+	jsReqOptions := jsclass.Object.New()
 	jsReqOptions.Set("method", req.Method)
 	jsReqOptions.Set("headers", ToJSHeader(req.Header))
 	jsReqBody := js.Undefined()
@@ -47,6 +47,6 @@ func ToJSRequest(req *http.Request) js.Value {
 		jsReqOptions.Set("duplex", "half")
 	}
 	jsReqOptions.Set("body", jsReqBody)
-	jsReq := jsutil.RequestClass.New(req.URL.String(), jsReqOptions)
+	jsReq := jsclass.Request.New(req.URL.String(), jsReqOptions)
 	return jsReq
 }

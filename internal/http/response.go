@@ -8,7 +8,6 @@ import (
 
 	jsclass "github.com/syumai/workers/internal/class"
 	jsstream "github.com/syumai/workers/internal/stream"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 func ToResponse(res js.Value) *http.Response {
@@ -31,7 +30,7 @@ func newJSResponse(statusCode int, headers http.Header, contentLength int64, bod
 	if status == 0 {
 		status = http.StatusOK
 	}
-	respInit := jsutil.NewObject()
+	respInit := jsclass.Object.New()
 	respInit.Set("status", status)
 	respInit.Set("statusText", http.StatusText(status))
 	respInit.Set("headers", ToJSHeader(headers))
@@ -39,18 +38,18 @@ func newJSResponse(statusCode int, headers http.Header, contentLength int64, bod
 		status == http.StatusNoContent ||
 		status == http.StatusResetContent ||
 		status == http.StatusNotModified {
-		return jsutil.ResponseClass.New(jsutil.Null, respInit)
+		return jsclass.Response.New(jsclass.Null, respInit)
 	}
 	readableStream := func() js.Value {
 		if rawBody != nil {
 			return *rawBody
 		}
-		if !jsutil.MaybeFixedLengthStreamClass.IsUndefined() && contentLength > 0 {
+		if !jsclass.MaybeFixedLengthStream.IsUndefined() && contentLength > 0 {
 			return jsstream.ReadCloserToFixedLengthStream(body, contentLength)
 		}
 		return jsstream.ReadCloserToReadableStream(body)
 	}()
-	return jsutil.ResponseClass.New(readableStream, respInit)
+	return jsclass.Response.New(readableStream, respInit)
 }
 
 func ToJSResponse(res *http.Response) js.Value {
@@ -59,7 +58,7 @@ func ToJSResponse(res *http.Response) js.Value {
 		status = http.StatusOK
 	}
 
-	respInit := jsutil.NewObject()
+	respInit := jsclass.Object.New()
 	respInit.Set("status", status)
 	respInit.Set("statusText", http.StatusText(status))
 	respInit.Set("headers", ToJSHeader(res.Header))
@@ -69,7 +68,7 @@ func ToJSResponse(res *http.Response) js.Value {
 		status == http.StatusNoContent ||
 		status == http.StatusResetContent ||
 		status == http.StatusNotModified {
-		return jsutil.ResponseClass.New(readableStream, respInit)
+		return jsclass.Response.New(readableStream, respInit)
 	}
 
 	contentLength, _ := strconv.ParseInt(res.Header.Get("Content-Length"), 10, 64)
@@ -79,6 +78,6 @@ func ToJSResponse(res *http.Response) js.Value {
 		readableStream = jsstream.ReadCloserToReadableStream(res.Body)
 	}
 
-	return jsutil.ResponseClass.New(readableStream, respInit)
+	return jsclass.Response.New(readableStream, respInit)
 
 }

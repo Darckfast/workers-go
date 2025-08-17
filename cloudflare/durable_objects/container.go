@@ -5,7 +5,6 @@ import (
 
 	jsclass "github.com/syumai/workers/internal/class"
 	jshttp "github.com/syumai/workers/internal/http"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type Container struct {
@@ -25,7 +24,7 @@ func (s *Container) ContainerFetch(req *http.Request) (*http.Response, error) {
 }
 
 func GetContainer(binding string, id string) (*Container, error) {
-	inst := jsutil.RuntimeEnv.Get(binding)
+	inst := jsclass.Env.Get(binding)
 	donamespace := &DurableObjectNamespace{instance: inst}
 	objId := donamespace.IdFromName(id)
 	obj, err := donamespace.Get(objId)

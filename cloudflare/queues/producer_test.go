@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 func validatingProducer(t *testing.T, validateFn func(message js.Value, options js.Value) error) *Producer {
@@ -17,7 +17,7 @@ func validatingProducer(t *testing.T, validateFn func(message js.Value, options 
 		if len(args) > 1 {
 			options = args[1]
 		}
-		return jsutil.NewPromise(js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		return jsclass.Promise.New(js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 			resolve := args[0]
 			go func() {
 				if err := validateFn(sendArg, options); err != nil {
@@ -30,7 +30,7 @@ func validatingProducer(t *testing.T, validateFn func(message js.Value, options 
 		}))
 	})
 
-	queue := jsutil.NewObject()
+	queue := jsclass.Object.New()
 	queue.Set("send", sendFn)
 	queue.Set("sendBatch", sendFn)
 

@@ -8,7 +8,6 @@ import (
 	jsclass "github.com/syumai/workers/internal/class"
 	jshttp "github.com/syumai/workers/internal/http"
 	jstry "github.com/syumai/workers/internal/try"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type DurableObjectNamespace struct {
@@ -16,7 +15,7 @@ type DurableObjectNamespace struct {
 }
 
 func NewDurableObjectNamespace(varName string) (*DurableObjectNamespace, error) {
-	inst := jsutil.RuntimeEnv.Get(varName)
+	inst := jsclass.Env.Get(varName)
 	if inst.IsUndefined() {
 		return nil, errors.New("%s is undefined" + varName)
 	}

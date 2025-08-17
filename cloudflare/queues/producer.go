@@ -4,7 +4,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 type Producer struct {
@@ -17,7 +17,7 @@ type Producer struct {
 // In Cloudflare API documentation, this object represents the Queue.
 //   - https://developers.cloudflare.com/queues/configuration/javascript-apis/#producer
 func NewProducer(queueName string) (*Producer, error) {
-	inst := jsutil.RuntimeEnv.Get(queueName)
+	inst := jsclass.Env.Get(queueName)
 	if inst.IsUndefined() {
 		return nil, errors.New(queueName + " is undefined")
 	}
@@ -31,7 +31,7 @@ func (p *Producer) SendText(body string, opts ...SendOption) error {
 
 // SendBytes sends a single byte array message to a queue.
 func (p *Producer) SendBytes(body []byte, opts ...SendOption) error {
-	ua := jsutil.NewUint8Array(len(body))
+	ua := jsclass.Uint8Array.New(len(body))
 	js.CopyBytesToJS(ua, body)
 	// accortind to docs, "bytes" type requires an ArrayBuffer to be sent, however practical experience shows that ArrayBufferView should
 	// be used instead and with Uint8Array.buffer as a value, the send simply fails
@@ -61,7 +61,7 @@ func (p *Producer) send(body js.Value, contentType contentType, opts ...SendOpti
 	}
 
 	prom := p.queue.Call("send", body, options.toJS())
-	_, err := jsutil.AwaitPromise(prom)
+	_, err := jsclass.Await(prom)
 	return err
 }
 
@@ -72,12 +72,12 @@ func (p *Producer) SendBatch(messages []*MessageSendRequest, opts ...BatchSendOp
 		opt(&options)
 	}
 
-	jsArray := jsutil.NewArray(len(messages))
+	jsArray := jsclass.Array.New(len(messages))
 	for i, message := range messages {
 		jsArray.SetIndex(i, message.toJS())
 	}
 
 	prom := p.queue.Call("sendBatch", jsArray, options.toJS())
-	_, err := jsutil.AwaitPromise(prom)
+	_, err := jsclass.Await(prom)
 	return err
 }

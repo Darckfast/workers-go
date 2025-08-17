@@ -10,9 +10,9 @@ import (
 
 	"github.com/syumai/workers/cloudflare/env"
 	_ "github.com/syumai/workers/cloudflare/env"
+	jsclass "github.com/syumai/workers/internal/class"
 	jshttp "github.com/syumai/workers/internal/http"
 	jsruntime "github.com/syumai/workers/internal/runtime"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 var httpHandler http.Handler = http.DefaultServeMux
@@ -35,15 +35,15 @@ func init() {
 			return nil
 		})
 
-		return jsutil.NewPromise(cb)
+		return jsclass.Promise.New(cb)
 	})
 
 	js.Global().Get("cf").Set("fetch", handleRequestPromise)
 }
 
 func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) js.Value {
-	jsutil.RuntimeEnv = envObj
-	jsutil.RuntimeExcutionContext = ctxObj
+	jsclass.Env = envObj
+	jsclass.ExcutionContext = ctxObj
 
 	env.LoadEnvs()
 	req := jshttp.ToRequest(reqObj)

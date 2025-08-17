@@ -1,7 +1,6 @@
 package jstry
 
 import (
-	"errors"
 	"syscall/js"
 )
 
@@ -38,7 +37,7 @@ func TryCatch(fn js.Func) (js.Value, error) {
 	resultVal := fnResultVal.Get("result")
 	errorVal := fnResultVal.Get("error")
 	if !errorVal.IsUndefined() {
-		return js.Value{}, errors.New(errorVal.String())
+		return js.Value{}, js.Error{Value: errorVal}
 	}
 	return resultVal, nil
 }

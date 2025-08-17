@@ -2,36 +2,31 @@ package jsclass
 
 import (
 	"syscall/js"
-
-	jstry "github.com/syumai/workers/internal/try"
 )
 
-type JSONWrap struct {
-	js.Value
-}
+func init() {
+	cf := js.Global().Get("cf")
+	if cf.IsUndefined() {
+		// is faster to JSON.parse than create an object
+		cfObj, _ := JSON.Parse(`{"ctx":{},"env":{},"handlers":{},"connect":{}}`)
+		js.Global().Set("cf", cfObj)
 
-func (j *JSONWrap) Stringify(args ...any) js.Value {
-	return j.Call("stringify", args...)
-}
+		return
+	}
 
-func (j *JSONWrap) Parse(args ...any) (js.Value, error) {
-	return jstry.TryCatch(js.FuncOf(func(_ js.Value, _ []js.Value) any {
-		return j.Call("parse", args...)
-	}))
-}
-
-type ObjectWrap struct {
-	js.Value
-}
-
-func (o *ObjectWrap) FromEntries(args ...any) js.Value {
-	return o.Call("fromEntries", args...)
+	Env = cf.Get("env")
+	ExcutionContext = cf.Get("ctx")
+	Connect = cf.Get("connect")
 }
 
 var (
-	Object            = ObjectWrap{js.Global().Get("Object")}
-	Promise           = js.Global().Get("Promise")
+	Env               js.Value
+	ExcutionContext   js.Value
+	Connect           js.Value // replace with js.Global().Get("import")
 	JSON              = JSONWrap{js.Global().Get("JSON")}
+	Object            = ObjectWrap{js.Global().Get("Object")}
+	Caches            = js.Global().Get("caches")
+	Promise           = js.Global().Get("Promise")
 	Request           = js.Global().Get("Request")
 	Boolean           = js.Global().Get("Boolean")
 	Response          = js.Global().Get("Response")

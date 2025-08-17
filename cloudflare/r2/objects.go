@@ -4,7 +4,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsconv "github.com/syumai/workers/internal/conv"
 )
 
 // Objects represents Cloudflare R2 objects.
@@ -38,7 +38,7 @@ func toObjects(v js.Value) (*Objects, error) {
 	return &Objects{
 		Objects:           objects,
 		Truncated:         v.Get("truncated").Bool(),
-		Cursor:            jsutil.MaybeString(v.Get("cursor")),
+		Cursor:            jsconv.MaybeString(v.Get("cursor")),
 		DelimitedPrefixes: prefixes,
 	}, nil
 }

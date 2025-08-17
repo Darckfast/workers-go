@@ -5,7 +5,7 @@ import (
 	"syscall/js"
 
 	"github.com/syumai/workers/cloudflare/env"
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 type Task func(evt *CronEvent) error
@@ -14,10 +14,10 @@ var scheduledTask Task = func(_ *CronEvent) error {
 	return errors.New("no scheduled implemented")
 }
 
-func runScheduler(eventObj js.Value, envObj js.Value, ctxObj js.Value) error {
-	jsutil.RuntimeEnv = envObj
-	jsutil.RuntimeExcutionContext = ctxObj
-	event := NewEvent(eventObj)
+func runScheduler(jsEvent js.Value, envObj js.Value, ctxObj js.Value) error {
+	jsclass.Env = envObj
+	jsclass.ExcutionContext = ctxObj
+	event := NewEvent(jsEvent)
 	env.LoadEnvs()
 
 	return scheduledTask(event)
@@ -38,14 +38,14 @@ func init() {
 			err := runScheduler(controllerObj, envObj, ctxObj)
 
 			if err != nil {
-				reject.Invoke(jsutil.Error(err.Error()))
+				reject.Invoke(jsclass.ToJSError(err))
 			} else {
 				resolve.Invoke(js.Undefined())
 			}
 			return nil
 		})
 
-		return jsutil.NewPromise(cb)
+		return jsclass.Promise.New(cb)
 	})
 
 	js.Global().Get("cf").Set("scheduled", runSchedulerCallback)

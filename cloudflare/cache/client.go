@@ -7,7 +7,6 @@ import (
 
 	jsclass "github.com/syumai/workers/internal/class"
 	jshttp "github.com/syumai/workers/internal/http"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type Cache struct {
@@ -15,7 +14,7 @@ type Cache struct {
 }
 
 func (c *Cache) Open(namespace string) error {
-	v, err := jsclass.Await(jsutil.RuntimeCache.Call("open", namespace))
+	v, err := jsclass.Await(jsclass.Caches.Call("open", namespace))
 	if err != nil {
 		return err
 	}
@@ -26,7 +25,7 @@ func (c *Cache) Open(namespace string) error {
 
 func New() *Cache {
 	return &Cache{
-		instance: jsutil.RuntimeCache.Get("default"),
+		instance: jsclass.Caches.Get("default"),
 	}
 }
 
@@ -54,7 +53,7 @@ func (opts *MatchOptions) toJS() js.Value {
 	if opts == nil {
 		return js.Undefined()
 	}
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	obj.Set("ignoreMethod", opts.IgnoreMethod)
 	return obj
 }
@@ -80,7 +79,7 @@ func (opts *DeleteOptions) toJS() js.Value {
 	if opts == nil {
 		return js.Undefined()
 	}
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	obj.Set("ignoreMethod", opts.IgnoreMethod)
 	return obj
 }

@@ -7,7 +7,6 @@ import (
 	"syscall/js"
 
 	jsclass "github.com/syumai/workers/internal/class"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 func ToHeader(headers js.Value) http.Header {
@@ -36,7 +35,7 @@ func ToJSHeader(header http.Header) js.Value {
 	hObj, _ := jsclass.JSON.Parse(string(hBytes))
 	// Returning as an object is faster, but it has problems with Get(key)
 	// on some headers keys
-	h := jsutil.HeadersClass.New(hObj)
+	h := jsclass.Headers.New(hObj)
 
 	return h
 }

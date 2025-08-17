@@ -4,7 +4,7 @@ import (
 	"io"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 // PutOptions represents Cloudflare KV namespace put options.
@@ -19,7 +19,7 @@ func (opts *PutOptions) toJS() js.Value {
 	if opts == nil {
 		return js.Undefined()
 	}
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	if opts.Expiration != 0 {
 		obj.Set("expiration", opts.Expiration)
 	}
@@ -33,7 +33,7 @@ func (opts *PutOptions) toJS() js.Value {
 //   - if a network error happens, returns error.
 func (ns *Namespace) PutString(key string, value string, opts *PutOptions) error {
 	p := ns.instance.Call("put", key, value, opts.toJS())
-	_, err := jsutil.AwaitPromise(p)
+	_, err := jsclass.Await(p)
 	if err != nil {
 		return err
 	}
@@ -49,10 +49,10 @@ func (ns *Namespace) PutReader(key string, value io.Reader, opts *PutOptions) er
 	if err != nil {
 		return err
 	}
-	ua := jsutil.NewUint8Array(len(b))
+	ua := jsclass.Uint8Array.New(len(b))
 	js.CopyBytesToJS(ua, b)
 	p := ns.instance.Call("put", key, ua.Get("buffer"), opts.toJS())
-	_, err = jsutil.AwaitPromise(p)
+	_, err = jsclass.Await(p)
 	if err != nil {
 		return err
 	}

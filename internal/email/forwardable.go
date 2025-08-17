@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"syscall/js"
 
+	jsclass "github.com/syumai/workers/internal/class"
 	jshttp "github.com/syumai/workers/internal/http"
 	jsstream "github.com/syumai/workers/internal/stream"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 type EmailMessage struct {
@@ -32,13 +32,13 @@ func (f *ForwardableEmailMessage) SetReject(reason string) {
 func (f *ForwardableEmailMessage) Forward(rcptTo string, headers *http.Header) error {
 	promise := f.self.Call("forward", rcptTo, jshttp.ToJSHeader(*headers))
 
-	_, err := jsutil.AwaitPromise(promise)
+	_, err := jsclass.Await(promise)
 
 	return err
 }
 
 func (f *ForwardableEmailMessage) Reply(emailMsg *EmailMessage) error {
-	emlMsgObj := jsutil.NewObject()
+	emlMsgObj := jsclass.Object.New()
 	emlMsgObj.Set("from", emailMsg.From)
 	emlMsgObj.Set("to", emailMsg.To)
 	readableStream := jsstream.ReadCloserToReadableStream(emailMsg.Raw)
@@ -46,7 +46,7 @@ func (f *ForwardableEmailMessage) Reply(emailMsg *EmailMessage) error {
 
 	promise := f.self.Call("reply", emlMsgObj)
 
-	_, err := jsutil.AwaitPromise(promise)
+	_, err := jsclass.Await(promise)
 
 	return err
 }

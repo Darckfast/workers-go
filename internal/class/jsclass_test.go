@@ -17,6 +17,6 @@ func TestAwaitOnReject(t *testing.T) {
 	r, e := Await(Promise.Call("reject", "Error message"))
 
 	assert.NotNil(t, e)
-	assert.Equal(t, "failed on promise: Error: Error message", e.Error())
+	assert.Equal(t, "JavaScript error: Error message", e.Error())
 	assert.True(t, r.IsUndefined())
 }

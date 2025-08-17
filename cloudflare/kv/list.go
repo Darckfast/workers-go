@@ -4,7 +4,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 // ListOptions represents Cloudflare KV namespace list options.
@@ -19,7 +19,7 @@ func (opts *ListOptions) toJS() js.Value {
 	if opts == nil {
 		return js.Undefined()
 	}
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	if opts.Limit != 0 {
 		obj.Set("limit", opts.Limit)
 	}
@@ -93,7 +93,7 @@ func toListResult(v js.Value) (*ListResult, error) {
 // List lists keys stored into the KV namespace.
 func (ns *Namespace) List(opts *ListOptions) (*ListResult, error) {
 	p := ns.instance.Call("list", opts.toJS())
-	v, err := jsutil.AwaitPromise(p)
+	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
 	}

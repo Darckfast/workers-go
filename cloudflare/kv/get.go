@@ -4,8 +4,8 @@ import (
 	"io"
 	"syscall/js"
 
+	jsclass "github.com/syumai/workers/internal/class"
 	jsstream "github.com/syumai/workers/internal/stream"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 // GetOptions represents Cloudflare KV namespace get options.
@@ -15,7 +15,7 @@ type GetOptions struct {
 }
 
 func (opts *GetOptions) toJS(type_ string) js.Value {
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	obj.Set("type", type_)
 	if opts == nil {
 		return obj
@@ -30,7 +30,7 @@ func (opts *GetOptions) toJS(type_ string) js.Value {
 //   - if a network error happens, returns error.
 func (ns *Namespace) GetString(key string, opts *GetOptions) (string, error) {
 	p := ns.instance.Call("get", key, opts.toJS("text"))
-	v, err := jsutil.AwaitPromise(p)
+	v, err := jsclass.Await(p)
 	if err != nil {
 		return "", err
 	}
@@ -41,7 +41,7 @@ func (ns *Namespace) GetString(key string, opts *GetOptions) (string, error) {
 //   - if a network error happens, returns error.
 func (ns *Namespace) GetReader(key string, opts *GetOptions) (io.Reader, error) {
 	p := ns.instance.Call("get", key, opts.toJS("stream"))
-	v, err := jsutil.AwaitPromise(p)
+	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
 	}

@@ -3,16 +3,16 @@ package env
 import (
 	"os"
 
+	jsclass "github.com/syumai/workers/internal/class"
 	jsconv "github.com/syumai/workers/internal/conv"
-	jsutil "github.com/syumai/workers/internal/utils"
 )
 
 func LoadEnvs() {
-	if jsutil.RuntimeEnv.IsUndefined() {
+	if jsclass.Env.IsUndefined() {
 		return
 	}
 
-	envs := jsconv.JSValueToMap(jsutil.RuntimeEnv)
+	envs := jsconv.JSValueToMap(jsclass.Env)
 
 	for key := range envs {
 		envValue, ok := envs[key].(string)

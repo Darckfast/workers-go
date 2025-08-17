@@ -4,7 +4,7 @@ import (
 	"syscall/js"
 	"time"
 
-	jsutil "github.com/syumai/workers/internal/utils"
+	jsclass "github.com/syumai/workers/internal/class"
 )
 
 type sendOptions struct {
@@ -18,7 +18,7 @@ type sendOptions struct {
 }
 
 func (o *sendOptions) toJS() js.Value {
-	obj := jsutil.NewObject()
+	obj := jsclass.Object.New()
 	obj.Set("contentType", string(o.ContentType))
 
 	if o.DelaySeconds != 0 {
