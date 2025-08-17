@@ -30,7 +30,12 @@ func StrRecordToMap(v js.Value) map[string]string {
 	return result
 }
 
-func ObjToMap(v js.Value) map[string]any {
+func MapToJSValue(v map[string]any) js.Value {
+	b, _ := json.Marshal(v)
+	return jsclass.JSON.Call("parse", string(b))
+}
+
+func JSValueToMap(v js.Value) map[string]any {
 	obj := map[string]any{}
 	if !v.Truthy() {
 		return obj

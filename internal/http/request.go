@@ -47,6 +47,7 @@ func ToJSRequest(req *http.Request) js.Value {
 	jsReqBody := js.Undefined()
 	if req.Body != nil && req.Method != http.MethodGet {
 		jsReqBody = jsutil.ReadCloserToReadableStream(req.Body)
+		jsReqOptions.Set("duplex", "half")
 	}
 	jsReqOptions.Set("body", jsReqBody)
 	jsReq := jsutil.RequestClass.New(req.URL.String(), jsReqOptions)

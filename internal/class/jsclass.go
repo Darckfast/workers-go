@@ -3,13 +3,30 @@ package jsclass
 import (
 	"fmt"
 	"syscall/js"
+
+	jsutil "github.com/syumai/workers/internal/utils"
 )
+
+type JSONWrap struct {
+	js.Value
+}
+
+func (j *JSONWrap) Stringify(args ...any) js.Value {
+	return j.Call("stringify", args...)
+}
+
+func (j *JSONWrap) Parse(args ...any) (js.Value, error) {
+	return jsutil.TryCatch(js.FuncOf(func(_ js.Value, _ []js.Value) any {
+		return j.Call("parse", args...)
+	}))
+}
 
 var (
 	Object            = js.Global().Get("Object")
 	Promise           = js.Global().Get("Promise")
-	JSON              = js.Global().Get("JSON")
+	JSON              = JSONWrap{js.Global().Get("JSON")}
 	Request           = js.Global().Get("Request")
+	Boolean           = js.Global().Get("Boolean")
 	Response          = js.Global().Get("Response")
 	Headers           = js.Global().Get("Headers")
 	String            = js.Global().Get("String")
@@ -17,7 +34,7 @@ var (
 	Number            = js.Global().Get("Number")
 	Uint8Array        = js.Global().Get("Uint8Array")
 	Uint8ClampedArray = js.Global().Get("Uint8ClampedArray")
-	ErrorJS           = js.Global().Get("Error")
+	Error             = js.Global().Get("Error")
 	ReadableStream    = js.Global().Get("ReadableStream")
 	Date              = js.Global().Get("Date")
 	Null              = js.ValueOf(nil)
@@ -27,8 +44,8 @@ var (
 	MaybeFixedLengthStream = js.Global().Get("FixedLengthStream")
 )
 
-func Error(err error) js.Value {
-	return ErrorJS.New(err.Error())
+func ToJSError(err error) js.Value {
+	return Error.New(err.Error())
 }
 
 func Await(promise js.Value) (js.Value, error) {
@@ -45,7 +62,15 @@ func Await(promise js.Value) (js.Value, error) {
 	defer close(errCh)
 
 	catch := js.FuncOf(func(_ js.Value, args []js.Value) any {
-		errCh <- fmt.Errorf("failed on promise: %s", args[0].Call("toString").String())
+		jsErr := args[0]
+		if !jsErr.InstanceOf(Error) {
+			if jsErr.InstanceOf(Object) {
+				jsErr = JSON.Stringify(jsErr)
+			}
+
+			jsErr = Error.New(jsErr)
+		}
+		errCh <- fmt.Errorf("failed on promise: %s", jsErr.Call("toString").String())
 		return nil
 	})
 	defer catch.Release()
