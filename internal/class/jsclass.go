@@ -8,8 +8,8 @@ func init() {
 	cf := js.Global().Get("cf")
 	if cf.IsUndefined() {
 		// is faster to JSON.parse than create an object
-		// cfObj, _ := JSON.Parse(`{"ctx":{},"env":{},"handlers":{},"connect":{}}`)
-		// js.Global().Set("cf", cfObj)
+		cfObj, _ := JSON.Parse(`{"ctx":{},"env":{},"handlers":{},"connect":{}}`)
+		js.Global().Set("cf", cfObj)
 
 		return
 	}

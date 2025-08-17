@@ -36,7 +36,9 @@ func New() *Cache {
 // - Cache-Control instructs not to cache or if the response is too large.
 // docs: https://developers.cloudflare.com/workers/runtime-apis/cache/#put
 func (c *Cache) Put(req *http.Request, res *http.Response) error {
-	_, err := jsclass.Await(c.instance.Call("put", jshttp.ToJSRequest(req), jshttp.ToJSResponse(res)))
+	r := jshttp.ToJSRequest(req)
+	rs := jshttp.ToJSResponse(res)
+	_, err := jsclass.Await(c.instance.Call("put", r, rs))
 	if err != nil {
 		return err
 	}

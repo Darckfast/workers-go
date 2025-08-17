@@ -8,14 +8,6 @@ import (
 	jsclass "github.com/syumai/workers/internal/class"
 )
 
-type RawJSBodyWriter interface {
-	WriteRawJSBody(body js.Value)
-}
-
-type RawJSBodyGetter interface {
-	GetRawJSBody() js.Value
-}
-
 type ReadableStream struct {
 	buf    bytes.Buffer
 	stream js.Value
@@ -23,9 +15,7 @@ type ReadableStream struct {
 }
 
 var (
-	_ io.ReadCloser   = (*ReadableStream)(nil)
-	_ io.WriterTo     = (*ReadableStream)(nil)
-	_ RawJSBodyGetter = (*ReadableStream)(nil)
+	_ io.ReadCloser = (*ReadableStream)(nil)
 )
 
 func (rs *ReadableStream) Read(p []byte) (n int, err error) {
@@ -92,118 +82,63 @@ type readerWrapper struct {
 	io.Reader
 }
 
-func (sr *ReadableStream) WriteTo(w io.Writer) (n int64, err error) {
-	if w, ok := w.(RawJSBodyWriter); ok {
-		w.WriteRawJSBody(sr.stream)
-		return 0, nil
-	}
-	return io.Copy(w, &readerWrapper{sr})
-}
-
-func (sr *ReadableStream) GetRawJSBody() js.Value {
-	return sr.stream
-}
-
 func ReadableStreamToReadCloser(stream js.Value) io.ReadCloser {
 	return &ReadableStream{
 		stream: stream,
 	}
 }
 
-type readerToReadableStream struct {
-	initialized bool
-	reader      io.ReadCloser
-	chunkBuf    []byte
-}
-
-func (rs *readerToReadableStream) Pull(controller js.Value) error {
-	if !rs.initialized {
-		ua := jsclass.Uint8Array.New(0)
-		controller.Call("enqueue", ua)
-		rs.initialized = true
-		return nil
-	}
-	n, err := rs.reader.Read(rs.chunkBuf)
-	if n != 0 {
-		ua := jsclass.Uint8Array.New(n)
-		js.CopyBytesToJS(ua, rs.chunkBuf[:n])
-		controller.Call("enqueue", ua)
-	}
-
-	// Cloudflare Workers sometimes call `pull` to closed ReadableStream.
-	// When the call happens, `io.ErrClosedPipe` should be ignored.
-	if err == io.EOF || err == io.ErrClosedPipe {
-		controller.Call("close")
-		if err := rs.reader.Close(); err != nil {
-			return err
-		}
-		return nil
-	}
-	if err != nil {
-		controller.Call("error", jsclass.Error.New(err.Error()))
-		if err := rs.reader.Close(); err != nil {
-			return err
-		}
-		return err
-	}
-	return nil
-}
-
-func (rs *readerToReadableStream) Cancel() error {
-	return rs.reader.Close()
-}
-
 // https://deno.land/std@0.139.0/streams/conversion.ts#L5
 const defaultChunkSize = 16_640
 
 func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
-	stream := &readerToReadableStream{
-		reader:   reader,
-		chunkBuf: make([]byte, defaultChunkSize),
-	}
+	pull := js.FuncOf(func(this js.Value, args []js.Value) any {
+		// Because the ReadableStream implemented above, this func
+		// need to be a promise, otherwise it will cause a deadlock
+		// if it tries to convert a ReadCloser that came from a Response
+		return jsclass.Promise.New(js.FuncOf(func(_ js.Value, pargs []js.Value) any {
+			go func() {
+
+				resolve := pargs[0]
+				controller := args[0]
+				chunk := make([]byte, defaultChunkSize)
+
+				n, err := reader.Read(chunk)
+				if err != nil && err != io.EOF && err != io.ErrClosedPipe {
+					controller.Call("error", err.Error())
+					return
+				}
+
+				if n > 0 {
+					uint8Array := js.Global().Get("Uint8Array").New(n)
+					js.CopyBytesToJS(uint8Array, chunk[:n])
+					controller.Call("enqueue", uint8Array)
+				}
+
+				if err == io.EOF || err == io.ErrClosedPipe {
+					controller.Call("close")
+				}
+
+				resolve.Invoke(true)
+			}()
+			return nil
+		}))
+	})
+
+	cancel := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		_ = reader.Close()
+		return nil
+	})
+
 	rsInit := jsclass.Object.New()
-	rsInit.Set("pull", js.FuncOf(func(_ js.Value, args []js.Value) any {
-		var cb js.Func
-		cb = js.FuncOf(func(this js.Value, pArgs []js.Value) any {
-			defer cb.Release()
-			resolve := pArgs[0]
-			reject := pArgs[1]
-			controller := args[0]
-			go func() {
-				err := stream.Pull(controller)
-				if err != nil {
-					reject.Invoke(jsclass.Error.New(err.Error()))
-					return
-				}
-				resolve.Invoke()
-			}()
-			return nil
-		})
-		return jsclass.Promise.New(cb)
-	}))
-	rsInit.Set("cancel", js.FuncOf(func(js.Value, []js.Value) any {
-		var cb js.Func
-		cb = js.FuncOf(func(this js.Value, pArgs []js.Value) any {
-			defer cb.Release()
-			resolve := pArgs[0]
-			reject := pArgs[1]
-			go func() {
-				err := stream.Cancel()
-				if err != nil {
-					reject.Invoke(jsclass.Error.New(err.Error()))
-					return
-				}
-				resolve.Invoke()
-			}()
-			return nil
-		})
-		return jsclass.Promise.New(cb)
-	}))
+	rsInit.Set("pull", pull)
+	rsInit.Set("cancel", cancel)
+
 	return jsclass.ReadableStream.New(rsInit)
 }
 
 func ReadCloserToFixedLengthStream(rc io.ReadCloser, size int64) js.Value {
-	stream := jsclass.MaybeFixedLengthStream.New(js.ValueOf(size))
+	stream := jsclass.MaybeFixedLengthStream.New(size)
 	go func(writer js.Value) {
 		defer rc.Close()
 

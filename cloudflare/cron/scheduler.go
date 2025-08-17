@@ -35,13 +35,15 @@ func init() {
 			resolve := pArgs[0]
 			reject := pArgs[1]
 
-			err := runScheduler(controllerObj, envObj, ctxObj)
+			go func() {
+				err := runScheduler(controllerObj, envObj, ctxObj)
 
-			if err != nil {
-				reject.Invoke(jsclass.ToJSError(err))
-			} else {
-				resolve.Invoke(js.Undefined())
-			}
+				if err != nil {
+					reject.Invoke(jsclass.ToJSError(err))
+				} else {
+					resolve.Invoke(js.Undefined())
+				}
+			}()
 			return nil
 		})
 

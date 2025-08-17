@@ -1,7 +1,6 @@
 package jshttp
 
 import (
-	"io"
 	"net/http"
 	"strconv"
 	"syscall/js"
@@ -23,33 +22,6 @@ func ToResponse(res js.Value) *http.Response {
 		Body:          body,
 		ContentLength: contentLength,
 	}
-}
-
-func newJSResponse(statusCode int, headers http.Header, contentLength int64, body io.ReadCloser, rawBody *js.Value) js.Value {
-	status := statusCode
-	if status == 0 {
-		status = http.StatusOK
-	}
-	respInit := jsclass.Object.New()
-	respInit.Set("status", status)
-	respInit.Set("statusText", http.StatusText(status))
-	respInit.Set("headers", ToJSHeader(headers))
-	if status == http.StatusSwitchingProtocols ||
-		status == http.StatusNoContent ||
-		status == http.StatusResetContent ||
-		status == http.StatusNotModified {
-		return jsclass.Response.New(jsclass.Null, respInit)
-	}
-	readableStream := func() js.Value {
-		if rawBody != nil {
-			return *rawBody
-		}
-		if !jsclass.MaybeFixedLengthStream.IsUndefined() && contentLength > 0 {
-			return jsstream.ReadCloserToFixedLengthStream(body, contentLength)
-		}
-		return jsstream.ReadCloserToReadableStream(body)
-	}()
-	return jsclass.Response.New(readableStream, respInit)
 }
 
 func ToJSResponse(res *http.Response) js.Value {

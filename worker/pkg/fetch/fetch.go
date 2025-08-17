@@ -147,7 +147,9 @@ func New() {
 			dummyR := http.Response{
 				Status: res.Status,
 				Header: http.Header{
-					"cache-control": []string{"max-age=1500"}},
+					"cache-control":  []string{"max-age=1500"},
+					"content-length": []string{res.Header.Get("Content-Length")},
+				},
 				Body: io.NopCloser(tee),
 			}
 			_ = c.Put(r, &dummyR)

@@ -1,13 +1,12 @@
 package jshttp
 
 import (
-	"fmt"
 	"io"
 	"net/http"
-	"strconv"
 	"sync"
 	"syscall/js"
 
+	jsclass "github.com/syumai/workers/internal/class"
 	jsstream "github.com/syumai/workers/internal/stream"
 )
 
@@ -19,12 +18,12 @@ type ResponseWriter struct {
 	ReadyCh     chan struct{}
 	Once        sync.Once
 	RawJSBody   *js.Value
+	Length      int64
 }
 
 var (
-	_ http.ResponseWriter      = (*ResponseWriter)(nil)
-	_ jsstream.RawJSBodyWriter = (*ResponseWriter)(nil)
-	_ http.Flusher             = (*ResponseWriter)(nil)
+	_ http.ResponseWriter = (*ResponseWriter)(nil)
+	_ http.Flusher        = (*ResponseWriter)(nil)
 )
 
 // Ready indicates that ResponseWriter is ready to be converted to Response.
@@ -36,7 +35,9 @@ func (w *ResponseWriter) Ready() {
 
 func (w *ResponseWriter) Write(data []byte) (n int, err error) {
 	w.Ready()
-	return w.Writer.Write(data)
+	n, e := w.Writer.Write(data)
+	w.Length += int64(n)
+	return n, e
 }
 
 func (w *ResponseWriter) Header() http.Header {
@@ -45,10 +46,6 @@ func (w *ResponseWriter) Header() http.Header {
 
 func (w *ResponseWriter) WriteHeader(statusCode int) {
 	w.StatusCode = statusCode
-}
-
-func (w *ResponseWriter) WriteRawJSBody(body js.Value) {
-	w.RawJSBody = &body
 }
 
 // Flush is a no-op implementation of http.Flusher.
@@ -60,10 +57,18 @@ func (w *ResponseWriter) Flush() {
 	// no-op
 }
 
-// ToJSResponse converts *ResponseWriter to JavaScript sides Response.
-//   - Response: https://developer.mozilla.org/docs/Web/API/Response
 func (w *ResponseWriter) ToJSResponse() js.Value {
-	contentLength, _ := strconv.ParseInt(w.HeaderValue.Get("Content-Length"), 10, 64)
-	fmt.Println(w.RawJSBody, w.Reader)
-	return newJSResponse(w.StatusCode, w.HeaderValue, contentLength, w.Reader, w.RawJSBody)
+	respInit := jsclass.Object.New()
+	respInit.Set("status", w.StatusCode)
+	respInit.Set("statusText", http.StatusText(w.StatusCode))
+	respInit.Set("headers", ToJSHeader(w.HeaderValue))
+	readableStream := jsclass.Null
+
+	if jsclass.MaybeFixedLengthStream.Truthy() && w.Length > 0 {
+		readableStream = jsstream.ReadCloserToFixedLengthStream(w.Reader, w.Length)
+	} else {
+		readableStream = jsstream.ReadCloserToReadableStream(w.Reader)
+	}
+
+	return jsclass.Response.New(readableStream, respInit)
 }
