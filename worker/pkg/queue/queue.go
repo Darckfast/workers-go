@@ -3,11 +3,15 @@ package queuehandler
 import (
 	"strings"
 
-	"github.com/syumai/workers/cloudflare/kv"
-	"github.com/syumai/workers/cloudflare/queues"
+	"github.com/Darckfast/workers-go/cloudflare/kv"
+	"github.com/Darckfast/workers-go/cloudflare/queues"
 )
 
 func New() {
+	/*
+	 * This functions must be called to instantiate the queue consumer, and make
+	 * globalThis.cf.queue() defined on JS global scope
+	 */
 	queues.ConsumeNonBlock(func(batch *queues.MessageBatch) error {
 		for _, msg := range batch.Messages {
 

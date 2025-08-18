@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jshttp
 
 import (
@@ -6,8 +8,8 @@ import (
 	"sync"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsstream "github.com/syumai/workers/internal/stream"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
 type ResponseWriter struct {

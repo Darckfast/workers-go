@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package fetch
 
 import (
@@ -5,9 +7,9 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsconv "github.com/syumai/workers/internal/conv"
-	jsruntime "github.com/syumai/workers/internal/runtime"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	jsruntime "github.com/Darckfast/workers-go/internal/runtime"
 )
 
 // RedirectMode represents the redirect mode of a fetch() request.

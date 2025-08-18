@@ -1,11 +1,13 @@
+//go:build js && wasm
+
 package kv
 
 import (
 	"io"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsstream "github.com/syumai/workers/internal/stream"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
 // GetOptions represents Cloudflare KV namespace get options.

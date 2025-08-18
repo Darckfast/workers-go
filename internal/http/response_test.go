@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jshttp
 
 import (
@@ -7,8 +9,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	jsclass "github.com/syumai/workers/internal/class"
-	jsconv "github.com/syumai/workers/internal/conv"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
 )
 
 func TestToJSResponse(t *testing.T) {

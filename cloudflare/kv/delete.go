@@ -1,7 +1,9 @@
+//go:build js && wasm
+
 package kv
 
 import (
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 // Delete deletes key-value pair specified by the key.

@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jsemail
 
 import (
@@ -5,9 +7,9 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jshttp "github.com/syumai/workers/internal/http"
-	jsstream "github.com/syumai/workers/internal/stream"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jshttp "github.com/Darckfast/workers-go/internal/http"
+	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
 type EmailMessage struct {

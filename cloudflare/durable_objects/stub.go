@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package durableobjects
 
 import (
@@ -5,9 +7,9 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jshttp "github.com/syumai/workers/internal/http"
-	jstry "github.com/syumai/workers/internal/try"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jshttp "github.com/Darckfast/workers-go/internal/http"
+	jstry "github.com/Darckfast/workers-go/internal/try"
 )
 
 type DurableObjectNamespace struct {

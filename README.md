@@ -1,4 +1,5 @@
-# workers
+# workers-go
+
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/syumai/workers.svg)](https://pkg.go.dev/github.com/syumai/workers)
 [![Discord Server](https://img.shields.io/discord/1095344956421447741?logo=discord&style=social)](https://discord.gg/tYhtatRqGs)
@@ -38,7 +39,7 @@
 ## Installation
 
 ```
-go get github.com/syumai/workers
+go get github.com/Darckfast/workers-go
 ```
 
 ## Usage
@@ -74,7 +75,7 @@ For concrete examples, see `_examples` directory.
 ### Requirements
 
 * Node.js (and npm)
-* Go 1.24.0 or later
+* Go 1.24 or later
 
 ### Create a new Worker project
 

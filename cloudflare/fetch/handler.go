@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"syscall/js"
 
-	"github.com/syumai/workers/cloudflare/env"
-	_ "github.com/syumai/workers/cloudflare/env"
-	jsclass "github.com/syumai/workers/internal/class"
-	jshttp "github.com/syumai/workers/internal/http"
-	jsruntime "github.com/syumai/workers/internal/runtime"
+	"github.com/Darckfast/workers-go/cloudflare/env"
+	_ "github.com/Darckfast/workers-go/cloudflare/env"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jshttp "github.com/Darckfast/workers-go/internal/http"
+	jsruntime "github.com/Darckfast/workers-go/internal/runtime"
 )
 
 var httpHandler http.Handler = http.DefaultServeMux

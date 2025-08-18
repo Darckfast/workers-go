@@ -1,4 +1,4 @@
-module github.com/syumai/workers
+module github.com/Darckfast/workers-go
 
 go 1.24
 

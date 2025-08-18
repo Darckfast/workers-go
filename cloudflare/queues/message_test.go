@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package queues
 
 import (
@@ -6,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsconv "github.com/syumai/workers/internal/conv"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
 )
 
 func TestNewConsumerMessage(t *testing.T) {

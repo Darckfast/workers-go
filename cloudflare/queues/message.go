@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package queues
 
 import (
@@ -5,8 +7,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsconv "github.com/syumai/workers/internal/conv"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
 )
 
 // Message represents a message of the batch received by the consumer.

@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package d1
 
 import (
@@ -8,7 +10,7 @@ import (
 	"sync"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 type rows struct {

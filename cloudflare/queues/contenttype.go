@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package queues
 
 // contentType represents the content type of a message produced to a queue.

@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package fetch
 
 import (
@@ -5,8 +7,8 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jshttp "github.com/syumai/workers/internal/http"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jshttp "github.com/Darckfast/workers-go/internal/http"
 )
 
 // fetch is a function that reproduces cloudflare fetch.

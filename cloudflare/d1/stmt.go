@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package d1
 
 import (
@@ -6,7 +8,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 type stmt struct {

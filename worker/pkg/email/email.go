@@ -5,11 +5,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/syumai/workers/cloudflare/email"
-	jsemail "github.com/syumai/workers/internal/email"
+	"github.com/Darckfast/workers-go/cloudflare/email"
+	jsemail "github.com/Darckfast/workers-go/internal/email"
 )
 
 func New() {
+	/*
+	 * This functions must be called to instantiate a email handler consumer
+	 */
 	email.ConsumeNonBlock(func(f *jsemail.ForwardableEmailMessage) error {
 		f.Headers.Add("x-test-id", "12345-asdfg-56789-ghjkl")
 

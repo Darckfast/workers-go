@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsconv "github.com/syumai/workers/internal/conv"
-	jshttp "github.com/syumai/workers/internal/http"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	jshttp "github.com/Darckfast/workers-go/internal/http"
 )
 
 type ScriptVersion struct {

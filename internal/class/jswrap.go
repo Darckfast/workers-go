@@ -1,9 +1,11 @@
+//go:build js && wasm
+
 package jsclass
 
 import (
 	"syscall/js"
 
-	jstry "github.com/syumai/workers/internal/try"
+	jstry "github.com/Darckfast/workers-go/internal/try"
 )
 
 // JSON.stringify and JSON.parse

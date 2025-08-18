@@ -11,6 +11,9 @@ importers:
       '@cloudflare/containers':
         specifier: ^0.0.25
         version: 0.0.25
+      catch-this:
+        specifier: ^0.0.3
+        version: 0.0.3
     devDependencies:
       '@cloudflare/vite-plugin':
         specifier: ^1.11.5
@@ -917,6 +920,9 @@ packages:
   callsites@3.1.0:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
+
+  catch-this@0.0.3:
+    resolution: {integrity: sha512-cQejqWt+cY17XLBygaA6uux/NFZQHFPGeEoKy2Y4IObWluE6iZJlLZTKhBKO4lxr4FPuc4C9pk7LYINahiJ79Q==}
 
   chai@5.2.1:
     resolution: {integrity: sha512-5nFxhUrX0PqtyogoYOA8IPswy5sZFTOsBFl/9bNsmDLgsxYTzSZQJDPppDnZPTQbzSEm0hqGjWPzRemQCYbD6A==}
@@ -2271,6 +2277,8 @@ snapshots:
   cac@6.7.14: {}
 
   callsites@3.1.0: {}
+
+  catch-this@0.0.3: {}
 
   chai@5.2.1:
     dependencies:

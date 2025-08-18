@@ -1,11 +1,13 @@
+//go:build js && wasm
+
 package cron
 
 import (
 	"errors"
 	"syscall/js"
 
-	"github.com/syumai/workers/cloudflare/env"
-	jsclass "github.com/syumai/workers/internal/class"
+	"github.com/Darckfast/workers-go/cloudflare/env"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 type Task func(evt *CronEvent) error

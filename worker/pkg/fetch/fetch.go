@@ -12,14 +12,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/syumai/workers/cloudflare/cache"
-	_ "github.com/syumai/workers/cloudflare/d1" // register driver
-	durableobjects "github.com/syumai/workers/cloudflare/durable_objects"
-	"github.com/syumai/workers/cloudflare/fetch"
-	"github.com/syumai/workers/cloudflare/kv"
-	"github.com/syumai/workers/cloudflare/queues"
-	"github.com/syumai/workers/cloudflare/r2"
-	"github.com/syumai/workers/cloudflare/sockets"
+	"github.com/Darckfast/workers-go/cloudflare/cache"
+	_ "github.com/Darckfast/workers-go/cloudflare/d1" // register driver
+	durableobjects "github.com/Darckfast/workers-go/cloudflare/durable_objects"
+	"github.com/Darckfast/workers-go/cloudflare/fetch"
+	"github.com/Darckfast/workers-go/cloudflare/kv"
+	"github.com/Darckfast/workers-go/cloudflare/queues"
+	"github.com/Darckfast/workers-go/cloudflare/r2"
+	"github.com/Darckfast/workers-go/cloudflare/sockets"
 )
 
 func New() {
@@ -57,6 +57,7 @@ func New() {
 			"number":   num,
 		})
 	})
+
 	http.HandleFunc("POST /multipart/form-data", func(w http.ResponseWriter, r *http.Request) {
 		r.ParseForm()
 
@@ -256,5 +257,10 @@ func New() {
 			"result": os.Environ(),
 		})
 	})
+
+	/*
+	 * Fetch handler uses http.DefaulServeMux as default, calling this function is
+	 * optional, unless a different handler must be used
+	 */
 	fetch.ServeNonBlock(nil)
 }

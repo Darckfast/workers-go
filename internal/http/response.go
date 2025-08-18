@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jshttp
 
 import (
@@ -5,8 +7,8 @@ import (
 	"strconv"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsstream "github.com/syumai/workers/internal/stream"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
 func ToResponse(res js.Value) *http.Response {

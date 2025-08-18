@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jsconv
 
 import (
@@ -7,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 func TestMaybeInt(t *testing.T) {

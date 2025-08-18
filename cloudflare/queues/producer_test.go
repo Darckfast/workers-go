@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package queues
 
 import (
@@ -7,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 func validatingProducer(t *testing.T, validateFn func(message js.Value, options js.Value) error) *Producer {

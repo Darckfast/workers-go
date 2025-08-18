@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package r2
 
 import (
@@ -6,9 +8,9 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsconv "github.com/syumai/workers/internal/conv"
-	jsstream "github.com/syumai/workers/internal/stream"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
 // Object represents Cloudflare R2 object.

@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
-  "name": "workers-go",
-  "version": "0.0.1",
+  "name": "<TBD>",
+  "version": "0.0.0",
   "description": "",
   "main": "./worker/main.ts",
   "type": "module",
@@ -40,6 +40,7 @@
     "wrangler": "^4.30.0"
   },
   "dependencies": {
-    "@cloudflare/containers": "^0.0.25"
+    "@cloudflare/containers": "^0.0.25",
+    "catch-this": "^0.0.3"
   }
 }

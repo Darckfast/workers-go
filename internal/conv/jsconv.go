@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jsconv
 
 import (
@@ -6,7 +8,7 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 func ArrayFrom(v js.Value) js.Value {

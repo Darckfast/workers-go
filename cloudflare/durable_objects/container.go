@@ -1,10 +1,12 @@
+//go:build js && wasm
+
 package durableobjects
 
 import (
 	"net/http"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jshttp "github.com/syumai/workers/internal/http"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jshttp "github.com/Darckfast/workers-go/internal/http"
 )
 
 type Container struct {

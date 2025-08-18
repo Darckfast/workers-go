@@ -1,11 +1,13 @@
+//go:build js && wasm
+
 package main
 
 import (
-	cronhandler "github.com/syumai/workers/worker/pkg/cron"
-	emailhandler "github.com/syumai/workers/worker/pkg/email"
-	fetchhandler "github.com/syumai/workers/worker/pkg/fetch"
-	queuehandler "github.com/syumai/workers/worker/pkg/queue"
-	tailhandler "github.com/syumai/workers/worker/pkg/tail"
+	cronhandler "github.com/Darckfast/workers-go/worker/pkg/cron"
+	emailhandler "github.com/Darckfast/workers-go/worker/pkg/email"
+	fetchhandler "github.com/Darckfast/workers-go/worker/pkg/fetch"
+	queuehandler "github.com/Darckfast/workers-go/worker/pkg/queue"
+	tailhandler "github.com/Darckfast/workers-go/worker/pkg/tail"
 )
 
 func main() {
@@ -15,5 +17,11 @@ func main() {
 	queuehandler.New()
 	tailhandler.New()
 
+	/**
+	 * This code below is REQUIRED, it's what will keep your Go's WASM binary
+	 * running while Cloudflare Worker consumes it
+	 *
+	 * Without this code, the process will exit before the handlers call it
+	 */
 	<-make(chan struct{})
 }

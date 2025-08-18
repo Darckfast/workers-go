@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jsstream
 
 import (
@@ -5,7 +7,7 @@ import (
 	"io"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 type ReadableStream struct {

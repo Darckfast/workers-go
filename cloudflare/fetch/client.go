@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package fetch
 
 import (
@@ -6,7 +8,7 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 // Client is an HTTP client.
