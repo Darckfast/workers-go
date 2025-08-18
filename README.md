@@ -1,7 +1,7 @@
 
 <img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/msyMXSSf3hlUnawe68PDG/d0edfa4f2703a94018c7ab65d9808616/45DEDC7B-B31F-461C-B786-12FBAF1A5391.png" alt="banner"/>
 
-Powered by ![vite](https://vite.dev/logo.svg) Vite and ![workers](https://workers.cloudflare.com/logo.svg) Cloudflare Workers
+Powered by !<img src="https://vite.dev/logo.svg" style="height: 1.65rem"/> Vite and <img src="https://workers.cloudflare.com/logo.svg" style="height: 1.65rem"/> Cloudflare Workers
 
 # workers-go
 
