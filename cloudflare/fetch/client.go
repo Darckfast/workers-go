@@ -3,25 +3,37 @@
 package fetch
 
 import (
-	"context"
-	"io"
+	"encoding/json"
 	"net/http"
 	"syscall/js"
+	"time"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jshttp "github.com/Darckfast/workers-go/internal/http"
 )
 
-// Client is an HTTP client.
-type Client struct {
-	// namespace - Objects that Fetch API belongs to. Default is Global
-	namespace js.Value
+type RequestInitCF struct {
+	// Using json tags will use reflect lib
+	// by default this is slower than manually setting the values
+	// in a string template or similar
+	Apps             bool           `json:"apps"`
+	CacheEverything  bool           `json:"cacheEverything"`
+	CacheKey         string         `json:"cacheKey"`
+	CacheTags        []string       `json:"cacheTags"`
+	CacheTtl         int            `json:"cacheTtl"`
+	CacheTtlByStatus map[string]int `json:"cacheTtlByStatus"`
+	Mirage           bool           `json:"mirage"`
+	Polish           string         `json:"polish"`
+	ResolveOverride  string         `json:"resolveOverride"`
+	ScrapShield      bool           `json:"scrapShield"`
+	Webp             bool           `json:"webp"`
 }
 
-// applyOptions applies client options.
-func (c *Client) applyOptions(opts []ClientOption) {
-	for _, opt := range opts {
-		opt(c)
-	}
+type Client struct {
+	RedirectMode string
+	Timeout      time.Duration
+	namespace    js.Value
+	CF           *RequestInitCF
 }
 
 func (c *Client) WithBinding(bindname string) *Client {
@@ -29,43 +41,54 @@ func (c *Client) WithBinding(bindname string) *Client {
 	return c
 }
 
-// HTTPClient returns *http.Client.
-func (c *Client) HTTPClient(redirect RedirectMode) *http.Client {
-	return &http.Client{
-		Transport: &CFTransport{
-			namespace: c.namespace,
-			redirect:  redirect,
-		},
-	}
-}
-
-// Do sends an HTTP request and returns an HTTP response
-func (c *Client) Do(req *http.Request, init *RequestInit) (*http.Response, error) {
-	return fetch(c.namespace, req, init)
-}
-
-// ClientOption is a type that represents an optional function.
-type ClientOption func(*Client)
-
-// WithBinding changes the objects that Fetch API belongs to.
-// This is useful for service bindings, mTLS, etc.
-func WithBinding(bind js.Value) ClientOption {
-	return func(c *Client) {
-		c.namespace = bind
-	}
-}
-
-// NewClient returns new Client
-func NewClient(opts ...ClientOption) *Client {
-	c := &Client{
-		namespace: js.Global(),
-	}
-	c.applyOptions(opts)
-
+func (c *Client) WithCF(cf *RequestInitCF) *Client {
+	c.CF = cf
 	return c
 }
 
-// NewRequest returns new Request given a method, URL, and optional body
-func NewRequest(ctx context.Context, method string, url string, body io.Reader) (*http.Request, error) {
-	return http.NewRequestWithContext(ctx, method, url, body)
+func (c *Client) Do(req *http.Request) (*http.Response, error) {
+	if c.namespace.IsUndefined() {
+		c.namespace = js.Global()
+	}
+
+	// This client is incompatible with the current container.fetch
+	fetchFunc := c.namespace.Get("fetch")
+
+	if c.RedirectMode == "" {
+		c.RedirectMode = "follow"
+	}
+
+	initOptions := map[string]string{
+		"redirect":    c.RedirectMode,
+		"credentials": "omit",
+	}
+
+	initJson, _ := json.Marshal(initOptions)
+	initObj, _ := jsclass.JSON.Parse(string(initJson))
+
+	if c.Timeout != 0 {
+		initObj.Set("signal", jsclass.AbortSignal.Call("timeout", c.Timeout.Milliseconds()))
+	}
+
+	if c.CF != nil {
+		cfJson, _ := json.Marshal(c.CF)
+		cfObj, _ := jsclass.JSON.Parse(string(cfJson))
+		initObj.Set("cf", cfObj)
+	}
+
+	promise := fetchFunc.Invoke(
+		jshttp.ToJSRequest(req),
+		initObj,
+	)
+
+	jsRes, err := jsclass.Await(promise)
+	if err != nil {
+		return nil, err
+	}
+
+	return jshttp.ToResponse(jsRes), nil
+}
+
+func NewClient() *Client {
+	return &Client{}
 }
