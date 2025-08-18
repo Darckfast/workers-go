@@ -1,7 +1,7 @@
 
 ![banner](.github/images/banner.png)
 
-Powered by !<img src="https://vite.dev/logo.svg" style="height: 1rem"/> Vite and <img src="https://workers.cloudflare.com/logo.svg" style="height: 1rem"/> Cloudflare Workers
+Powered by <img src="https://vite.dev/logo.svg" style="height: 1rem"/> Vite and <img src="https://workers.cloudflare.com/logo.svg" style="height: 1rem"/> Cloudflare Workers
 
 # workers-go
 
@@ -13,6 +13,62 @@ This repository is a fork of https://github.com/syumai/workers ❤️
 `workers-go` is a pure Go library, made to help interface Go's WASM with [Cloudflare Workers](https://workers.cloudflare.com/).
 It implements a series of handlers, helpers and bindings, making easier to integrate Go with Workers
 
+## Quick Start
+<!---->
+<!-- * You can easily create and deploy a project from `Deploy to Cloudflare` button. -->
+<!---->
+<!-- <!-- [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Fsyumai%2Fworker-go-deploy) --> -->
+<!---->
+<!-- * If you want to create a project manually, please follow the guide below. -->
+
+### Requirements
+
+* NodeJS v22+
+* Go 1.24+
+
+### Create a new Worker project
+
+Run the following command:
+
+```bash
+pnpm create cloudflare@latest -- --template github.com/Darckfast/workers-go/worker
+```
+
+### Initialize the project
+
+1. Navigate to your new project directory:
+
+```bash
+cd my-app
+```
+
+2. Initialize Go modules:
+
+```bash
+go mod init
+go mod tidy
+```
+
+3. Start the development server:
+
+The development server is powered by Vite and Cloudflare Worker's plugin
+
+```bash
+pnpm install
+pnpm run dev
+```
+
+4. Verify the worker is running:
+
+```bash
+curl http://localhost:5173/hello
+```
+
+## Installation
+
+```bash
+go get github.com/Darckfast/workers-go
+```
 ## Features
 
 | Feature | Implemented | Notes |
@@ -36,11 +92,6 @@ It implements a series of handlers, helpers and bindings, making easier to integ
 |TCP Sockets|🔵||
 |Queue producer|🔵||
 
-## Installation
-
-```bash
-go get github.com/Darckfast/workers-go
-```
 ## `main.ts`
 
 `main.ts` is the entry point, declared in the `wrangler.toml`, and its where the wasm binary
@@ -141,53 +192,3 @@ Although we can wrap JavaScript errors in Go, at the moment there is no source m
 
 For Gopls show `syscall/js` methods signature and autocomplete, either `export GOOS=js && export GOARCH=wasm` or add the comment `//go:build js && wasm` at the top of your Go file
 
-## Quick Start
-<!---->
-<!-- * You can easily create and deploy a project from `Deploy to Cloudflare` button. -->
-<!---->
-<!-- <!-- [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Fsyumai%2Fworker-go-deploy) --> -->
-<!---->
-<!-- * If you want to create a project manually, please follow the guide below. -->
-
-### Requirements
-
-* NodeJS v22+
-* Go 1.24+
-
-### Create a new Worker project
-
-Run the following command:
-
-```bash
-pnpm create cloudflare@latest -- --template github.com/Darckfast/workers-go/worker
-```
-
-### Initialize the project
-
-1. Navigate to your new project directory:
-
-```bash
-cd my-app
-```
-
-2. Initialize Go modules:
-
-```bash
-go mod init
-go mod tidy
-```
-
-3. Start the development server:
-
-The development server is powered by Vite and Cloudflare Worker's plugin
-
-```bash
-pnpm install
-pnpm run dev
-```
-
-4. Verify the worker is running:
-
-```bash
-curl http://localhost:5173/hello
-```

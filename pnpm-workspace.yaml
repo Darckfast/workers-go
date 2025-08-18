@@ -1,3 +1,6 @@
+color: always
+packages:
+  - worker
 onlyBuiltDependencies:
   - esbuild
   - sharp
