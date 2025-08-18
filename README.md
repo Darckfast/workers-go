@@ -17,14 +17,11 @@ It implements a series of handlers, helpers and bindings, making easier to integ
 <!---->
 <!-- * You can easily create and deploy a project from `Deploy to Cloudflare` button. -->
 <!---->
-<!-- <!-- [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Fsyumai%2Fworker-go-deploy) --> -->
+<!-- <!-- [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Fsyumai%2Fworker-go-deploy) -->
 <!---->
 <!-- * If you want to create a project manually, please follow the guide below. -->
 
-### Requirements
-
-* NodeJS v22+
-* Go 1.24+
+This project has only been tested on **Go 1.23+** with **NodeJS 22+**
 
 ### Create a new Worker project
 
@@ -42,11 +39,10 @@ pnpm create cloudflare@latest -- --template github.com/Darckfast/workers-go/work
 cd my-app
 ```
 
-2. Initialize Go modules:
+2. Initialize Go modules and NodeJS packages:
 
 ```bash
-go mod init
-go mod tidy
+pnpm run init # this will run go mod tidy && pnpm install
 ```
 
 3. Start the development server:
@@ -54,7 +50,6 @@ go mod tidy
 The development server is powered by Vite and Cloudflare Worker's plugin
 
 ```bash
-pnpm install
 pnpm run dev
 ```
 
@@ -69,7 +64,10 @@ curl http://localhost:5173/hello
 ```bash
 go get github.com/Darckfast/workers-go
 ```
+
 ## Features
+
+Below is a list of implemented, and not implemented Cloudflare features
 
 | Feature | Implemented | Notes |
 |-|-|-|
@@ -173,7 +171,19 @@ func main() {
 ## Caveats
 
 ### C Binding
-If any Go lib that depends on a C lib, e.g. vips, it wont work
+IF you use any library or package that depends or use any C binding, or C compiled code, compiling to WASM is not possible
+
+#### Incompatible ❌
+https://github.com/kolesa-team/go-webp
+https://github.com/Kagami/go-avif
+https://github.com/h2non/bimg
+https://github.com/davidbyttow/govips
+https://github.com/gographics/imagick
+
+#### Compatible ✅
+https://github.com/anthonynsimon/bild
+https://github.com/nfnt/resize
+https://github.com/bamiaux/rez
 
 ### HTTP Requests
 When making http request, the `fetch.NewClient()` must be used, as it implements the Cloudflare Worker native `fetch()` call
@@ -182,13 +192,13 @@ When making http request, the `fetch.NewClient()` must be used, as it implements
 Cloudflare Queue locally is incredibly slow to produce events (up to 7 seconds)
 
 ### TinyGo
-Go's compiled binary can exceed the Free Cloudflare Worker's limit, in which case one suggestion is to use TinyGo to compile, but for performance reasons, this package makes use of the `encoding/json` from the std Go's library, which makes this package incompatible with the current build of TinyGo
+Go's compiled binary can exceed the Free 3MB Cloudflare Worker's limit, in which case one suggestion is to use TinyGo to compile, but for performance reasons `workers-go` uses the `encoding/json` from the std Go's library, which makes this package incompatible with the current build of TinyGo
+
+Another possible fix is related to this issue https://github.com/golang/go/issues/63904
 
 ### Errors
-
 Although we can wrap JavaScript errors in Go, at the moment there is no source maps available in wasm, meaning we can get errors messages, but not a useful stack trace
 
 ### Build constraint
-
-For Gopls show `syscall/js` methods signature and autocomplete, either `export GOOS=js && export GOARCH=wasm` or add the comment `//go:build js && wasm` at the top of your Go file
+For [gopls](https://github.com/golang/tools/tree/master/gopls) to show `syscall/js` method's signature and auto complete, either `export GOOS=js && export GOARCH=wasm` or add the comment `//go:build js && wasm` at the top of your Go files
 
