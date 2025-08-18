@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package fetchhandler
 
 import (
@@ -12,9 +14,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Darckfast/workers-go/cloudflare/cache"
 	_ "github.com/Darckfast/workers-go/cloudflare/d1" // register driver
-	durableobjects "github.com/Darckfast/workers-go/cloudflare/durable_objects"
+
+	"github.com/Darckfast/workers-go/cloudflare/cache"
+	"github.com/Darckfast/workers-go/cloudflare/durableobjects"
 	"github.com/Darckfast/workers-go/cloudflare/fetch"
 	"github.com/Darckfast/workers-go/cloudflare/kv"
 	"github.com/Darckfast/workers-go/cloudflare/queues"
@@ -23,6 +26,10 @@ import (
 )
 
 func New() {
+	http.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello"))
+	})
+
 	http.HandleFunc("GET /application/json", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]any{"vitest": true})

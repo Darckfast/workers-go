@@ -1,25 +1,40 @@
+
+<img src="https://cf-assets.www.cloudflare.com/zkvhlag99gkb/msyMXSSf3hlUnawe68PDG/d0edfa4f2703a94018c7ab65d9808616/45DEDC7B-B31F-461C-B786-12FBAF1A5391.png" alt="banner"/>
+
+Powered by ![vite](https://vite.dev/logo.svg) Vite and ![workers](https://workers.cloudflare.com/logo.svg) Cloudflare Workers
+
 # workers-go
 
-This repo is a fork of https://github.com/syumai/workers ❤️
+This repository is a fork of https://github.com/syumai/workers ❤️
 
 <!-- [![Go Reference](https://pkg.go.dev/badge/github.com/syumai/workers.svg)](https://pkg.go.dev/github.com/syumai/workers) -->
 <!-- [![Discord Server](https://img.shields.io/discord/1095344956421447741?logo=discord&style=social)](https://discord.gg/tYhtatRqGs) -->
 
-<!-- * `workers` is a package to run an HTTP server written in Go on [Cloudflare Workers](https://workers.cloudflare.com/). -->
-<!-- * This package can easily serve *http.Handler* on Cloudflare Workers. -->
-<!-- * Caution: This is an experimental project. -->
+`workers-go` is a pure Go library, made to help interface Go's WASM with [Cloudflare Workers](https://workers.cloudflare.com/).
+It implements a series of handlers, helpers and bindings, making easier to integrate Go with Workers
 
 ## Features
 
 | Feature | Implemented | Notes |
 |-|-|-|
-|Handler `fetch`|✅| _At the moment all request use HTTP, RPC is not supported_. All functions uses either `http.Request` or `http.Response`|
-|Handler `queue`|✅||
-|Handler `email`|✅||
-|Handler `scheduled`|✅||
-|Handler `tail`|✅| **EXPERIMENTAL**: This has not been tested in production env yet|
-|`Containers`| 🔵| Only the `containerFetch()` function has been implemented|
-|`env`|✅|All Cloudflare Worker's are copied into `os.Environ()`, making them available at runtime with `os.Getenv()`|
+|`fetch`|✅| _At the moment all request use HTTP, RPC is not supported_. All functions uses either `http.Request` or `http.Response`|
+|`queue`|✅||
+|`email`|✅||
+|`scheduled`|✅||
+|`tail`|✅| **EXPERIMENTAL**: This has not been tested in production env yet|
+|`env`|✅|All Cloudflare Worker's are copied into `os.Environ()`, making them available at runtime with `os.Getenv()`. Only string typed values are copied|
+|Containers| 🔵| Only the `containerFetch()` function has been implemented|
+|R2| 🔵|_Options for R2 methods still not implementd_|
+|D1|🔵||
+|KV|🔵|_Options for KV methods still not implemented_|
+|Cache API|✅||
+|Durable Objects|🔵|_Only stub calls have been implemented_|
+|RPC|❌|_Not implemented_|
+|Service binding|❌|_Not implemented_|
+|HTTP|🔵|_RequestInitCfProperties still not implemented_|
+|FetchEvent|🔵||
+|TCP Sockets|🔵||
+|Queue producer|🔵||
 
 ## Installation
 
@@ -31,7 +46,7 @@ go get github.com/Darckfast/workers-go
 `main.ts` is the entry point, declared in the `wrangler.toml`, and its where the wasm binary
 will be loaded and used
 
-Below is a (_non functional_) example, for a functional and complete one check `./worker/bin/main.ts`
+Below is a (_non functional_) example, for a functional and complete example check `./worker/bin/main.ts`
 
 ```ts
 import app from "./bin/app.wasm"; // Compiled wasm binary
@@ -104,8 +119,27 @@ func main() {
   <-make(chan struct{})
 }
 ```
+## Caveats
 
-<!-- For concrete examples, see `_examples` directory. -->
+### C Binding
+If any Go lib that depends on a C lib, e.g. vips, it wont work
+
+### HTTP Requests
+When making http request, the `fetch.NewClient()` must be used, as it implements the Cloudflare Worker native `fetch()` call
+
+### Queues
+Cloudflare Queue locally is incredibly slow to produce events (up to 7 seconds)
+
+### TinyGo
+Go's compiled binary can exceed the Free Cloudflare Worker's limit, in which case one suggestion is to use TinyGo to compile, but for performance reasons, this package makes use of the `encoding/json` from the std Go's library, which makes this package incompatible with the current build of TinyGo
+
+### Errors
+
+Although we can wrap JavaScript errors in Go, at the moment there is no source maps available in wasm, meaning we can get errors messages, but not a useful stack trace
+
+### Build constraint
+
+For Gopls show `syscall/js` methods signature and autocomplete, either `export GOOS=js && export GOARCH=wasm` or add the comment `//go:build js && wasm` at the top of your Go file
 
 ## Quick Start
 <!---->
@@ -124,7 +158,7 @@ func main() {
 
 Run the following command:
 
-```console
+```bash
 pnpm create cloudflare@latest -- --template github.com/Darckfast/workers-go/worker
 ```
 
@@ -132,48 +166,28 @@ pnpm create cloudflare@latest -- --template github.com/Darckfast/workers-go/work
 
 1. Navigate to your new project directory:
 
-```console
+```bash
 cd my-app
 ```
 
 2. Initialize Go modules:
 
-```console
+```bash
 go mod init
 go mod tidy
 ```
 
 3. Start the development server:
 
-```console
+The development server is powered by Vite and Cloudflare Worker's plugin
+
+```bash
 pnpm install
 pnpm run dev
 ```
 
 4. Verify the worker is running:
 
-```console
+```bash
 curl http://localhost:5173/hello
 ```
-
-<!-- You will see **"Hello!"** as the response. -->
-
-<!-- If you want a more detailed description, please refer to the README.md file in the generated directory. -->
-
-<!-- ## FAQ -->
-<!---->
-<!-- ### How do I deploy a worker implemented in this package? -->
-<!---->
-<!-- To deploy a Worker, the following steps are required. -->
-<!---->
-<!-- * Create a worker project using [wrangler](https://developers.cloudflare.com/workers/wrangler/). -->
-<!-- * Build a Wasm binary. -->
-<!-- * Upload a Wasm binary with a JavaScript code to load and instantiate Wasm (for entry point). -->
-<!---->
-<!-- The [worker-go template](https://github.com/syumai/workers/tree/main/_templates/cloudflare/worker-go) contains all the required files, so I recommend using this template. -->
-<!---->
-<!-- But Go (not TinyGo) with many dependencies may exceed the size limit of the Worker (3MB for free plan, 10MB for paid plan). In that case, you can use the [TinyGo template](https://github.com/syumai/workers/tree/main/_templates/cloudflare/worker-tinygo) instead. -->
-<!---->
-<!-- ### Where can I have discussions about contributions, or ask questions about how to use the library? -->
-<!---->
-<!-- You can do both through GitHub Issues. If you want to have a more casual conversation, please use the [Discord server](https://discord.gg/tYhtatRqGs). -->
