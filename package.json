@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "worker": "pnpm --filter worker",
-    "dev": "pnpm worker dev",
+    "dev": "vite",
     "wd": "pnpm worker wd",
     "test": "pnpm worker build && vitest",
     "test:go": "GOOS=js GOARCH=wasm go test ./...",
@@ -31,6 +31,14 @@
     "globals": "^16.3.0",
     "jiti": "^2.5.1",
     "typescript-eslint": "^8.39.1",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "@cloudflare/vite-plugin": "^1.11.5",
+    "vite": "^7.1.2",
+    "vite-plugin-watch": "^0.3.1",
+    "wrangler": "^4.30.0"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "^0.0.25",
+    "catch-this": "^0.0.3"
   }
 }

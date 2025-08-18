@@ -7,19 +7,10 @@ Powered by <img src="https://vite.dev/logo.svg" style="height: 1rem"/> Vite and 
 
 This repository is a fork of https://github.com/syumai/workers ❤️
 
-<!-- [![Go Reference](https://pkg.go.dev/badge/github.com/syumai/workers.svg)](https://pkg.go.dev/github.com/syumai/workers) -->
-<!-- [![Discord Server](https://img.shields.io/discord/1095344956421447741?logo=discord&style=social)](https://discord.gg/tYhtatRqGs) -->
-
 `workers-go` is a pure Go library, made to help interface Go's WASM with [Cloudflare Workers](https://workers.cloudflare.com/).
 It implements a series of handlers, helpers and bindings, making easier to integrate Go with Workers
 
 ## Quick Start
-<!---->
-<!-- * You can easily create and deploy a project from `Deploy to Cloudflare` button. -->
-<!---->
-<!-- <!-- [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https%3A%2F%2Fgithub.com%2Fsyumai%2Fworker-go-deploy) -->
-<!---->
-<!-- * If you want to create a project manually, please follow the guide below. -->
 
 This project has only been tested on **Go 1.23+** with **NodeJS 22+**
 
@@ -170,20 +161,19 @@ func main() {
 ```
 ## Caveats
 
-### C Binding
+### ▶️ C Binding
 IF you use any library or package that depends or use any C binding, or C compiled code, compiling to WASM is not possible
 
-#### Incompatible ❌
-https://github.com/kolesa-team/go-webp
-https://github.com/Kagami/go-avif
-https://github.com/h2non/bimg
-https://github.com/davidbyttow/govips
-https://github.com/gographics/imagick
-
-#### Compatible ✅
-https://github.com/anthonynsimon/bild
-https://github.com/nfnt/resize
-https://github.com/bamiaux/rez
+| Package | Compatible |
+|-|-|
+|https://github.com/anthonynsimon/bild|✅|
+|https://github.com/nfnt/resize|✅|
+|https://github.com/bamiaux/rez|✅|
+|https://github.com/kolesa-team/go-webp|❌|
+|https://github.com/Kagami/go-avif|❌|
+|https://github.com/h2non/bimg|❌|
+|https://github.com/davidbyttow/govips|❌|
+|https://github.com/gographics/imagick|❌|
 
 ### HTTP Requests
 When making http request, the `fetch.NewClient()` must be used, as it implements the Cloudflare Worker native `fetch()` call

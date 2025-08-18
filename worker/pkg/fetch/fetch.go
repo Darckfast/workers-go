@@ -148,8 +148,8 @@ func New() {
 		xcache := "miss"
 		if res == nil {
 			w.Header().Add("x-cache", xcache)
-			rs, _ := fetch.NewRequest(r.Context(), "GET", "https://google.com", nil)
-			res, _ = fetch.NewClient().Do(rs, nil)
+			rs, _ := http.NewRequestWithContext(r.Context(), "GET", "https://google.com", nil)
+			res, _ := fetch.NewClient().Do(rs)
 
 			tee := io.TeeReader(res.Body, w)
 			dummyR := http.Response{

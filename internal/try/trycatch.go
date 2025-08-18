@@ -6,16 +6,18 @@ import (
 	"syscall/js"
 )
 
-func init() {
-	if !js.Global().Get("tryCatch").Truthy() {
+var catchThis = js.Global().Get("catchThis")
 
+func init() {
+	if !catchThis.Truthy() {
 		fn := js.Global().Get("Function")
 
-		// Sync fn with JS error normalization: https://github.com/Darckfast/catch-this/blob/f96ceb6b7b5060281a152494353e07f9d6cbf0ca/index.js#L1
+		// Sync fn with JS error normalization
+		// This is only to go test run without crashing
 		tryCatchFn := fn.New("fn", `{
       try {
       return {
-      result: fn(),
+      data: fn(),
       };
       } catch (e) {
       if (!(e instanceof Error)) {
@@ -29,17 +31,18 @@ func init() {
       };
       }
       }`)
-
 		js.Global().Set("tryCatch", tryCatchFn)
 	}
 }
 
 func TryCatch(fn js.Func) (js.Value, error) {
-	fnResultVal := js.Global().Call("tryCatch", fn)
-	resultVal := fnResultVal.Get("result")
-	errorVal := fnResultVal.Get("error")
+	fnResult := catchThis.Call("auto", fn)
+	resultVal := fnResult.Get("data")
+	errorVal := fnResult.Get("error")
+
 	if !errorVal.IsUndefined() {
 		return js.Value{}, js.Error{Value: errorVal}
 	}
+
 	return resultVal, nil
 }
