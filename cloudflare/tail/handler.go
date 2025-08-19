@@ -8,12 +8,11 @@ import (
 
 	"github.com/Darckfast/workers-go/cloudflare/env"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jstail "github.com/Darckfast/workers-go/internal/tail"
 )
 
-type TailConsumer func(f *[]jstail.TailItem) error
+type TailConsumer func(f *[]TailItem) error
 
-var consumer TailConsumer = func(_ *[]jstail.TailItem) error {
+var consumer TailConsumer = func(_ *[]TailItem) error {
 	return errors.New("no consumer implemented")
 }
 
@@ -51,7 +50,7 @@ func handler(eventsObj, envObj, ctxObj js.Value) error {
 	jsclass.ExcutionContext = ctxObj
 
 	env.LoadEnvs()
-	events := jstail.NewEvents(eventsObj)
+	events := NewEvents(eventsObj)
 
 	return consumer(events)
 }

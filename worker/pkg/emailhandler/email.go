@@ -8,14 +8,13 @@ import (
 	"strings"
 
 	"github.com/Darckfast/workers-go/cloudflare/email"
-	jsemail "github.com/Darckfast/workers-go/internal/email"
 )
 
 func New() {
 	/*
 	 * ConsumeNonBlock must be called to instantiate a email handler consumer
 	 */
-	email.ConsumeNonBlock(func(f *jsemail.ForwardableEmailMessage) error {
+	email.ConsumeNonBlock(func(f *email.ForwardableEmailMessage) error {
 		f.Headers.Add("x-test-id", "12345-asdfg-56789-ghjkl")
 
 		err := f.Forward("<YOUR_EMAIL>", &f.Headers)
@@ -25,7 +24,7 @@ func New() {
 		}
 
 		emailBody := strings.NewReader("this is a test, and this email has " + strconv.Itoa(f.RawSize))
-		reply := jsemail.EmailMessage{
+		reply := email.EmailMessage{
 			From: "me",
 			To:   "you",
 			Raw:  io.NopCloser(emailBody),

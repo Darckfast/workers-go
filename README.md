@@ -10,7 +10,7 @@ This repository is a fork of https://github.com/syumai/workers ❤️
 `workers-go` is a pure Go library, made to help interface Go's WASM with [Cloudflare Workers](https://workers.cloudflare.com/).
 It implements a series of handlers, helpers and bindings, making easier to integrate Go with Workers
 
-## Start
+## Install
 
 This project has only been tested on **Go 1.23+** with **NodeJS 22+**
 
@@ -25,8 +25,8 @@ Setting the handler in go, will make certain callbacks available in JavaScript g
 
 | Go func | JS callback |
 |-|-|
-| `fetch.ServeNonBlock()`| `globalThis.cf.fetch()`|
-| `cron.ScheduleTaskNonBlock()` | `globalThis.cf.scheduled()`|
+|`fetch.ServeNonBlock()`| `globalThis.cf.fetch()`|
+|`cron.ScheduleTaskNonBlock()` | `globalThis.cf.scheduled()`|
 |`queues.ConsumeNonBlock()`|`globalThis.cf.queue()`|
 |`tail.ConsumeNonBlock()`|`globalThis.cf.tail()`|
 |`email.ConsumeNonBlock()`|`globalThis.cf.email()`|
@@ -40,6 +40,8 @@ Implement your `http.Handler` and give it to `fetch.ServeNonBlock()`.
 //go:build js && wasm
 
 package main
+
+import "github.com/Darckfast/workers-go/cloudflare/fetch"
 
 func main() {
 	var handler http.HandlerFunc = func (w http.ResponseWriter, req *http.Request) {
@@ -57,6 +59,8 @@ or just call `http.Handle` and `http.HandleFunc`, then invoke `workers.Serve()` 
 //go:build js && wasm
 
 package main
+
+import "github.com/Darckfast/workers-go/cloudflare/fetch"
 
 func main() {
 	http.HandleFunc("/hello", func (w http.ResponseWriter, req *http.Request) {
@@ -96,11 +100,7 @@ func main() {
 
 package main
 
-import (
-	"strings"
-
-	"github.com/Darckfast/workers-go/cloudflare/queues"
-)
+import 	"github.com/Darckfast/workers-go/cloudflare/queues"
 
 func main() {
 	queues.ConsumeNonBlock(func(batch *queues.MessageBatch) error {
@@ -125,13 +125,11 @@ func main() {
 
 package main
 
-import (
-	"github.com/Darckfast/workers-go/cloudflare/tail"
-	jstail "github.com/Darckfast/workers-go/internal/tail"
-)
+import "github.com/Darckfast/workers-go/cloudflare/tail"
+
 
 func main() {
-	tail.ConsumeNonBlock(func(f *[]jstail.TailItem) error {
+	tail.ConsumeNonBlock(func(f *[]tail.TailItem) error {
     // ... process tail trace events
 		return nil
 	})
@@ -147,17 +145,11 @@ func main() {
 
 package main
 
-import (
-	"io"
-	"strconv"
-	"strings"
+import "github.com/Darckfast/workers-go/cloudflare/email"
 
-	"github.com/Darckfast/workers-go/cloudflare/email"
-	jsemail "github.com/Darckfast/workers-go/internal/email"
-)
 
 func main() {
-	email.ConsumeNonBlock(func(f *jsemail.ForwardableEmailMessage) error {
+	email.ConsumeNonBlock(func(f *email.ForwardableEmailMessage) error {
     // ... process the email
 		return nil
 	})

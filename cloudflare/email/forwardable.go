@@ -1,6 +1,6 @@
 //go:build js && wasm
 
-package jsemail
+package email
 
 import (
 	"io"
