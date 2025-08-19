@@ -30,4 +30,4 @@ jobs:
 
       - name: Test Worker
         shell: bash
-        run: pnpm run test:ci
+        run: pnpm run test:run
