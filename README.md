@@ -184,6 +184,7 @@ will be loaded and used
 Below is a (_non functional_) example, for a functional and complete example check `./worker/bin/main.ts`
 
 ```ts
+import "github.com/Darckfast/workers-go/cloudflare/fetch"
 import app from "./bin/app.wasm"; // Compiled wasm binary
 import "./bin/wasm_exec.js"; // cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" .
 
