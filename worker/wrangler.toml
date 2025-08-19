@@ -33,11 +33,11 @@ max_batch_size = 10
 max_batch_timeout = 5
 
 # Cloudflare Container
-# [[containers]]
-# name = "go-container"
-# class_name = "GoContainer"
-# image = "./Dockerfile"
-# max_instances = 3
+[[containers]]
+name = "go-container"
+class_name = "GoContainer"
+image = "./Dockerfile"
+max_instances = 3
 
 # Cloudflare Container
 [[durable_objects.bindings]]

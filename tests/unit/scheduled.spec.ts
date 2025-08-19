@@ -23,7 +23,7 @@ describe("scheduled()", () => {
 		cronResult = await response.json();
 	});
 
-	it("should run scheduled task with no errors", () => {
+	it("should have persisted into kv the scheduledTime", () => {
 		expect(cronResult).toHaveProperty("data");
 		expect(cronResult.data).toEqual(`${time}`);
 	});
