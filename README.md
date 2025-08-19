@@ -178,6 +178,13 @@ export default {
 } satisfies ExportedHandler<Env>;
 ```
 
+## Building and deploying
+
+TBD
+
+If we just use wrangler build, it will include the worker source code, making the final gzip larger than it need to be
+
+
 ## Caveats
 
 ### ▶️ C Binding
