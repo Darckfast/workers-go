@@ -13,9 +13,9 @@ import (
 )
 
 type RequestInitCF struct {
-	// Using json tags will use reflect lib
+	// Using json tags will use reflect
 	// by default this is slower than manually setting the values
-	// in a string template or similar
+	// in a string template or similar, but it's easier to maintain
 	Apps             bool           `json:"apps"`
 	CacheEverything  bool           `json:"cacheEverything"`
 	CacheKey         string         `json:"cacheKey"`
