@@ -74,7 +74,6 @@ describe("tail()", () => {
 	});
 
 	it("should serialize and proccess the event", async () => {
-		console.log(resultSaveInKV.result);
 		expect(JSON.parse(resultSaveInKV.result)).toStrictEqual([
 			{
 				scriptName: "worker-producer",

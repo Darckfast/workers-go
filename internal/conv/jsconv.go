@@ -92,9 +92,9 @@ func MaybeInt64(v js.Value) int64 {
 	return 0
 }
 
-func MaybeDate(v js.Value) (time.Time, error) {
+func MaybeDate(v js.Value) time.Time {
 	if v.IsUndefined() {
-		return time.Time{}, nil
+		return time.Time{}
 	}
 	return DateToTime(v)
 }
@@ -109,10 +109,9 @@ func DateToTimestamp(v js.Value) int64 {
 	return -1
 }
 
-// TODO: check if needs to be float
-func DateToTime(v js.Value) (time.Time, error) {
-	milli := v.Call("getTime").Float() // why?
-	return time.UnixMilli(int64(milli)), nil
+func DateToTime(v js.Value) time.Time {
+	milli := MaybeInt64(v.Call("getTime"))
+	return time.UnixMilli(milli)
 }
 
 func TimeToDate(t time.Time) js.Value {

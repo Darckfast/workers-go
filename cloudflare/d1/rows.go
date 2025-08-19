@@ -56,7 +56,7 @@ func convertRowColumnValueToAny(v js.Value) (driver.Value, error) {
 	case js.TypeNull:
 		return nil, nil
 	case js.TypeNumber:
-		fv := v.Float()
+		fv := v.Float() // TODO: this loses its precision, need to change it for MaybeInt64
 		// if the value can be treated as integral value, return as int64.
 		if isIntegralNumber(fv) {
 			return int64(fv), nil

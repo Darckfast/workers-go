@@ -28,10 +28,7 @@ type Message struct {
 }
 
 func newMessage(obj js.Value) (*Message, error) {
-	timestamp, err := jsconv.DateToTime(obj.Get("timestamp"))
-	if err != nil {
-		return nil, errors.New("failed to parse message timestamp: " + err.Error())
-	}
+	timestamp := jsconv.DateToTime(obj.Get("timestamp"))
 
 	return &Message{
 		instance:  obj,

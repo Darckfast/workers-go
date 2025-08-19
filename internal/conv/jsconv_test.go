@@ -91,11 +91,7 @@ func TestDateToEpoch(t *testing.T) {
 func TestDateToTime(t *testing.T) {
 	ts := time.Now().UnixMilli()
 	obj := jsclass.Date.New(ts)
-	jsts, err := DateToTime(obj)
-
-	if err != nil {
-		t.Fatalf("conversion yielded error: %s", err.Error())
-	}
+	jsts := DateToTime(obj)
 
 	if jsts.UnixMilli() != ts {
 		t.Fatalf("conversion yielded wrong value: had %d expected %d", jsts.UnixMilli(), ts)
