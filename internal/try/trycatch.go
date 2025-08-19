@@ -14,7 +14,7 @@ func init() {
 
 		// Sync fn with JS error normalization
 		// This is only to go test run without crashing
-		tryCatchFn := fn.New("fn", `{
+		catchThis = fn.New("fn", `{
       try {
       return {
       data: fn(),
@@ -31,12 +31,11 @@ func init() {
       };
       }
       }`)
-		js.Global().Set("tryCatch", tryCatchFn)
 	}
 }
 
 func TryCatch(fn js.Func) (js.Value, error) {
-	fnResult := catchThis.Call("auto", fn)
+	fnResult := catchThis.Invoke(fn)
 	resultVal := fnResult.Get("data")
 	errorVal := fnResult.Get("error")
 
