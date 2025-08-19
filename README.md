@@ -38,8 +38,6 @@ pnpm run init # this will run go mod tidy && pnpm install
 
 3. Start the development server:
 
-The development server is powered by Vite and Cloudflare Worker's plugin
-
 ```bash
 pnpm run dev
 ```
@@ -67,7 +65,7 @@ Below is a list of implemented, and not implemented Cloudflare features
 | `email`                      | ✅           |                                                                                                                                                  |   |
 | `scheduled`                  | ✅           |                                                                                                                                                  |   |
 | `tail`                       | ✅           | **EXPERIMENTAL**: This has not been tested in production env yet                                                                                 |   |
-| Env                          | ✅           | All Cloudflare Worker's are copied into `os.Environ()`, making them available at runtime with `os.Getenv()`. Only string typed values are copied |   |
+| Env                          | ✅           | All Cloudflare Worker's env are copied into `os.Environ()`, making them available at runtime with `os.Getenv()`. Only string typed values are copied |   |
 | Containers                   | 🔵          | Only the `containerFetch()` function has been implemented                                                                                        |   |
 | R2                           | 🔵          | _Options for R2 methods still not implementd_                                                                                                    |   |
 | D1                           | 🔵          |                                                                                                                                                  |   |
@@ -75,7 +73,7 @@ Below is a list of implemented, and not implemented Cloudflare features
 | Cache API                    | ✅           |                                                                                                                                                  |   |
 | Durable Objects              | 🔵          | _Only stub calls have been implemented_                                                                                                          |   |
 | RPC                          | ❌           | _Not implemented_                                                                                                                                |   |
-| Service binding              | ❌           | _Not implemented_                                                                                                                                |   |
+| Service binding              | ✅           | `fetch.Client{}.WithBinding(serviceName)`. only works for `fetch` or HTTP requests                                                                                                                          |   |
 | HTTP                         | ✅           | native fetch interface using `fetch.Client{}.Do(req)`                                                                                            |   |
 | HTTP Timeout                 | ✅           | Implemented using the same interface as `http.Client{ Timeout: 20 * time.Second }`                                                               |   |
 | HTTP RequestInitCfProperties | ✅           | Implemented all but the `image` property, they must be set on the `http.Client{ CF: &RequestInitCF{} }`                                          |   |
