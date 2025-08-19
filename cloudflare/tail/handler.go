@@ -11,9 +11,9 @@ import (
 	jstail "github.com/Darckfast/workers-go/internal/tail"
 )
 
-type TailConsumer func(f *[]jstail.TailEvent) error
+type TailConsumer func(f *[]jstail.TailItem) error
 
-var consumer TailConsumer = func(_ *[]jstail.TailEvent) error {
+var consumer TailConsumer = func(_ *[]jstail.TailItem) error {
 	return errors.New("no consumer implemented")
 }
 
