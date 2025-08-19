@@ -12,6 +12,22 @@ import (
 	"github.com/Darckfast/workers-go/cloudflare/kv"
 )
 
+var GET_KV = func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	key := r.URL.Query().Get("key")
+
+	if key == "" {
+		json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
+		w.WriteHeader(400)
+		return
+	}
+
+	kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
+	data, _ := kvStore.GetString(key, nil)
+
+	json.NewEncoder(w).Encode(map[string]any{"data": data})
+}
+
 var DELETE_KV = func(w http.ResponseWriter, r *http.Request) {
 	namespace, _ := kv.NewNamespace("TEST_NAMESPACE")
 	err := namespace.Delete("count")

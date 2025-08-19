@@ -28,6 +28,7 @@ func New() {
 	http.HandleFunc("POST /multipart/form-data", httpsimple.POST_MULTIPART_FORM_DATA)
 	http.HandleFunc("DELETE /kv", httpkv.DELETE_KV)
 	http.HandleFunc("POST /kv", httpkv.POST_KV)
+	http.HandleFunc("GET /kv", httpkv.GET_KV)
 	http.HandleFunc("GET /r2", httpr2.GET_R2)
 	http.HandleFunc("POST /r2", httpr2.POST_R2)
 	http.HandleFunc("GET /cache", httpcache.GET_CACHE)

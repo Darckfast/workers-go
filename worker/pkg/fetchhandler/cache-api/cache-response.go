@@ -20,15 +20,14 @@ var GET_CACHE = func(w http.ResponseWriter, r *http.Request) {
 	xcache := "miss"
 	if res == nil {
 		w.Header().Add("x-cache", xcache)
-		rs, _ := http.NewRequest("GET", "https://google.com", nil)
+		rs, _ := http.NewRequest("GET", "https://darckfast.com", nil)
 		res, _ := fetch.NewClient().Do(rs)
 
 		tee := io.TeeReader(res.Body, w)
 		dummyR := http.Response{
 			Status: res.Status,
 			Header: http.Header{
-				"cache-control":  []string{"max-age=1500"},
-				"content-length": []string{res.Header.Get("Content-Length")},
+				"cache-control": []string{"max-age=1500"},
 			},
 			Body: io.NopCloser(tee),
 		}
