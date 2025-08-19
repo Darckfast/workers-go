@@ -9,12 +9,11 @@ import (
 	"github.com/Darckfast/workers-go/cloudflare/env"
 	_ "github.com/Darckfast/workers-go/cloudflare/env"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsemail "github.com/Darckfast/workers-go/internal/email"
 )
 
-type EmailConsumer func(f *jsemail.ForwardableEmailMessage) error
+type EmailConsumer func(f *ForwardableEmailMessage) error
 
-var consumer EmailConsumer = func(_ *jsemail.ForwardableEmailMessage) error {
+var consumer EmailConsumer = func(_ *ForwardableEmailMessage) error {
 	return errors.New("no consumer implemented")
 }
 
@@ -52,7 +51,7 @@ func handler(emailObj, envObj, ctxObj js.Value) error {
 	jsclass.ExcutionContext = ctxObj
 
 	env.LoadEnvs()
-	email := jsemail.NewForwardableEmailMessage(emailObj)
+	email := NewForwardableEmailMessage(emailObj)
 	defer email.Raw.Close()
 
 	return consumer(email)

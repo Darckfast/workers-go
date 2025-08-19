@@ -10,78 +10,29 @@ This repository is a fork of https://github.com/syumai/workers ❤️
 `workers-go` is a pure Go library, made to help interface Go's WASM with [Cloudflare Workers](https://workers.cloudflare.com/).
 It implements a series of handlers, helpers and bindings, making easier to integrate Go with Workers
 
-## Quick Start
+## Install
 
 This project has only been tested on **Go 1.23+** with **NodeJS 22+**
 
-### Create a new Worker project
-
-Run the following command:
-
-```bash
-pnpm create cloudflare@latest -- --template github.com/Darckfast/workers-go/worker
-```
-
-### Initialize the project
-
-1. Navigate to your new project directory:
-
-```bash
-cd my-app
-```
-
-2. Initialize Go modules and NodeJS packages:
-
-```bash
-pnpm run init # this will run go mod tidy && pnpm install
-```
-
-3. Start the development server:
-
-```bash
-pnpm run dev
-```
-
-4. Verify the worker is running:
-
-```bash
-curl http://localhost:5173/hello
-```
-
-## Installation
 
 ```bash
 go get github.com/Darckfast/workers-go
 ```
 
-## Features
+## Go to JS Handlers
 
-Below is a list of implemented, and not implemented Cloudflare features
+Setting the handler in go, will make certain callbacks available in JavaScript global scope
 
-| Feature                      | Implemented | Notes                                                                                                                                            |   |
-|------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------|---|
-| `fetch`                      | ✅           | All functions uses either `http.Request` or `http.Response`                          |   |
-| `queue`                      | ✅           |                                                                                                                                                  |   |
-| `email`                      | ✅           |                                                                                                                                                  |   |
-| `scheduled`                  | ✅           |                                                                                                                                                  |   |
-| `tail`                       | ✅           | **EXPERIMENTAL**: This has not been tested in production env yet                                                                                 |   |
-| Env                          | ✅           | All Cloudflare Worker's env are copied into `os.Environ()`, making them available at runtime with `os.Getenv()`. Only string typed values are copied |   |
-| Containers                   | 🔵          | Only the `containerFetch()` function has been implemented                                                                                        |   |
-| R2                           | 🔵          | _Options for R2 methods still not implementd_                                                                                                    |   |
-| D1                           | 🔵          |                                                                                                                                                  |   |
-| KV                           | 🔵          | _Options for KV methods still not implemented_                                                                                                   |   |
-| Cache API                    | ✅           |                                                                                                                                                  |   |
-| Durable Objects              | 🔵          | _Only stub calls have been implemented_                                                                                                          |   |
-| RPC                          | ❌           | _Not implemented_                                                                                                                                |   |
-| Service binding              | ✅           | `fetch.Client{}.WithBinding(serviceName)`. only works for `fetch` or HTTP requests                                                                                                                          |   |
-| HTTP                         | ✅           | native fetch interface using `fetch.Client{}.Do(req)`                                                                                            |   |
-| HTTP Timeout                 | ✅           | Implemented using the same interface as `http.Client{ Timeout: 20 * time.Second }`                                                               |   |
-| HTTP RequestInitCfProperties | ✅           | Implemented all but the `image` property, they must be set on the `http.Client{ CF: &RequestInitCF{} }`                                          |   |
-| FetchEvent                   | ✅          |                                                                                                                                                  |   |
-| TCP Sockets                  | ✅          |                                                                                                                                                  |   |
-| Queue producer               | ✅          |                                                                                                                                                  |   |
+| Go func | JS callback |
+|-|-|
+|`fetch.ServeNonBlock()`| `globalThis.cf.fetch()`|
+|`cron.ScheduleTaskNonBlock()` | `globalThis.cf.scheduled()`|
+|`queues.ConsumeNonBlock()`|`globalThis.cf.queue()`|
+|`tail.ConsumeNonBlock()`|`globalThis.cf.tail()`|
+|`email.ConsumeNonBlock()`|`globalThis.cf.email()`|
 
-## Implementing `fetch` handler
+
+## `fetch` handler
 
 Implement your `http.Handler` and give it to `fetch.ServeNonBlock()`.
 
@@ -89,6 +40,8 @@ Implement your `http.Handler` and give it to `fetch.ServeNonBlock()`.
 //go:build js && wasm
 
 package main
+
+import "github.com/Darckfast/workers-go/cloudflare/fetch"
 
 func main() {
 	var handler http.HandlerFunc = func (w http.ResponseWriter, req *http.Request) {
@@ -107,6 +60,8 @@ or just call `http.Handle` and `http.HandleFunc`, then invoke `workers.Serve()` 
 
 package main
 
+import "github.com/Darckfast/workers-go/cloudflare/fetch"
+
 func main() {
 	http.HandleFunc("/hello", func (w http.ResponseWriter, req *http.Request) {
     //...
@@ -118,8 +73,93 @@ func main() {
 }
 ```
 
+## `scheduled` handler
+
+```go
+//go:build js && wasm
+
+package main
+
+import "github.com/Darckfast/workers-go/cloudflare/cron"
+
+
+func main() {
+	cron.ScheduleTaskNonBlock(func(event *cron.CronEvent) error {
+    // ... my scheduled task
+		return nil
+	})
+
+  <-make(chan struct{})
+}
+```
+
+## `queue` handler
+
+```go
+//go:build js && wasm
+
+package main
+
+import 	"github.com/Darckfast/workers-go/cloudflare/queues"
+
+func main() {
+	queues.ConsumeNonBlock(func(batch *queues.MessageBatch) error {
+		for _, msg := range batch.Messages {
+
+      // ... process the message
+
+			msg.Ack()
+		}
+
+		return nil
+	})
+
+  <-make(chan struct{})
+}
+```
+
+## `tail` handler
+
+```go
+//go:build js && wasm
+
+package main
+
+import "github.com/Darckfast/workers-go/cloudflare/tail"
+
+
+func main() {
+	tail.ConsumeNonBlock(func(f *[]tail.TailItem) error {
+    // ... process tail trace events
+		return nil
+	})
+
+  <-make(chan struct{})
+}
+```
+
+## `email` handler
+
+```go
+//go:build js && wasm
+
+package main
+
+import "github.com/Darckfast/workers-go/cloudflare/email"
+
+
+func main() {
+	email.ConsumeNonBlock(func(f *email.ForwardableEmailMessage) error {
+    // ... process the email
+		return nil
+	})
+
+  <-make(chan struct{})
+}
+```
+
 ## Making HTTP Request
-For compatability reasons, you must use the `fetch.Client{}` to make http request, as it interfaces Go's http with Cloudflare Worker `fetch()` API
+For compatibility reasons, you **must** use the `fetch.Client{}` to make http request, as it interfaces Go's http with Cloudflare Worker `fetch()` API
 
 ```go
 r, _ := http.NewRequest("GET", "https://google.com", nil)
@@ -144,6 +184,7 @@ will be loaded and used
 Below is a (_non functional_) example, for a functional and complete example check `./worker/bin/main.ts`
 
 ```ts
+import "github.com/Darckfast/workers-go/cloudflare/fetch"
 import app from "./bin/app.wasm"; // Compiled wasm binary
 import "./bin/wasm_exec.js"; // cp "$(go env GOROOT)/lib/wasm/wasm_exec.js" .
 
@@ -178,9 +219,54 @@ export default {
 } satisfies ExportedHandler<Env>;
 ```
 
-## Caveats
+## Building and deploying
 
-### ▶️ C Binding
+To build locally, you can run
+```bash
+vite build
+```
+This will compile the wasm binary, and flat the JS dependencies into a single file, the out dir is `dist` or `./worker/dist`
+
+To deploy, just run
+```bash
+wrangler build
+```
+
+The `wrangler` CLI will auto detect, build the project and compress the final `gzip` file
+
+If this is your first Cloudflare Worker, [check their documentation](https://developers.cloudflare.com/learning-paths/workers/get-started/first-worker/#build-and-deploy-your-first-worker)
+
+## Features
+
+Below is a list of implemented, and not implemented Cloudflare features
+
+| Feature                      | Implemented | Notes                                                                                                                                            |   |
+|------------------------------|-------------|--------------------------------------------------------------------------------------------------------------------------------------------------|---|
+| `fetch`                      | ✅           | All functions uses either `http.Request` or `http.Response`                          |   |
+| `queue`                      | ✅           |                                                                                                                                                  |   |
+| `email`                      | ✅           |                                                                                                                                                  |   |
+| `scheduled`                  | ✅           |                                                                                                                                                  |   |
+| `tail`                       | ✅           | **EXPERIMENTAL**: This has not been tested in production env yet                                                                                 |   |
+| Env                          | ✅           | All Cloudflare Worker's env are copied into `os.Environ()`, making them available at runtime with `os.Getenv()`. Only string typed values are copied |   |
+| Containers                   | 🔵          | Only the `containerFetch()` function has been implemented                                                                                        |   |
+| R2                           | 🔵          | _Options for R2 methods still not implementd_                                                                                                    |   |
+| D1                           | 🔵          |                                                                                                                                                  |   |
+| KV                           | 🔵          | _Options for KV methods still not implemented_                                                                                                   |   |
+| Cache API                    | ✅           |                                                                                                                                                  |   |
+| Durable Objects              | 🔵          | _Only stub calls have been implemented_                                                                                                          |   |
+| RPC                          | ❌           | _Not implemented_                                                                                                                                |   |
+| Service binding              | ✅           | `fetch.Client{}.WithBinding(serviceName)`. only works for `fetch` or HTTP requests                                                                                                                          |   |
+| HTTP                         | ✅           | native fetch interface using `fetch.Client{}.Do(req)`                                                                                            |   |
+| HTTP Timeout                 | ✅           | Implemented using the same interface as `http.Client{ Timeout: 20 * time.Second }`                                                               |   |
+| HTTP RequestInitCfProperties | ✅           | Implemented all but the `image` property, they must be set on the `http.Client{ CF: &RequestInitCF{} }`                                          |   |
+| FetchEvent                   | ✅          |                                                                                                                                                  |   |
+| TCP Sockets                  | ✅          |                                                                                                                                                  |   |
+| Queue producer               | ✅          |                                                                                                                                                  |   |
+
+
+## ⚠️ Caveats
+
+###  C Binding
 IF you use any library or package that depends or use any C binding, or C compiled code, compiling to WASM is not possible
 
 Some examples

@@ -1,6 +1,6 @@
 //go:build js && wasm
 
-package jstail
+package tail
 
 import (
 	"net/http"
@@ -79,7 +79,7 @@ type TraceDiagnosticeChannelEvent struct {
 	Message   string `json:"message,omitempty"`
 }
 
-type TailItem struct {
+type TraceItem struct {
 	ScriptName               string                         `json:"scriptName,omitempty"`
 	Entrypoint               string                         `json:"entrypoint,omitempty"`
 	Event                    *TraceItemEvent                `json:"event,omitempty"`
@@ -97,32 +97,8 @@ type TailItem struct {
 	ScriptVersion            *ScriptVersion                 `json:"scriptVersion,omitempty"`
 }
 
-// type TailEvent struct {
-// 	self   js.Value
-// 	Type   string
-// 	Events *[]TailItem
-// 	Traces *[]TailItem
-// }
-//
-// func (t *TailEvent) WailUntil(task func() error) {
-// 	t.self.Call("waitUntil", jsclass.Promise.New(js.FuncOf(func(this js.Value, args []js.Value) any {
-// 		resolve := args[0]
-// 		reject := args[1]
-//
-// 		err := task()
-//
-// 		if err == nil {
-// 			resolve.Invoke(true)
-// 		} else {
-// 			reject.Invoke(jsclass.ToJSError(err))
-// 		}
-//
-// 		return nil
-// 	})))
-// }
-
-func parseTailItems(tracesJs js.Value) []TailItem {
-	traces := []TailItem{}
+func parseTailItems(tracesJs js.Value) []TraceItem {
+	traces := []TraceItem{}
 
 	if !tracesJs.Truthy() {
 		return traces
@@ -131,7 +107,7 @@ func parseTailItems(tracesJs js.Value) []TailItem {
 	// jsconv.JSValueToMap(tracesJs)
 	for j := range tracesJs.Length() {
 		traceJs := tracesJs.Index(j)
-		tailItem := TailItem{
+		tailItem := TraceItem{
 			ScriptName:               traceJs.Get("scriptName").String(),
 			Entrypoint:               traceJs.Get("entrypoint").String(),
 			EventTimeStamp:           jsconv.MaybeInt64(traceJs.Get("eventTimestamp")),
@@ -288,7 +264,7 @@ func GetEvent(event js.Value) *TraceItemEvent {
 	return nil
 }
 
-func NewEvents(eventsJs js.Value) *[]TailItem {
+func NewEvents(eventsJs js.Value) *[]TraceItem {
 	events := parseTailItems(eventsJs)
 	return &events
 }

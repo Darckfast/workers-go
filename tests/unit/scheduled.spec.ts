@@ -20,11 +20,10 @@ describe("scheduled()", () => {
 		const request = new Request("http://example.com/kv?key=cron:result");
 		const response: Response = await worker.fetch(request, env, ctx);
 		await waitOnExecutionContext(ctx);
-		cronResult = await response.json();
+		cronResult = await response.text();
 	});
 
 	it("should have persisted into kv the scheduledTime", () => {
-		expect(cronResult).toHaveProperty("data");
-		expect(cronResult.data).toEqual(`${time}`);
+		expect(cronResult).toEqual(`${time}`);
 	});
 });

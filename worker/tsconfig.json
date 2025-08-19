@@ -4,6 +4,7 @@
 		"target": "esnext",
 		"module": "esnext",
 		"lib": ["esnext", "dom"],
+		"strict": true,
 		"moduleResolution": "bundler",
 		"types": ["node", "@cloudflare/workers-types"]
 	},

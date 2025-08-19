@@ -4,15 +4,52 @@ package httpkv
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
-	"strconv"
-
-	_ "github.com/Darckfast/workers-go/cloudflare/d1" // register driver
 
 	"github.com/Darckfast/workers-go/cloudflare/kv"
 )
 
+var GET_KV_LIST = func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+
+	kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
+	data, _ := kvStore.List(nil)
+
+	json.NewEncoder(w).Encode(map[string]any{"data": data})
+}
+
 var GET_KV = func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain")
+	key := r.URL.Query().Get("key")
+
+	if key == "" {
+		json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
+		w.WriteHeader(400)
+		return
+	}
+
+	kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
+	data, err := kvStore.GetReader(key, nil)
+
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+
+		json.NewEncoder(w).Encode(map[string]any{"error": err.Error()})
+		return
+	}
+
+	_, err = io.Copy(w, data)
+
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+
+		json.NewEncoder(w).Encode(map[string]any{"error": err.Error()})
+		return
+	}
+}
+
+var DELETE_KV = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	key := r.URL.Query().Get("key")
 
@@ -23,28 +60,27 @@ var GET_KV = func(w http.ResponseWriter, r *http.Request) {
 	}
 
 	kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
-	data, _ := kvStore.GetString(key, nil)
+	err := kvStore.Delete(key)
 
-	json.NewEncoder(w).Encode(map[string]any{"data": data})
-}
-
-var DELETE_KV = func(w http.ResponseWriter, r *http.Request) {
-	namespace, _ := kv.NewNamespace("TEST_NAMESPACE")
-	err := namespace.Delete("count")
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]any{"has_error": err != nil})
+	json.NewEncoder(w).Encode(map[string]any{"error": err})
 }
 
 var POST_KV = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	namespace, _ := kv.NewNamespace("TEST_NAMESPACE")
+	key := r.URL.Query().Get("key")
 
-	countStr, _ := namespace.GetString("count", nil)
-	count, _ := strconv.Atoi(countStr)
+	if key == "" {
+		json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
+		w.WriteHeader(400)
+		return
+	}
 
-	nextCountStr := strconv.Itoa(count + 1)
+	kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
 
-	err := namespace.PutString("count", nextCountStr, nil)
-	json.NewEncoder(w).Encode(map[string]any{"has_error": err != nil, "count": nextCountStr})
+	defer r.Body.Close()
+
+	err := kvStore.PutReader(key, r.Body, nil)
+	json.NewEncoder(w).Encode(map[string]any{
+		"error": err,
+	})
 }

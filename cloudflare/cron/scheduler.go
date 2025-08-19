@@ -19,8 +19,8 @@ var scheduledTask Task = func(_ *CronEvent) error {
 func runScheduler(jsEvent js.Value, envObj js.Value, ctxObj js.Value) error {
 	jsclass.Env = envObj
 	jsclass.ExcutionContext = ctxObj
-	event := NewEvent(jsEvent)
 	env.LoadEnvs()
+	event := NewEvent(jsEvent)
 
 	return scheduledTask(event)
 }
