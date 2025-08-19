@@ -34,7 +34,6 @@
     "wrangler": "^4.31.0"
   },
   "dependencies": {
-    "@cloudflare/containers": "^0.0.25",
-    "catch-this": "^0.0.3"
+    "@cloudflare/containers": "^0.0.25"
   }
 }

@@ -1,5 +1,4 @@
 import { connect } from "cloudflare:sockets";
-import { catchThis } from "catch-this";
 import app from "./bin/app.wasm";
 import "./bin/wasm_exec.js";
 
@@ -14,13 +13,26 @@ globalThis.cf = {
 };
 
 /**
- * A REQUIRED nice to have lib, since errors thrown within the JS runtime
+ * A REQUIRED nice to have function, since errors thrown within the JS runtime
  * inside Go's will cause the process to exit
  *
- * This functions is just a try...catch with error normalization, that work both
- * with sync (callback) and async (promises) functions
+ * It's just a try...catch with error normalization
  */
-globalThis.catchThis = catchThis.auto;
+globalThis.tryCatch = (fn) => {
+	try {
+		return { data: fn() };
+	} catch (err) {
+		if (!(err instanceof Error)) {
+			if (err instanceof Object) {
+				err = JSON.stringify(err);
+			}
+
+			err = new Error(err || "no error message");
+		}
+
+		return { error: err };
+	}
+};
 
 /**
  * This function is what initialize your Go's compiled WASM binary

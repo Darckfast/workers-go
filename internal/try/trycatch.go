@@ -6,7 +6,7 @@ import (
 	"syscall/js"
 )
 
-var catchThis = js.Global().Get("catchThis")
+var catchThis = js.Global().Get("tryCatch")
 
 func init() {
 	if !catchThis.Truthy() {
