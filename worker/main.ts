@@ -14,7 +14,7 @@ globalThis.cf = {
 }
 
 /**
- * A OPTIONAL nice to have lib, since errors thrown within the JS runtime
+ * A REQUIRED nice to have lib, since errors thrown within the JS runtime
  * inside Go's will cause the process to exit
  *
  * This functions is just a try...catch with error normalization, that work both
