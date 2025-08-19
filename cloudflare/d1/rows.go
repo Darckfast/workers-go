@@ -40,6 +40,7 @@ func (r *rows) Close() error {
 }
 
 // isIntegralNumber returns if given float64 value is integral value or not.
+// TODO: Use js Number.isInteger() call instead
 func isIntegralNumber(f float64) bool {
 	// If the value is NaN or Inf, returns the value to avoid being mistakenly treated as an integral value.
 	if math.IsNaN(f) || math.IsInf(f, 0) {
@@ -86,7 +87,7 @@ func (r *rows) Next(dest []driver.Value) error {
 	// rowArray is Array of string.
 	rowArray := r.rowsArray.Index(r.currentRow)
 	rowArrayLen := rowArray.Length()
-	for i := 0; i < rowArrayLen; i++ {
+	for i := range rowArrayLen {
 		v, err := convertRowColumnValueToAny(rowArray.Index(i))
 		if err != nil {
 			return err

@@ -3,6 +3,7 @@
 package kv
 
 import (
+	"errors"
 	"io"
 	"syscall/js"
 
@@ -41,11 +42,16 @@ func (ns *Namespace) GetString(key string, opts *GetOptions) (string, error) {
 
 // GetReader gets stream value by the specified key.
 //   - if a network error happens, returns error.
-func (ns *Namespace) GetReader(key string, opts *GetOptions) (io.Reader, error) {
+func (ns *Namespace) GetReader(key string, opts *GetOptions) (io.ReadCloser, error) {
 	p := ns.instance.Call("get", key, opts.toJS("stream"))
 	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
 	}
+
+	if v.IsNull() || v.IsUndefined() {
+		return nil, errors.New("key has no value")
+	}
+
 	return jsstream.ReadableStreamToReadCloser(v), nil
 }
