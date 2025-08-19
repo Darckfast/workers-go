@@ -21,7 +21,8 @@
   },
   "include": [
     "./**/*.ts",
+    "./worker/types/*.ts",
     "./**/*.spec.ts",
-    "worker/vite.config.ts",
+    // "worker/vite.config.ts",
   ],
 }
