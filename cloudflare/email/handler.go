@@ -6,10 +6,10 @@ import (
 	"errors"
 	"syscall/js"
 
-	"github.com/syumai/workers/cloudflare/env"
-	_ "github.com/syumai/workers/cloudflare/env"
-	jsclass "github.com/syumai/workers/internal/class"
-	jsemail "github.com/syumai/workers/internal/email"
+	"github.com/Darckfast/workers-go/cloudflare/env"
+	_ "github.com/Darckfast/workers-go/cloudflare/env"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsemail "github.com/Darckfast/workers-go/internal/email"
 )
 
 type EmailConsumer func(f *jsemail.ForwardableEmailMessage) error

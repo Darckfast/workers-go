@@ -1,10 +1,12 @@
+//go:build js && wasm
+
 package queues
 
 import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 type batchSendOptions struct {

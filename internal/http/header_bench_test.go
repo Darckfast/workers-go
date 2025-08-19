@@ -1,10 +1,12 @@
+//go:build js && wasm
+
 package jshttp
 
 import (
 	"net/http"
 	"testing"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 func BenchmarkToHeades(b *testing.B) {

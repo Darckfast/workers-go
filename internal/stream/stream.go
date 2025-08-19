@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jsstream
 
 import (
@@ -5,7 +7,7 @@ import (
 	"io"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 type ReadableStream struct {
@@ -124,7 +126,7 @@ func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
 		}))
 	})
 
-	cancel := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+	cancel := js.FuncOf(func(this js.Value, args []js.Value) any {
 		_ = reader.Close()
 		return nil
 	})
@@ -139,8 +141,6 @@ func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
 func ReadCloserToFixedLengthStream(rc io.ReadCloser, size int64) js.Value {
 	stream := jsclass.MaybeFixedLengthStream.New(size)
 	go func(writer js.Value) {
-		defer rc.Close()
-
 		chunk := make([]byte, min(size, 16_640))
 		jsclass.Await(writer.Get("ready"))
 		for {

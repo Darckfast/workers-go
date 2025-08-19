@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package sockets
 
 import (
@@ -6,8 +8,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jstry "github.com/syumai/workers/internal/try"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jstry "github.com/Darckfast/workers-go/internal/try"
 )
 
 type SecureTransport string

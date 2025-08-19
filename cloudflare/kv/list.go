@@ -1,10 +1,12 @@
+//go:build js && wasm
+
 package kv
 
 import (
 	"errors"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 // ListOptions represents Cloudflare KV namespace list options.

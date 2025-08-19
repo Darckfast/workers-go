@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jshttp
 
 import (
@@ -5,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 func TestToHeaders(t *testing.T) {

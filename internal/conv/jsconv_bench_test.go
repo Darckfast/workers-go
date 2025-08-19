@@ -1,10 +1,12 @@
+//go:build js && wasm
+
 package jsconv
 
 import (
 	"math"
 	"testing"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 func BenchmarkStrRecordToMap(b *testing.B) {

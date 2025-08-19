@@ -1,10 +1,12 @@
+//go:build js && wasm
+
 package r2
 
 import (
 	"errors"
 	"syscall/js"
 
-	jsconv "github.com/syumai/workers/internal/conv"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
 )
 
 // Objects represents Cloudflare R2 objects.

@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package r2
 
 import (
@@ -5,8 +7,8 @@ import (
 	"io"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsstream "github.com/syumai/workers/internal/stream"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
 // Bucket represents interface of Cloudflare Worker's R2 Bucket instance.
@@ -18,7 +20,7 @@ type Bucket struct {
 
 // NewBucket returns Bucket for given variable name.
 //   - variable name must be defined in wrangler.toml.
-//   - see example: https://github.com/syumai/workers/tree/main/_examples/r2-image-viewer
+//   - see example: https://github.com/Darckfast/workers-go/tree/main/_examples/r2-image-viewer
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewBucket(varName string) (*Bucket, error) {

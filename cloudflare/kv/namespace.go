@@ -1,10 +1,12 @@
+//go:build js && wasm
+
 package kv
 
 import (
 	"errors"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 // Namespace represents interface of Cloudflare Worker's KV namespace instance.

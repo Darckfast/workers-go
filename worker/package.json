@@ -1,0 +1,34 @@
+{
+	"$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
+	"name": "worker",
+	"version": "0.0.0",
+	"description": "",
+	"main": "./bin/main.ts",
+	"type": "module",
+	"scripts": {
+		"init": "go mod init && go mod tidy && pnpm install",
+		"dev": "vite",
+		"wd": "pnpm run build && wrangler --port 5173 dev",
+		"build": "GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ./bin/app.wasm ./pkg/main.go",
+		"build:tiny": "GOOS=js GOARCH=wasm tinygo build -o ./bin/app.wasm ./pkg/main.go"
+	},
+	"keywords": [],
+	"author": "",
+	"engines": {
+		"node": "22"
+	},
+	"engineStrict": true,
+	"license": "ISC",
+	"packageManager": "pnpm@10.14.0",
+	"devDependencies": {
+		"@biomejs/biome": "2.2.0",
+		"@cloudflare/vite-plugin": "^1.11.5",
+		"vite": "^7.1.2",
+		"vite-plugin-watch": "^0.3.1",
+		"wrangler": "^4.30.0"
+	},
+	"dependencies": {
+		"@cloudflare/containers": "^0.0.25",
+		"catch-this": "^0.0.3"
+	}
+}

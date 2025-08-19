@@ -1,27 +1,23 @@
 {
-  "$schema": "https://www.schemastore.org/tsconfig.json",
-  "compilerOptions": {
-    "target": "esnext",
-    "module": "esnext",
-    "lib": [
-      "esnext",
-      "dom",
-    ],
-    "moduleResolution": "bundler",
-    "types": [
-      "node",
-      "@cloudflare/workers-types",
-      "@cloudflare/vitest-pool-workers",
-    ],
-    "paths": {
-      "$wrk/*": [
-        "./worker/*"
-      ]
-    }
-  },
-  "include": [
-    "./**/*.ts",
-    "./**/*.spec.ts",
-    "./vite.config.ts",
-  ],
+	"$schema": "https://www.schemastore.org/tsconfig.json",
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "esnext",
+		"lib": ["esnext", "dom"],
+		"moduleResolution": "bundler",
+		"types": [
+			"node",
+			"@cloudflare/workers-types",
+			"@cloudflare/vitest-pool-workers"
+		],
+		"paths": {
+			"$wrk/*": ["./worker/*"]
+		}
+	},
+	"include": [
+		"./**/*.ts",
+		"./worker/types/*.ts",
+		"./**/*.spec.ts"
+		// "worker/vite.config.ts",
+	]
 }

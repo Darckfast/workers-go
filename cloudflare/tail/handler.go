@@ -6,14 +6,14 @@ import (
 	"errors"
 	"syscall/js"
 
-	"github.com/syumai/workers/cloudflare/env"
-	jsclass "github.com/syumai/workers/internal/class"
-	jstail "github.com/syumai/workers/internal/tail"
+	"github.com/Darckfast/workers-go/cloudflare/env"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jstail "github.com/Darckfast/workers-go/internal/tail"
 )
 
-type TailConsumer func(f *[]jstail.TailEvent) error
+type TailConsumer func(f *[]jstail.TailItem) error
 
-var consumer TailConsumer = func(_ *[]jstail.TailEvent) error {
+var consumer TailConsumer = func(_ *[]jstail.TailItem) error {
 	return errors.New("no consumer implemented")
 }
 

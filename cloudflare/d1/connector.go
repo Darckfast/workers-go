@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package d1
 
 import (
@@ -5,7 +7,7 @@ import (
 	"database/sql/driver"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 type Connector struct {

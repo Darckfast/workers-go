@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package sockets
 
 import (
@@ -8,8 +10,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsstream "github.com/syumai/workers/internal/stream"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
 func newSocket(ctx context.Context, sockVal js.Value, readDeadline, writeDeadline time.Time) *Socket {

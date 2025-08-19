@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jsclass
 
 import (
@@ -27,6 +29,7 @@ var (
 	Object            = ObjectWrap{js.Global().Get("Object")}
 	Caches            = js.Global().Get("caches")
 	Promise           = js.Global().Get("Promise")
+	AbortSignal       = js.Global().Get("AbortSignal")
 	Request           = js.Global().Get("Request")
 	Boolean           = js.Global().Get("Boolean")
 	Response          = js.Global().Get("Response")

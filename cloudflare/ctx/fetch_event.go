@@ -1,9 +1,11 @@
+//go:build js && wasm
+
 package contx
 
 import (
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 // WaitUntil extends the lifetime of the "fetch" event.

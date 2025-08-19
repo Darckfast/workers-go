@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package queues
 
 import (
@@ -5,8 +7,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/syumai/workers/internal/class"
-	jsconv "github.com/syumai/workers/internal/conv"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
 )
 
 // Message represents a message of the batch received by the consumer.
@@ -26,10 +28,7 @@ type Message struct {
 }
 
 func newMessage(obj js.Value) (*Message, error) {
-	timestamp, err := jsconv.DateToTime(obj.Get("timestamp"))
-	if err != nil {
-		return nil, errors.New("failed to parse message timestamp: " + err.Error())
-	}
+	timestamp := jsconv.DateToTime(obj.Get("timestamp"))
 
 	return &Message{
 		instance:  obj,

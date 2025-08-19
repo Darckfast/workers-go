@@ -1,3 +1,5 @@
+//go:build js && wasm
+
 package jshttp
 
 import (
@@ -6,7 +8,7 @@ import (
 	"strings"
 	"syscall/js"
 
-	jsclass "github.com/syumai/workers/internal/class"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 func ToHeader(headers js.Value) http.Header {
