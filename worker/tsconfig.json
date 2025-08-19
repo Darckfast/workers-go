@@ -1,0 +1,20 @@
+{
+  "$schema": "https://www.schemastore.org/tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": [
+      "esnext",
+      "dom",
+    ],
+    "moduleResolution": "bundler",
+    "types": [
+      "node",
+      "@cloudflare/workers-types",
+    ],
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.spec.ts",
+  ],
+}
