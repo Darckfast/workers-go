@@ -20,7 +20,7 @@ globalThis.cf = {
  * This functions is just a try...catch with error normalization, that work both
  * with sync (callback) and async (promises) functions
  */
-globalThis.catchThis = catchThis
+globalThis.catchThis = catchThis.auto
 
 /**
   * This function is what initialize your Go's compiled WASM binary
