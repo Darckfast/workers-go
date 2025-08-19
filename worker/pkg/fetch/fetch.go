@@ -166,7 +166,10 @@ func New() {
 			w.Header().Add("x-cache", xcache)
 			io.Copy(w, res.Body)
 		}
-		defer res.Body.Close()
+		// There might be a concurrency problem due pull being a promise
+		// res.Body sometimes is nil when this function exits, but the returned body
+		// is correct
+		// defer res.Body.Close()
 	})
 
 	http.HandleFunc("GET /d1", func(w http.ResponseWriter, r *http.Request) {
