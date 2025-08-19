@@ -3,10 +3,11 @@
 package cronhandler
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/Darckfast/workers-go/cloudflare/cron"
-	cloudflare "github.com/Darckfast/workers-go/cloudflare/ctx"
+	"github.com/Darckfast/workers-go/cloudflare/kv"
 )
 
 func New() {
@@ -15,9 +16,9 @@ func New() {
 	 * ScheduleTaskNonBlock functions must be called, it what will instantiate a cron task consumer
 	 */
 	cron.ScheduleTaskNonBlock(func(event *cron.CronEvent) error {
-		cloudflare.WaitUntil(func() {
-			log.Println("running my scheduled task at " + event.ScheduledTime.String())
-		})
+		log.Println(event.ScheduledTime.UnixMilli())
+		kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
+		kvStore.PutString("cron:result", fmt.Sprintf("%d", event.ScheduledTime.UnixMilli()), nil)
 
 		return nil
 	})

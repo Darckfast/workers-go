@@ -5,6 +5,8 @@ package cron
 import (
 	"syscall/js"
 	"time"
+
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
 )
 
 type CronEvent struct {
@@ -13,9 +15,9 @@ type CronEvent struct {
 }
 
 func NewEvent(obj js.Value) *CronEvent {
-	scheduledTimeVal := obj.Get("scheduledTime").Float()
+	scheduledTimeVal := jsconv.MaybeInt64(obj.Get("scheduledTime"))
 	return &CronEvent{
 		Cron:          obj.Get("cron").String(),
-		ScheduledTime: time.Unix(int64(scheduledTimeVal)/1000, 0).UTC(),
+		ScheduledTime: time.Unix(0, scheduledTimeVal*int64(time.Millisecond)).UTC(),
 	}
 }

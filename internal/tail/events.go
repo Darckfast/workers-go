@@ -6,129 +6,129 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsconv "github.com/Darckfast/workers-go/internal/conv"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
 )
 
 type ScriptVersion struct {
-	Id      string
-	Tag     string
-	Message string
+	Id      string `json:"id,omitempty"`
+	Tag     string `json:"tag,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 type TraceItemTailEventInfoTailItem struct {
-	ScriptName string
+	ScriptName string `json:"scriptName,omitempty"`
 }
 
 type TraceItemFetchEventInfoResponse struct {
-	Status int
+	Status int `json:"status,omitempty"`
 }
 type TraceItemFetchEventInfoRequest struct {
-	Cf      map[string]any
-	Headers http.Header
-	Method  string
-	Url     string
+	Cf      map[string]any `json:"cf,omitempty"`
+	Headers http.Header    `json:"headers,omitempty"`
+	Method  string         `json:"method,omitempty"`
+	Url     string         `json:"url,omitempty"`
 }
 
 type TraceItemEvent struct {
-	Type string
+	Type string `json:"-"`
 	//rpc
-	RpcMethod string
+	RpcMethod string `json:"rpcMethod,omitempty"`
 	//email
-	MailFrom string
-	RcptTo   string
-	RawSize  int
+	MailFrom string `json:"mailFrom,omitempty"`
+	RcptTo   string `json:"rcptTo,omitempty"`
+	RawSize  int    `json:"rawSize,omitempty"`
 	//queue
-	Queue     string
-	BatchSize int
+	Queue     string `json:"queue,omitempty"`
+	BatchSize int    `json:"batchSize,omitempty"`
 	// cron and alarm
-	ScheduledTime int64
+	ScheduledTime int64 `json:"scheduledTime,omitempty"`
 	// cron
-	Cron string
+	Cron string `json:"cron,omitempty"`
 	// tail
-	ConsumedEvents *[]TraceItemTailEventInfoTailItem
+	ConsumedEvents *[]TraceItemTailEventInfoTailItem `json:"consumedEvents,omitempty"`
 	// fetch
-	Response *TraceItemFetchEventInfoResponse
-	Request  *TraceItemFetchEventInfoRequest
+	Response *TraceItemFetchEventInfoResponse `json:"response,omitempty"`
+	Request  *TraceItemFetchEventInfoRequest  `json:"request,omitempty"`
 	// websocket
-	GetWebSocketEvent *TraceItemGetWebSocketEvent
+	GetWebSocketEvent *TraceItemGetWebSocketEvent `json:"getWebSocketEvent,omitempty"`
 }
 
 type TraceItemGetWebSocketEvent struct {
-	WebSocketEventType string
-	Code               int
-	WasClean           bool
+	WebSocketEventType string `json:"webSocketEventType,omitempty"`
+	Code               int    `json:"code,omitempty"`
+	WasClean           bool   `json:"wasClean,omitempty"`
 }
 
 type TraceLog struct {
-	Timestamp int64
-	Level     string
-	Message   string
+	Timestamp int64  `json:"timestamp,omitempty"`
+	Level     string `json:"level,omitempty"`
+	Message   string `json:"message,omitempty"`
 }
 
 type TraceException struct {
-	Timestamp int64
-	Message   string
-	Name      string
-	Stack     string
+	Timestamp int64  `json:"timestamp,omitempty"`
+	Message   string `json:"message,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Stack     string `json:"stack,omitempty"`
 }
 
 type TraceDiagnosticeChannelEvent struct {
-	Timestamp int64
-	Channel   string
-	Message   string
+	Timestamp int64  `json:"timestamp,omitempty"`
+	Channel   string `json:"channel,omitempty"`
+	Message   string `json:"message,omitempty"`
 }
 
 type TailItem struct {
-	ScriptName               string
-	Entrypoint               string
-	Event                    *TraceItemEvent
-	EventTimeStamp           int64
-	Logs                     []TraceLog
-	Exceptions               []TraceException
-	DiagnosticsChannelEvents []TraceDiagnosticeChannelEvent
-	Outcome                  string
-	Truncated                bool
-	CpuTime                  int64
-	WallTime                 int64
-	ExecutionModel           string
-	ScriptTags               []string
-	DispatchNamespace        string
-	ScriptVersion            *ScriptVersion
+	ScriptName               string                         `json:"scriptName,omitempty"`
+	Entrypoint               string                         `json:"entrypoint,omitempty"`
+	Event                    *TraceItemEvent                `json:"event,omitempty"`
+	EventTimeStamp           int64                          `json:"eventTimestamp,omitempty"`
+	Logs                     []TraceLog                     `json:"logs,omitempty"`
+	Exceptions               []TraceException               `json:"exceptions,omitempty"`
+	DiagnosticsChannelEvents []TraceDiagnosticeChannelEvent `json:"diagnosticsChannelEvents,omitempty"`
+	Outcome                  string                         `json:"outcome,omitempty"`
+	Truncated                bool                           `json:"truncated,omitempty"`
+	CpuTime                  int64                          `json:"cpuTime,omitempty"`
+	WallTime                 int64                          `json:"wallTime,omitempty"`
+	ExecutionModel           string                         `json:"executionModel,omitempty"`
+	ScriptTags               []string                       `json:"scriptTags,omitempty"`
+	DispatchNamespace        string                         `json:"dispatchNamespace,omitempty"`
+	ScriptVersion            *ScriptVersion                 `json:"scriptVersion,omitempty"`
 }
 
-type TailEvent struct {
-	self   js.Value
-	Type   string
-	Events *[]TailItem
-	Traces *[]TailItem
-}
+// type TailEvent struct {
+// 	self   js.Value
+// 	Type   string
+// 	Events *[]TailItem
+// 	Traces *[]TailItem
+// }
+//
+// func (t *TailEvent) WailUntil(task func() error) {
+// 	t.self.Call("waitUntil", jsclass.Promise.New(js.FuncOf(func(this js.Value, args []js.Value) any {
+// 		resolve := args[0]
+// 		reject := args[1]
+//
+// 		err := task()
+//
+// 		if err == nil {
+// 			resolve.Invoke(true)
+// 		} else {
+// 			reject.Invoke(jsclass.ToJSError(err))
+// 		}
+//
+// 		return nil
+// 	})))
+// }
 
-func (t *TailEvent) WailUntil(task func() error) {
-	t.self.Call("waitUntil", jsclass.Promise.New(js.FuncOf(func(this js.Value, args []js.Value) any {
-		resolve := args[0]
-		reject := args[1]
-
-		err := task()
-
-		if err == nil {
-			resolve.Invoke(true)
-		} else {
-			reject.Invoke(jsclass.ToJSError(err))
-		}
-
-		return nil
-	})))
-}
-
-func parseTailItems(tracesJs js.Value) *[]TailItem {
+func parseTailItems(tracesJs js.Value) []TailItem {
 	traces := []TailItem{}
 
 	if !tracesJs.Truthy() {
-		return &traces
+		return traces
 	}
 
+	// jsconv.JSValueToMap(tracesJs)
 	for j := range tracesJs.Length() {
 		traceJs := tracesJs.Index(j)
 		tailItem := TailItem{
@@ -211,7 +211,7 @@ func parseTailItems(tracesJs js.Value) *[]TailItem {
 		traces = append(traces, tailItem)
 	}
 
-	return &traces
+	return traces
 }
 
 func GetEvent(event js.Value) *TraceItemEvent {
@@ -288,19 +288,7 @@ func GetEvent(event js.Value) *TraceItemEvent {
 	return nil
 }
 
-func NewEvents(eventsJs js.Value) *[]TailEvent {
-	tailEvents := []TailEvent{}
-
-	for i := range eventsJs.Length() {
-		event := eventsJs.Index(i)
-		traces := parseTailItems(event.Get("traces"))
-		events := parseTailItems(event.Get("events"))
-		tailEvents = append(tailEvents, TailEvent{
-			Events: events,
-			Type:   event.Get("type").String(),
-			Traces: traces,
-		})
-	}
-
-	return &tailEvents
+func NewEvents(eventsJs js.Value) *[]TailItem {
+	events := parseTailItems(eventsJs)
+	return &events
 }
