@@ -291,7 +291,6 @@ Cloudflare Queue locally is incredibly slow to produce events (up to 7 seconds)
 ### TinyGo
 Go's compiled binary can exceed the Free 3MB Cloudflare Worker's limit, in which case one suggestion is to use TinyGo to compile, but for performance reasons `workers-go` uses the `encoding/json` from the std Go's library, which makes this package incompatible with the current build of TinyGo
 
-
 https://github.com/golang/go/issues/63904
 https://github.com/golang/go/issues/6853
 
@@ -300,4 +299,24 @@ Although we can wrap JavaScript errors in Go, at the moment there is no source m
 
 ### Build constraint
 For [gopls](https://github.com/golang/tools/tree/master/gopls) to show `syscall/js` method's signature and auto complete, either `export GOOS=js && export GOARCH=wasm` or add the comment `//go:build js && wasm` at the top of your Go files
+
+## Developing
+
+Before developing on this library, you first must have:
+
+* NodeJS and `pnpm`
+* Go 1.24+
+
+Then fork it and clone the repository locally
+
+To spin up a local testing worker, run the commands bellow
+
+
+```bash
+go get ./...
+pnpm i
+pnpm dev
+```
+
+This will serve a local worker on `http://localhost:5173`, it also has live reload, any change made either in the library or worker code will trigger a re-compile automatically
 
