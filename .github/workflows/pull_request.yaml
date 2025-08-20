@@ -1,6 +1,10 @@
 name: PR
 on: [pull_request]
 
+env:
+  GOOS: js
+  GOARCH: wasm
+
 jobs:
   ci:
     strategy:
@@ -21,6 +25,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - run: echo "$(go env GOROOT)/lib/wasm" >> $GITHUB_PATH
       - run: pnpm i
 

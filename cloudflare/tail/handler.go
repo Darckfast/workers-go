@@ -47,9 +47,13 @@ func init() {
 
 func handler(eventsObj, envObj, ctxObj js.Value) error {
 	jsclass.Env = envObj
-	jsclass.ExcutionContext = ctxObj
+	jsclass.ExcutionContext = jsclass.ExecutionContextWrap{Ctx: ctxObj}
 
-	env.LoadEnvs()
+	err := env.LoadEnvs()
+	if err != nil {
+		return err
+	}
+
 	events := NewEvents(eventsObj)
 
 	return consumer(events)

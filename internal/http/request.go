@@ -25,7 +25,7 @@ func ToBody(body js.Value) io.ReadCloser {
 
 func ToRequest(req js.Value) *http.Request {
 	reqUrl, _ := url.Parse(req.Get("url").String())
-	header := ToHeader(req.Get("headers"))
+	header, _ := ToHeader(req.Get("headers"))
 
 	contentLength, _ := strconv.ParseInt(header.Get("Content-Length"), 10, 64)
 	return &http.Request{

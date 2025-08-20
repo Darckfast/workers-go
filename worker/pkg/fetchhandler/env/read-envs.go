@@ -13,7 +13,7 @@ import (
 var GET_ENV = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	json.NewEncoder(w).Encode(map[string]any{
+	_ = json.NewEncoder(w).Encode(map[string]any{
 		"result": os.Environ(),
 	})
 }

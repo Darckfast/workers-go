@@ -10,6 +10,7 @@ import (
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewConsumerMessage(t *testing.T) {
@@ -24,25 +25,11 @@ func TestNewConsumerMessage(t *testing.T) {
 	}
 
 	got, err := newMessage(js.ValueOf(m))
-	if err != nil {
-		t.Fatalf("newMessage failed: %v", err)
-	}
-
-	if body := got.Body.String(); body != "hello" {
-		t.Fatalf("Body() = %v, want %v", body, "hello")
-	}
-
-	if got.ID != id {
-		t.Fatalf("ID = %v, want %v", got.ID, id)
-	}
-
-	if got.Attempts != 1 {
-		t.Fatalf("Attempts = %v, want %v", got.Attempts, 1)
-	}
-
-	if got.Timestamp.UnixMilli() != ts.UnixMilli() {
-		t.Fatalf("Timestamp = %v, want %v", got.Timestamp, ts)
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, "hello", got.Body.String())
+	assert.Equal(t, id, got.ID)
+	assert.Equal(t, 1, got.Attempts)
+	assert.True(t, ts.Equal(got.Timestamp))
 }
 
 func TestConsumerMessage_Ack(t *testing.T) {
@@ -58,9 +45,7 @@ func TestConsumerMessage_Ack(t *testing.T) {
 
 	m.Ack()
 
-	if !ackCalled {
-		t.Fatalf("Ack() did not call ack")
-	}
+	assert.True(t, ackCalled)
 }
 
 func TestConsumerMessage_Retry(t *testing.T) {
@@ -76,9 +61,7 @@ func TestConsumerMessage_Retry(t *testing.T) {
 
 	m.Retry()
 
-	if !retryCalled {
-		t.Fatalf("Retry() did not call retry")
-	}
+	assert.True(t, retryCalled)
 }
 
 func TestConsumerMessage_RetryWithDelay(t *testing.T) {

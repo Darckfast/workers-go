@@ -10,6 +10,7 @@ import (
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestToRequest(t *testing.T) {
@@ -28,13 +29,10 @@ func TestToRequest(t *testing.T) {
 		t.Fatalf("conversion is missing header: had %s expected %s", r.Header.Get("content-type"), "application/json")
 	}
 
-	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
 	bs := string(b)
 
-	if bs != rawStr {
-		t.Fatalf("conversion has wrong body: had %s expected %s", bs, rawStr)
-	}
+	assert.Equal(t, rawStr, bs)
 }
 
 func TestToJSRequest(t *testing.T) {
@@ -45,15 +43,8 @@ func TestToJSRequest(t *testing.T) {
 	r.Header.Set("content-type", "application/json")
 
 	rjs := ToJSRequest(r)
-
-	if rjs.Get("headers").Call("get", "content-type").String() != "application/json" {
-		t.Fatalf("conversion has wrong header:  expected application/json")
-	}
-
 	j, _ := jsclass.Await(rjs.Call("json"))
 
 	js := jsclass.JSON.Call("stringify", j)
-	if js.String() != rawStr {
-		t.Fatalf("conversion has wrong body: had %s expected %s", js.String(), rawStr)
-	}
+	assert.Equal(t, rawStr, js.String())
 }

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestToHeaders(t *testing.T) {
@@ -30,14 +31,12 @@ func TestToHeaders(t *testing.T) {
 	headers.Call("append", "X-Fake-Referer", "https://fake.example.com")
 	headers.Call("append", "X-Fake-IP", "192.0.2.123")
 
-	h := ToHeader(headers)
+	h, _ := ToHeader(headers)
 
 	for key, value := range h {
 		hv := strings.Join(value, ",")
 		jsh := headers.Call("get", key).String()
-		if hv != jsh {
-			t.Fatalf("conversion yielded wrong value: had '%s' expected '%s' on '%s'", hv, jsh, key)
-		}
+		assert.Equal(t, hv, jsh)
 	}
 }
 
@@ -65,8 +64,6 @@ func TestToJSHeaders(t *testing.T) {
 	for key, value := range headers {
 		hv := strings.Join(value, ",")
 		jsh := h.Call("get", key).String()
-		if hv != jsh {
-			t.Fatalf("conversion yielded wrong value: had '%s' expected '%s' on '%s'", hv, jsh, key)
-		}
+		assert.Equal(t, hv, jsh)
 	}
 }

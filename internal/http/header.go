@@ -11,16 +11,20 @@ import (
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
-func ToHeader(headers js.Value) http.Header {
+func ToHeader(headers js.Value) (http.Header, error) {
 	if !headers.Truthy() {
-		return http.Header{}
+		return http.Header{}, nil
 	}
 
 	hObj := jsclass.Object.FromEntries(headers.Call("entries"))
 	hStr := jsclass.JSON.Stringify(hObj).String()
 	var hMap map[string]string
 
-	json.Unmarshal([]byte(hStr), &hMap)
+	err := json.Unmarshal([]byte(hStr), &hMap)
+
+	if err != nil {
+		return http.Header{}, err
+	}
 
 	h := http.Header{}
 	for i := range hMap {
@@ -29,7 +33,8 @@ func ToHeader(headers js.Value) http.Header {
 			h.Add(i, value)
 		}
 	}
-	return h
+
+	return h, nil
 }
 
 func ToJSHeader(header http.Header) js.Value {

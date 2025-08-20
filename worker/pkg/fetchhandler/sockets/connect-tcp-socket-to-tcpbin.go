@@ -14,10 +14,12 @@ import (
 
 var GET_SOCKET_TCPBIN = func(w http.ResponseWriter, r *http.Request) {
 	conn, _ := sockets.Connect(r.Context(), "tcpbin.com:4242", nil)
-	defer conn.Close()
-	conn.SetDeadline(time.Now().Add(1 * time.Hour))
-	conn.Write([]byte("hello.\n"))
+	defer func() {
+		_ = conn.Close()
+	}()
+	_ = conn.SetDeadline(time.Now().Add(1 * time.Hour))
+	_, _ = conn.Write([]byte("hello.\n"))
 	rd := bufio.NewReader(conn)
 	bts, _ := rd.ReadBytes('.')
-	w.Write(bts)
+	_, _ = w.Write(bts)
 }

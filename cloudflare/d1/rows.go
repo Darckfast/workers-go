@@ -6,11 +6,11 @@ import (
 	"database/sql/driver"
 	"errors"
 	"io"
-	"math"
 	"sync"
 	"syscall/js"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
 )
 
 type rows struct {
@@ -39,14 +39,8 @@ func (r *rows) Close() error {
 	return nil
 }
 
-// isIntegralNumber returns if given float64 value is integral value or not.
-// TODO: Use js Number.isInteger() call instead
-func isIntegralNumber(f float64) bool {
-	// If the value is NaN or Inf, returns the value to avoid being mistakenly treated as an integral value.
-	if math.IsNaN(f) || math.IsInf(f, 0) {
-		return false
-	}
-	return f == math.Trunc(f)
+func isSafeInteger(f js.Value) bool {
+	return jsclass.Number.Call("isSafeInteger", f).Bool()
 }
 
 // convertRowColumnValueToDriverValue converts row column's value in JS to Go's driver.Value.
@@ -57,12 +51,10 @@ func convertRowColumnValueToAny(v js.Value) (driver.Value, error) {
 	case js.TypeNull:
 		return nil, nil
 	case js.TypeNumber:
-		fv := v.Float() // TODO: this loses its precision, need to change it for MaybeInt64
-		// if the value can be treated as integral value, return as int64.
-		if isIntegralNumber(fv) {
-			return int64(fv), nil
+		if isSafeInteger(v) {
+			return jsconv.MaybeInt64(v), nil
 		}
-		return fv, nil
+		return v.Float(), nil
 	case js.TypeString:
 		return v.String(), nil
 	case js.TypeObject:

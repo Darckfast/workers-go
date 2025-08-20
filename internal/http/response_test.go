@@ -8,9 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestToJSResponse(t *testing.T) {
@@ -45,7 +45,6 @@ func TestToResponse(t *testing.T) {
 
 	r := ToResponse(res)
 
-	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
 
 	assert.Equal(t, rawStr, string(b))

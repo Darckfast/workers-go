@@ -17,7 +17,7 @@ var GET_DO = func(w http.ResponseWriter, r *http.Request) {
 
 	rs, err := stub.Call("sayHello")
 
-	json.NewEncoder(w).Encode(map[string]any{
+	_ = json.NewEncoder(w).Encode(map[string]any{
 		"has_error": err != nil,
 		"result":    rs,
 	})

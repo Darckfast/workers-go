@@ -25,7 +25,7 @@ type Objects struct {
 func toObjects(v js.Value) (*Objects, error) {
 	objectsVal := v.Get("objects")
 	objects := make([]*Object, objectsVal.Length())
-	for i := 0; i < len(objects); i++ {
+	for i := range len(objects) {
 		obj, err := toObject(objectsVal.Index(i))
 		if err != nil {
 			return nil, errors.New("error converting to Object: " + err.Error())
@@ -34,7 +34,7 @@ func toObjects(v js.Value) (*Objects, error) {
 	}
 	prefixesVal := v.Get("delimitedPrefixes")
 	prefixes := make([]string, prefixesVal.Length())
-	for i := 0; i < len(prefixes); i++ {
+	for i := range len(prefixes) {
 		prefixes[i] = prefixesVal.Index(i).String()
 	}
 	return &Objects{

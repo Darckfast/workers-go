@@ -20,7 +20,7 @@ var GET_R2 = func(w http.ResponseWriter, r *http.Request) {
 	rawBody, _ := io.ReadAll(result.Body)
 	b64 := base64.StdEncoding.EncodeToString(rawBody)
 
-	json.NewEncoder(w).Encode(map[string]any{
+	_ = json.NewEncoder(w).Encode(map[string]any{
 		"has_error": err != nil,
 		"result":    result,
 		"body":      b64,
@@ -32,12 +32,12 @@ var POST_R2 = func(w http.ResponseWriter, r *http.Request) {
 	bucket, _ := r2.NewBucket("TEST_BUCKET")
 
 	b64 := r.FormValue("b64")
-	data, err := base64.StdEncoding.DecodeString(b64)
+	data, _ := base64.StdEncoding.DecodeString(b64)
 
 	reader := io.NopCloser(bytes.NewReader(data))
 	result, err := bucket.Put("count", reader, int64(len(data)), nil)
 
-	json.NewEncoder(w).Encode(map[string]any{
+	_ = json.NewEncoder(w).Encode(map[string]any{
 		"has_error": err != nil,
 		"result":    result,
 	})

@@ -13,6 +13,8 @@ import (
 	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
+// TODO: implement awsfetch for url signed => due was limitations with syscall, using the aws-sdk-go is not viable
+// afaik during init() it tries to access the home dir to load the local config, and this makes the process exit
 // Object represents Cloudflare R2 object.
 //   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L1094
 type Object struct {

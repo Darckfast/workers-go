@@ -22,7 +22,7 @@ var (
 // This method checks DB existence. If DB was not found, this function returns error.
 func OpenConnector(name string) (driver.Connector, error) {
 	v := jsclass.Env.Get(name)
-	if v.IsUndefined() {
+	if !v.Truthy() {
 		return nil, ErrDatabaseNotFound
 	}
 	return &Connector{dbObj: v}, nil

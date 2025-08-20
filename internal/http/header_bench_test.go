@@ -30,7 +30,7 @@ func BenchmarkToHeades(b *testing.B) {
 	headers.Call("append", "X-Fake-IP", "192.0.2.123")
 
 	for b.Loop() {
-		ToHeader(headers)
+		_, _ = ToHeader(headers)
 	}
 }
 
@@ -54,6 +54,6 @@ func BenchmarkToJSHeaders(t *testing.B) {
 	headers.Set("X-Fake-IP", "192.0.2.123")
 
 	for t.Loop() {
-		ToJSHeader(headers)
+		_ = ToJSHeader(headers)
 	}
 }
