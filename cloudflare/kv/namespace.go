@@ -6,7 +6,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 )
 
 // Namespace represents interface of Cloudflare Worker's KV namespace instance.
@@ -21,7 +21,7 @@ type Namespace struct {
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewNamespace(varName string) (*Namespace, error) {
-	inst := jsclass.Env.Get(varName)
+	inst := lifecycle.Env.Get(varName)
 	if inst.IsUndefined() {
 		return nil, errors.New(varName + " is undefined")
 	}

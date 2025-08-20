@@ -10,6 +10,7 @@ import (
 	"syscall/js"
 
 	"github.com/Darckfast/workers-go/cloudflare/env"
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
 	jsruntime "github.com/Darckfast/workers-go/internal/runtime"
@@ -47,8 +48,8 @@ func init() {
 }
 
 func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error) {
-	jsclass.Env = envObj
-	jsclass.ExcutionContext = jsclass.ExecutionContextWrap{Ctx: ctxObj}
+	lifecycle.Env = envObj
+	lifecycle.Ctx = jsclass.ExecutionContextWrap{Ctx: ctxObj}
 
 	err := env.LoadEnvs()
 	if err != nil {

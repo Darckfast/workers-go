@@ -6,6 +6,7 @@ import (
 	"errors"
 	"syscall/js"
 
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
@@ -19,7 +20,7 @@ type Producer struct {
 // In Cloudflare API documentation, this object represents the Queue.
 //   - https://developers.cloudflare.com/queues/configuration/javascript-apis/#producer
 func NewProducer(queueName string) (*Producer, error) {
-	inst := jsclass.Env.Get(queueName)
+	inst := lifecycle.Env.Get(queueName)
 	if inst.IsUndefined() {
 		return nil, errors.New(queueName + " is undefined")
 	}

@@ -8,6 +8,7 @@ import (
 	"syscall/js"
 	"time"
 
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
 )
@@ -58,7 +59,7 @@ func (c *Client) ToHTTPClient() *http.Client {
 }
 
 func (c *Client) WithBinding(bindname string) *Client {
-	c.namespace = jsclass.Env.Get(bindname)
+	c.namespace = lifecycle.Env.Get(bindname)
 	return c
 }
 

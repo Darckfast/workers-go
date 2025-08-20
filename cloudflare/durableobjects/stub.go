@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"syscall/js"
 
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
 	jstry "github.com/Darckfast/workers-go/internal/try"
@@ -17,7 +18,7 @@ type DurableObjectNamespace struct {
 }
 
 func NewDurableObjectNamespace(varName string) (*DurableObjectNamespace, error) {
-	inst := jsclass.Env.Get(varName)
+	inst := lifecycle.Env.Get(varName)
 	if inst.IsUndefined() {
 		return nil, errors.New("%s is undefined" + varName)
 	}
