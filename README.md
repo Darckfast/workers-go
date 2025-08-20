@@ -1,14 +1,21 @@
+<p align="center">
+  <a href="https://turso.tech/libsql">
+    <img alt="workers-go" src=".github/images/banner.png">
+    <h1 align="center">workers-go</h1>
+  </a>
+</p>
 
-![banner](.github/images/banner.png)
+<p align="center">
+  workers-go is a fork of <a href="https://github.com/syumai/workers">syumai's workers</a> ❤️ depedency free Go library, made to help interface Go's WASM with <a href="https://workers.cloudflare.com/">Cloudflare Workers</a>.
+</p>
 
-Powered by <img src="https://vite.dev/logo.svg" style="height: 1rem"/> Vite and <img src="https://workers.cloudflare.com/logo.svg" style="height: 1rem"/> Cloudflare Workers
+<p align="center">
+Powered by <img src="https://vite.dev/logo.svg" style="height: 1rem; place-self: center;"/> Vite and <img src="https://developers.cloudflare.com/_astro/logo.DAG2yejx.svg" style="height: 1rem"/> Cloudflare Wrangler
+</p>
 
-# workers-go
-
-This repository is a fork of https://github.com/syumai/workers ❤️
-
-`workers-go` is a pure Go library, made to help interface Go's WASM with [Cloudflare Workers](https://workers.cloudflare.com/).
-It implements a series of handlers, helpers and bindings, making easier to integrate Go with Workers
+<p align="center">
+ 📜 <a href="#"><strong>workers-go docs [SOON]</strong></a>
+</p>
 
 ## Install
 
@@ -44,10 +51,10 @@ package main
 import "github.com/Darckfast/workers-go/cloudflare/fetch"
 
 func main() {
-  var handler http.HandlerFunc = func (w http.ResponseWriter, req *http.Request) {
+	var handler http.HandlerFunc = func (w http.ResponseWriter, req *http.Request) {
     //...
   }
-  fetch.ServeNonBlock(handler)
+	fetch.ServeNonBlock(handler)
 
   <-make(chan struct{})
 }
@@ -63,11 +70,11 @@ package main
 import "github.com/Darckfast/workers-go/cloudflare/fetch"
 
 func main() {
-  http.HandleFunc("/hello", func (w http.ResponseWriter, req *http.Request) {
+	http.HandleFunc("/hello", func (w http.ResponseWriter, req *http.Request) {
     //...
   })
 
-  fetch.ServeNonBlock(handler)// if nil is given, http.DefaultServeMux is used.
+	fetch.ServeNonBlock(handler)// if nil is given, http.DefaultServeMux is used.
 
   <-make(chan struct{})
 }
@@ -84,10 +91,10 @@ import "github.com/Darckfast/workers-go/cloudflare/cron"
 
 
 func main() {
-  cron.ScheduleTaskNonBlock(func(event *cron.CronEvent) error {
+	cron.ScheduleTaskNonBlock(func(event *cron.CronEvent) error {
     // ... my scheduled task
-    return nil
-  })
+		return nil
+	})
 
   <-make(chan struct{})
 }
@@ -103,16 +110,16 @@ package main
 import 	"github.com/Darckfast/workers-go/cloudflare/queues"
 
 func main() {
-  queues.ConsumeNonBlock(func(batch *queues.MessageBatch) error {
-    for _, msg := range batch.Messages {
+	queues.ConsumeNonBlock(func(batch *queues.MessageBatch) error {
+		for _, msg := range batch.Messages {
 
       // ... process the message
 
-      msg.Ack()
-    }
+			msg.Ack()
+		}
 
-    return nil
-  })
+		return nil
+	})
 
   <-make(chan struct{})
 }
@@ -129,10 +136,10 @@ import "github.com/Darckfast/workers-go/cloudflare/tail"
 
 
 func main() {
-  tail.ConsumeNonBlock(func(f *[]tail.TailItem) error {
+	tail.ConsumeNonBlock(func(f *[]tail.TailItem) error {
     // ... process tail trace events
-    return nil
-  })
+		return nil
+	})
 
   <-make(chan struct{})
 }
@@ -149,10 +156,10 @@ import "github.com/Darckfast/workers-go/cloudflare/email"
 
 
 func main() {
-  email.ConsumeNonBlock(func(f *email.ForwardableEmailMessage) error {
+	email.ConsumeNonBlock(func(f *email.ForwardableEmailMessage) error {
     // ... process the email
-    return nil
-  })
+		return nil
+	})
 
   <-make(chan struct{})
 }
@@ -250,8 +257,8 @@ Below is a list of implemented, and not implemented Cloudflare features
 | Env                          | ✅           | All Cloudflare Worker's env are copied into `os.Environ()`, making them available at runtime with `os.Getenv()`. Only string typed values are copied |   |
 | Containers                   | 🔵          | Only the `containerFetch()` function has been implemented                                                                                        |   |
 | R2                           | 🔵          | _Options for R2 methods still not implementd_                                                                                                    |   |
-| D1                           | ✅          |                                                                                                                                                  |   |
-| KV                           | ✅         | `get` only has `GetString`,`GetStringWithMetadata`, `GetStrings`, `GetReader` and `GetReaderWithMetadata` implemented                   |   |
+| D1                           | 🔵          |                                                                                                                                                  |   |
+| KV                           | 🔵          | _Options for KV methods still not implemented_                                                                                                   |   |
 | Cache API                    | ✅           |                                                                                                                                                  |   |
 | Durable Objects              | 🔵          | _Only stub calls have been implemented_                                                                                                          |   |
 | RPC                          | ❌           | _Not implemented_                                                                                                                                |   |
@@ -291,8 +298,7 @@ Cloudflare Queue locally is incredibly slow to produce events (up to 7 seconds)
 ### TinyGo
 Go's compiled binary can exceed the Free 3MB Cloudflare Worker's limit, in which case one suggestion is to use TinyGo to compile, but for performance reasons `workers-go` uses the `encoding/json` from the std Go's library, which makes this package incompatible with the current build of TinyGo
 
-https://github.com/golang/go/issues/63904
-https://github.com/golang/go/issues/6853
+Another possible fix is related to this issue https://github.com/golang/go/issues/63904
 
 ### Errors
 Although we can wrap JavaScript errors in Go, at the moment there is no source maps available in wasm, meaning we can get errors messages, but not a useful stack trace
@@ -300,23 +306,4 @@ Although we can wrap JavaScript errors in Go, at the moment there is no source m
 ### Build constraint
 For [gopls](https://github.com/golang/tools/tree/master/gopls) to show `syscall/js` method's signature and auto complete, either `export GOOS=js && export GOARCH=wasm` or add the comment `//go:build js && wasm` at the top of your Go files
 
-## Developing
-
-Before developing on this library, you first must have:
-
-* NodeJS and `pnpm`
-* Go 1.24+
-
-Then fork it and clone the repository locally
-
-To spin up a local testing worker, run the commands bellow
-
-
-```bash
-go get ./...
-pnpm i
-pnpm dev
-```
-
-This will serve a local worker on `http://localhost:5173`, it also has live reload, any change made either in the library or worker code will trigger a re-compile automatically
 
