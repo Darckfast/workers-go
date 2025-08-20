@@ -25,9 +25,9 @@ var GET_QUEUE = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var POST_QUEUE = func(w http.ResponseWriter, r *http.Request) {
-	q, err := queues.NewProducer("TEST_QUEUE")
+	q, _ := queues.NewProducer("TEST_QUEUE")
 	content, _ := io.ReadAll(r.Body)
-	err = q.SendText(string(content))
+	err := q.SendText(string(content))
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(202)

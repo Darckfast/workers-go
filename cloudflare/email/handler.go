@@ -7,7 +7,6 @@ import (
 	"syscall/js"
 
 	"github.com/Darckfast/workers-go/cloudflare/env"
-	_ "github.com/Darckfast/workers-go/cloudflare/env"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 

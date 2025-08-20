@@ -65,7 +65,7 @@ func (w *ResponseWriter) ToJSResponse() js.Value {
 	respInit.Set("status", w.StatusCode)
 	respInit.Set("statusText", http.StatusText(w.StatusCode))
 	respInit.Set("headers", ToJSHeader(w.HeaderValue))
-	readableStream := jsclass.Null
+	var readableStream js.Value
 
 	if jsclass.MaybeFixedLengthStream.Truthy() && w.Length > 0 {
 		readableStream = jsstream.ReadCloserToFixedLengthStream(w.Reader, w.Length)

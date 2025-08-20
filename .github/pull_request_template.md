@@ -1,11 +1,10 @@
-# What
+# Description
 
-<!-- Please describe what this change will do. -->
+<!-- Add a brief description of what this PR is doing -->
 
-# Motivation
+## Changes
 
 <!--
-  Please describe the motivation for this change.
-  If you have documentation (or a GitHub issue) related to this change, please give its URL.
+List the changes made in this PR
 -->
 

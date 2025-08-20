@@ -80,10 +80,6 @@ func (sr *ReadableStream) Close() error {
 	return nil
 }
 
-type readerWrapper struct {
-	io.Reader
-}
-
 func ReadableStreamToReadCloser(stream js.Value) io.ReadCloser {
 	return &ReadableStream{
 		stream: stream,

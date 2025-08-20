@@ -50,9 +50,17 @@ var POST_FORM_URLENCODED = func(w http.ResponseWriter, r *http.Request) {
 }
 
 var POST_MULTIPART_FORM_DATA = func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	r.ParseForm()
 
 	f, fh, err := r.FormFile("img")
+	if err != nil {
+		json.NewEncoder(w).Encode(map[string]any{
+			"has_error": true,
+			"error":     err.Error(),
+		})
+		return
+	}
 	defer f.Close()
 	buf := bytes.NewBuffer(make([]byte, 0))
 	io.Copy(buf, f)
@@ -61,7 +69,6 @@ var POST_MULTIPART_FORM_DATA = func(w http.ResponseWriter, r *http.Request) {
 	var j map[string]any
 	json.Unmarshal([]byte(jsonStr), &j)
 	jb, _ := json.Marshal(j)
-	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]any{
 		"has_error":    err != nil,
 		"size":         fh.Size,
