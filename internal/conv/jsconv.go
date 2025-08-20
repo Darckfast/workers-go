@@ -37,13 +37,25 @@ func MapToJSValue(v map[string]any) js.Value {
 	return jsclass.JSON.Call("parse", string(b))
 }
 
+func JSValueToMapString(v js.Value) map[string]string {
+	obj := map[string]string{}
+	if !v.Truthy() {
+		return obj
+	}
+
+	jsonStr := jsclass.JSON.Stringify(v).String()
+	json.Unmarshal([]byte(jsonStr), &obj)
+
+	return obj
+}
+
 func JSValueToMap(v js.Value) map[string]any {
 	obj := map[string]any{}
 	if !v.Truthy() {
 		return obj
 	}
 
-	jsonStr := jsclass.JSON.Call("stringify", v).String()
+	jsonStr := jsclass.JSON.Stringify(v).String()
 	json.Unmarshal([]byte(jsonStr), &obj)
 
 	return obj
