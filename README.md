@@ -291,7 +291,9 @@ Cloudflare Queue locally is incredibly slow to produce events (up to 7 seconds)
 ### TinyGo
 Go's compiled binary can exceed the Free 3MB Cloudflare Worker's limit, in which case one suggestion is to use TinyGo to compile, but for performance reasons `workers-go` uses the `encoding/json` from the std Go's library, which makes this package incompatible with the current build of TinyGo
 
-Another possible fix is related to this issue https://github.com/golang/go/issues/63904
+
+https://github.com/golang/go/issues/63904
+https://github.com/golang/go/issues/6853
 
 ### Errors
 Although we can wrap JavaScript errors in Go, at the moment there is no source maps available in wasm, meaning we can get errors messages, but not a useful stack trace
