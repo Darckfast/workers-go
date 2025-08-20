@@ -17,3 +17,6 @@ Powered by <img src="https://vite.dev/logo.svg" style="height: 1rem; place-self:
  📜 <a href="https://darckfast.com/docs/workers-go"><strong>workers-go docs</strong></a>
 </p>
 
+---
+
+[Check the documentation for more details](https://darckfast.com/docs/workers-go)
