@@ -62,7 +62,7 @@ func (ns *Namespace) GetStrings(keys []string, opts *GetOptions) (map[string]str
 		return nil, errors.New("key has no value")
 	}
 
-	return jsconv.JSValueToMapString(v), nil
+	return jsconv.JSValueToMapString(v)
 }
 
 func (ns *Namespace) GetString(key string, opts *GetOptions) (string, error) {

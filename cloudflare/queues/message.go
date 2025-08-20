@@ -67,11 +67,11 @@ func (m *Message) StringBody() (string, error) {
 }
 
 func (m *Message) BytesBody() ([]byte, error) {
-	if m.Body.Type() != js.TypeObject ||
-		!(m.Body.InstanceOf(jsclass.Uint8Array) || m.Body.InstanceOf(jsclass.Uint8ClampedArray)) {
-		return nil, errors.New("message body is not a byte array: " + m.Body.Type().String())
+	if m.Body.Type() == js.TypeObject &&
+		(m.Body.InstanceOf(jsclass.Uint8Array) || m.Body.InstanceOf(jsclass.Uint8ClampedArray)) {
+		b := make([]byte, m.Body.Get("byteLength").Int())
+		js.CopyBytesToGo(b, m.Body)
+		return b, nil
 	}
-	b := make([]byte, m.Body.Get("byteLength").Int())
-	js.CopyBytesToGo(b, m.Body)
-	return b, nil
+	return nil, errors.New("message body is not a byte array: " + m.Body.Type().String())
 }

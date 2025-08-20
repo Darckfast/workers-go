@@ -4,6 +4,7 @@ package email
 
 import (
 	"errors"
+	"log"
 	"syscall/js"
 
 	"github.com/Darckfast/workers-go/cloudflare/env"
@@ -47,11 +48,19 @@ func init() {
 
 func handler(emailObj, envObj, ctxObj js.Value) error {
 	jsclass.Env = envObj
-	jsclass.ExcutionContext = ctxObj
+	jsclass.ExcutionContext = jsclass.ExecutionContextWrap{Ctx: ctxObj}
 
-	env.LoadEnvs()
+	err := env.LoadEnvs()
+	if err != nil {
+		return err
+	}
 	email := NewForwardableEmailMessage(emailObj)
-	defer email.Raw.Close()
+	defer func() {
+		err := email.Raw.Close()
+		if err != nil {
+			log.Println("error closing email raw body reader", err.Error())
+		}
+	}()
 
 	return consumer(email)
 }

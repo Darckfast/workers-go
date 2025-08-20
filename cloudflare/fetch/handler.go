@@ -5,6 +5,7 @@ package fetch
 import (
 	"context"
 	"io"
+	"log"
 	"net/http"
 	"syscall/js"
 
@@ -25,10 +26,15 @@ func init() {
 		cb = js.FuncOf(func(_ js.Value, pArgs []js.Value) any {
 			defer cb.Release()
 			resolve := pArgs[0]
+			reject := pArgs[1]
 
 			go func() {
-				res := handler(reqObj, envObj, ctxObj)
-				resolve.Invoke(res)
+				res, err := handler(reqObj, envObj, ctxObj)
+				if err != nil {
+					reject.Invoke(jsclass.ToJSError(err))
+				} else {
+					resolve.Invoke(res)
+				}
 			}()
 
 			return nil
@@ -40,11 +46,15 @@ func init() {
 	js.Global().Get("cf").Set("fetch", handleRequestPromise)
 }
 
-func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) js.Value {
+func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error) {
 	jsclass.Env = envObj
-	jsclass.ExcutionContext = ctxObj
+	jsclass.ExcutionContext = jsclass.ExecutionContextWrap{Ctx: ctxObj}
 
-	env.LoadEnvs()
+	err := env.LoadEnvs()
+	if err != nil {
+		return js.Value{}, err
+	}
+
 	req := jshttp.ToRequest(reqObj)
 	ctx := jsruntime.New(context.Background(), reqObj)
 	req = req.WithContext(ctx)
@@ -61,13 +71,19 @@ func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) js.Value {
 	go func() {
 		defer func() {
 			w.Ready()
-			writer.Close()
+			err := writer.Close()
+
+			if err != nil {
+				log.Println("error closing response body writer", err.Error())
+			}
 		}()
 
 		httpHandler.ServeHTTP(w, req)
 	}()
+
 	<-w.ReadyCh
-	return w.ToJSResponse()
+
+	return w.ToJSResponse(), nil
 }
 
 func ServeNonBlock(handler http.Handler) {

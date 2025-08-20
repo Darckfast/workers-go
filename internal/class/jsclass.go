@@ -17,14 +17,14 @@ func init() {
 	}
 
 	Env = cf.Get("env")
-	ExcutionContext = cf.Get("ctx")
+	ExcutionContext = ExecutionContextWrap{Ctx: cf.Get("ctx")}
 	Connect = cf.Get("connect")
 }
 
 var (
 	Env               js.Value
-	ExcutionContext   js.Value
-	Connect           js.Value // replace with js.Global().Get("import")
+	ExcutionContext   ExecutionContextWrap
+	Connect           js.Value
 	JSON              = JSONWrap{js.Global().Get("JSON")}
 	Object            = ObjectWrap{js.Global().Get("Object")}
 	Caches            = js.Global().Get("caches")

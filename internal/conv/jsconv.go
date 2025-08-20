@@ -37,28 +37,28 @@ func MapToJSValue(v map[string]any) js.Value {
 	return jsclass.JSON.Call("parse", string(b))
 }
 
-func JSValueToMapString(v js.Value) map[string]string {
+func JSValueToMapString(v js.Value) (map[string]string, error) {
 	obj := map[string]string{}
 	if !v.Truthy() {
-		return obj
+		return obj, nil
 	}
 
 	jsonStr := jsclass.JSON.Stringify(v).String()
-	json.Unmarshal([]byte(jsonStr), &obj)
+	err := json.Unmarshal([]byte(jsonStr), &obj)
 
-	return obj
+	return obj, err
 }
 
-func JSValueToMap(v js.Value) map[string]any {
+func JSValueToMap(v js.Value) (map[string]any, error) {
 	obj := map[string]any{}
 	if !v.Truthy() {
-		return obj
+		return obj, nil
 	}
 
 	jsonStr := jsclass.JSON.Stringify(v).String()
-	json.Unmarshal([]byte(jsonStr), &obj)
+	err := json.Unmarshal([]byte(jsonStr), &obj)
 
-	return obj
+	return obj, err
 }
 
 func MaybeStringList(v js.Value) []string {

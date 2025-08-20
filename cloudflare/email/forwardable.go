@@ -54,10 +54,11 @@ func (f *ForwardableEmailMessage) Reply(emailMsg *EmailMessage) error {
 }
 
 func NewForwardableEmailMessage(msg js.Value) *ForwardableEmailMessage {
+	h, _ := jshttp.ToHeader(msg.Get("headers"))
 	frwMsg := ForwardableEmailMessage{
 		From:    msg.Get("from").String(),
 		To:      msg.Get("to").String(),
-		Headers: jshttp.ToHeader(msg.Get("headers")),
+		Headers: h,
 		Raw:     jshttp.ToBody(msg.Get("raw")),
 		RawSize: msg.Get("rawSize").Int(),
 		self:    &msg,

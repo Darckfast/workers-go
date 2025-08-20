@@ -28,7 +28,6 @@ func TestToRequest(t *testing.T) {
 		t.Fatalf("conversion is missing header: had %s expected %s", r.Header.Get("content-type"), "application/json")
 	}
 
-	defer r.Body.Close()
 	b, _ := io.ReadAll(r.Body)
 	bs := string(b)
 

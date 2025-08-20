@@ -29,18 +29,22 @@ func init() {
 		var cb js.Func
 		cb = js.FuncOf(func(_ js.Value, pArgs []js.Value) any {
 			defer cb.Release()
+
 			resolve := pArgs[0]
 			reject := pArgs[1]
+
 			go func() {
 				err := consumeBatch(batch, envObj, ctxObj)
 				if err != nil {
 					reject.Invoke(jsclass.ToJSError(err))
-					return
+				} else {
+					resolve.Invoke(true)
 				}
-				resolve.Invoke(js.Undefined())
 			}()
-			return js.Undefined()
+
+			return nil
 		})
+
 		return jsclass.Promise.New(cb)
 	})
 	js.Global().Get("cf").Set("queue", handleBatchCallback)
@@ -48,17 +52,23 @@ func init() {
 
 func consumeBatch(batch, envObj, ctxObj js.Value) error {
 	jsclass.Env = envObj
-	jsclass.ExcutionContext = ctxObj
+	jsclass.ExcutionContext = jsclass.ExecutionContextWrap{Ctx: ctxObj}
 
-	env.LoadEnvs()
-	b, err := newMessageBatch(batch)
+	err := env.LoadEnvs()
 	if err != nil {
-		return errors.New("failed to parse message batch: " + err.Error())
+		return err
+	}
+
+	b, err := newMessageBatch(batch)
+
+	if err != nil {
+		return err
 	}
 
 	if err := consumer(b); err != nil {
 		return err
 	}
+
 	return nil
 }
 

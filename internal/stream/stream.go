@@ -138,7 +138,13 @@ func ReadCloserToFixedLengthStream(rc io.ReadCloser, size int64) js.Value {
 	stream := jsclass.MaybeFixedLengthStream.New(size)
 	go func(writer js.Value) {
 		chunk := make([]byte, min(size, 16_640))
-		jsclass.Await(writer.Get("ready"))
+		_, err := jsclass.Await(writer.Get("ready"))
+
+		if err != nil {
+			writer.Call("abort", "writable ready promise returned error: "+err.Error())
+			return
+		}
+
 		for {
 			n, err := rc.Read(chunk)
 
@@ -149,7 +155,7 @@ func ReadCloserToFixedLengthStream(rc io.ReadCloser, size int64) js.Value {
 			}
 
 			if err != nil {
-				jsclass.Await(writer.Get("ready"))
+				// jsclass.Await(writer.Get("ready"))
 				writer.Call("close")
 				return
 			}

@@ -234,6 +234,7 @@ func GetEvent(event js.Value) *TraceItemEvent {
 
 		return event
 	} else if event.Get("request").Truthy() {
+		h, _ := jshttp.ToHeader(event.Get("request").Get("headers"))
 		return &TraceItemEvent{
 			Type: "fetch",
 			Response: &TraceItemFetchEventInfoResponse{
@@ -242,7 +243,7 @@ func GetEvent(event js.Value) *TraceItemEvent {
 			Request: &TraceItemFetchEventInfoRequest{
 				Url:     event.Get("request").Get("url").String(),
 				Method:  event.Get("request").Get("method").String(),
-				Headers: jshttp.ToHeader(event.Get("request").Get("headers")),
+				Headers: h,
 			},
 		}
 	} else if event.Get("rpcMethod").Truthy() {

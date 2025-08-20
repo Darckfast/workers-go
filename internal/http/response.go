@@ -14,7 +14,7 @@ import (
 func ToResponse(res js.Value) *http.Response {
 	body := jsstream.ReadableStreamToReadCloser(res.Get("body"))
 	status := res.Get("status").Int()
-	header := ToHeader(res.Get("headers"))
+	header, _ := ToHeader(res.Get("headers"))
 	contentLength, _ := strconv.ParseInt(header.Get("Content-Length"), 10, 64)
 
 	return &http.Response{

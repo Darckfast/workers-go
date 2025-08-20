@@ -30,7 +30,7 @@ func TestToHeaders(t *testing.T) {
 	headers.Call("append", "X-Fake-Referer", "https://fake.example.com")
 	headers.Call("append", "X-Fake-IP", "192.0.2.123")
 
-	h := ToHeader(headers)
+	h, _ := ToHeader(headers)
 
 	for key, value := range h {
 		hv := strings.Join(value, ",")

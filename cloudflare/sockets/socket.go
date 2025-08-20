@@ -5,6 +5,7 @@ package sockets
 import (
 	"context"
 	"io"
+	"log"
 	"net"
 	"os"
 	"syscall/js"
@@ -29,9 +30,14 @@ func newSocket(ctx context.Context, sockVal js.Value, readDeadline, writeDeadlin
 		readDeadline:  readDeadline,
 		writeDeadline: writeDeadline,
 
-		startTLS:   func() js.Value { return sockVal.Call("startTls") },
-		close:      func() { sockVal.Call("close") },
-		closeRead:  func() { readCloser.Close() },
+		startTLS: func() js.Value { return sockVal.Call("startTls") },
+		close:    func() { sockVal.Call("close") },
+		closeRead: func() {
+			err := readCloser.Close()
+			if err != nil {
+				log.Println("error closing reader on socket", err.Error())
+			}
+		},
 		closeWrite: func() { writerVal.Call("close") },
 	}
 }
@@ -156,8 +162,15 @@ func (t *Socket) RemoteAddr() net.Addr {
 //
 // A zero value for t means I/O operations will not time out.
 func (t *Socket) SetDeadline(deadline time.Time) error {
-	t.SetReadDeadline(deadline)
-	t.SetWriteDeadline(deadline)
+	err := t.SetReadDeadline(deadline)
+	if err != nil {
+		return err
+	}
+
+	err = t.SetWriteDeadline(deadline)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
