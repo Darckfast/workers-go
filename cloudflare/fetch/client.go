@@ -46,6 +46,10 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 var _ http.RoundTripper = (*Transport)(nil)
 
+// Deprecated: This can be used normally, just be aware by transforming it into
+// http.Client, the compiler will also include the crypto lib, and
+// it can increase the final binary size from 5.6MB to 11MB
+// the compressed file can increase from 1.6MB to 2.8MB
 func (c *Client) ToHTTPClient() *http.Client {
 	return &http.Client{
 		Timeout:   c.Timeout,
