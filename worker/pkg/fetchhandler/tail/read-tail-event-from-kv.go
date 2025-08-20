@@ -18,7 +18,7 @@ var GET_TAIL = func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)
 	}
 
-	json.NewEncoder(w).Encode(map[string]any{
+	_ = json.NewEncoder(w).Encode(map[string]any{
 		"result": result,
 	})
 }

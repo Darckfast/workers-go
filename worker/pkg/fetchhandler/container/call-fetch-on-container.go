@@ -15,7 +15,7 @@ var GET_CONTAINER = func(w http.ResponseWriter, r *http.Request) {
 
 	rs, _ := c.ContainerFetch(r)
 
-	json.NewEncoder(w).Encode(map[string]any{
+	_ = json.NewEncoder(w).Encode(map[string]any{
 		"has_error": err != nil,
 		"result":    rs.Status,
 	})

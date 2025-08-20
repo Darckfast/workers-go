@@ -35,7 +35,7 @@ var GET_CACHE = func(w http.ResponseWriter, r *http.Request) {
 	} else {
 		xcache = "hit"
 		w.Header().Add("x-cache", xcache)
-		io.Copy(w, res.Body)
+		_, _ = io.Copy(w, res.Body)
 	}
 	// There might be a concurrency problem due pull being a promise
 	// res.Body sometimes is nil when this function exits, but the returned body

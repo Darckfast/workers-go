@@ -16,7 +16,7 @@ var GET_KV_LIST = func(w http.ResponseWriter, r *http.Request) {
 	kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
 	data, _ := kvStore.List(nil)
 
-	json.NewEncoder(w).Encode(map[string]any{"data": data})
+	_ = json.NewEncoder(w).Encode(map[string]any{"data": data})
 }
 
 var GET_KV = func(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +24,7 @@ var GET_KV = func(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Query().Get("key")
 
 	if key == "" {
-		json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
+		_ = json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
 		w.WriteHeader(400)
 		return
 	}
@@ -35,7 +35,7 @@ var GET_KV = func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 
-		json.NewEncoder(w).Encode(map[string]any{"error": err.Error()})
+		_ = json.NewEncoder(w).Encode(map[string]any{"error": err.Error()})
 		return
 	}
 
@@ -44,7 +44,7 @@ var GET_KV = func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.Header().Set("Content-Type", "application/json")
 
-		json.NewEncoder(w).Encode(map[string]any{"error": err.Error()})
+		_ = json.NewEncoder(w).Encode(map[string]any{"error": err.Error()})
 		return
 	}
 }
@@ -54,7 +54,7 @@ var DELETE_KV = func(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Query().Get("key")
 
 	if key == "" {
-		json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
+		_ = json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
 		w.WriteHeader(400)
 		return
 	}
@@ -62,7 +62,7 @@ var DELETE_KV = func(w http.ResponseWriter, r *http.Request) {
 	kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
 	err := kvStore.Delete(key)
 
-	json.NewEncoder(w).Encode(map[string]any{"error": err})
+	_ = json.NewEncoder(w).Encode(map[string]any{"error": err})
 }
 
 var POST_KV = func(w http.ResponseWriter, r *http.Request) {
@@ -70,17 +70,19 @@ var POST_KV = func(w http.ResponseWriter, r *http.Request) {
 	key := r.URL.Query().Get("key")
 
 	if key == "" {
-		json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
+		_ = json.NewEncoder(w).Encode(map[string]any{"error": "missing key"})
 		w.WriteHeader(400)
 		return
 	}
 
 	kvStore, _ := kv.NewNamespace("TEST_NAMESPACE")
 
-	defer r.Body.Close()
+	defer func() {
+		_ = r.Body.Close()
+	}()
 
 	err := kvStore.PutReader(key, r.Body, nil)
-	json.NewEncoder(w).Encode(map[string]any{
+	_ = json.NewEncoder(w).Encode(map[string]any{
 		"error": err,
 	})
 }
