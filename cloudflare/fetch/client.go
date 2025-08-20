@@ -36,6 +36,23 @@ type Client struct {
 	CF           *RequestInitCF
 }
 
+type Transport struct{}
+
+func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
+	c := Client{}
+
+	return c.Do(req)
+}
+
+var _ http.RoundTripper = (*Transport)(nil)
+
+func (c *Client) ToHTTPClient() *http.Client {
+	return &http.Client{
+		Timeout:   c.Timeout,
+		Transport: &Transport{},
+	}
+}
+
 func (c *Client) WithBinding(bindname string) *Client {
 	c.namespace = jsclass.Env.Get(bindname)
 	return c
