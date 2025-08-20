@@ -44,10 +44,10 @@ package main
 import "github.com/Darckfast/workers-go/cloudflare/fetch"
 
 func main() {
-	var handler http.HandlerFunc = func (w http.ResponseWriter, req *http.Request) {
+  var handler http.HandlerFunc = func (w http.ResponseWriter, req *http.Request) {
     //...
   }
-	fetch.ServeNonBlock(handler)
+  fetch.ServeNonBlock(handler)
 
   <-make(chan struct{})
 }
@@ -63,11 +63,11 @@ package main
 import "github.com/Darckfast/workers-go/cloudflare/fetch"
 
 func main() {
-	http.HandleFunc("/hello", func (w http.ResponseWriter, req *http.Request) {
+  http.HandleFunc("/hello", func (w http.ResponseWriter, req *http.Request) {
     //...
   })
 
-	fetch.ServeNonBlock(handler)// if nil is given, http.DefaultServeMux is used.
+  fetch.ServeNonBlock(handler)// if nil is given, http.DefaultServeMux is used.
 
   <-make(chan struct{})
 }
@@ -84,10 +84,10 @@ import "github.com/Darckfast/workers-go/cloudflare/cron"
 
 
 func main() {
-	cron.ScheduleTaskNonBlock(func(event *cron.CronEvent) error {
+  cron.ScheduleTaskNonBlock(func(event *cron.CronEvent) error {
     // ... my scheduled task
-		return nil
-	})
+    return nil
+  })
 
   <-make(chan struct{})
 }
@@ -103,16 +103,16 @@ package main
 import 	"github.com/Darckfast/workers-go/cloudflare/queues"
 
 func main() {
-	queues.ConsumeNonBlock(func(batch *queues.MessageBatch) error {
-		for _, msg := range batch.Messages {
+  queues.ConsumeNonBlock(func(batch *queues.MessageBatch) error {
+    for _, msg := range batch.Messages {
 
       // ... process the message
 
-			msg.Ack()
-		}
+      msg.Ack()
+    }
 
-		return nil
-	})
+    return nil
+  })
 
   <-make(chan struct{})
 }
@@ -129,10 +129,10 @@ import "github.com/Darckfast/workers-go/cloudflare/tail"
 
 
 func main() {
-	tail.ConsumeNonBlock(func(f *[]tail.TailItem) error {
+  tail.ConsumeNonBlock(func(f *[]tail.TailItem) error {
     // ... process tail trace events
-		return nil
-	})
+    return nil
+  })
 
   <-make(chan struct{})
 }
@@ -149,10 +149,10 @@ import "github.com/Darckfast/workers-go/cloudflare/email"
 
 
 func main() {
-	email.ConsumeNonBlock(func(f *email.ForwardableEmailMessage) error {
+  email.ConsumeNonBlock(func(f *email.ForwardableEmailMessage) error {
     // ... process the email
-		return nil
-	})
+    return nil
+  })
 
   <-make(chan struct{})
 }
