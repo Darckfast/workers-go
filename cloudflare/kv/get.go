@@ -8,11 +8,10 @@ import (
 	"syscall/js"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsconv "github.com/Darckfast/workers-go/internal/conv"
 	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
 
-// GetOptions represents Cloudflare KV namespace get options.
-//   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L930
 type GetOptions struct {
 	CacheTTL int
 }
@@ -29,19 +28,58 @@ func (opts *GetOptions) toJS(type_ string) js.Value {
 	return obj
 }
 
-// GetString gets string value by the specified key.
-//   - if a network error happens, returns error.
+func (ns *Namespace) GetStringWithMetadata(key string, opts *GetOptions) (string, string, error) {
+	p := ns.instance.Call("get", key, opts.toJS("text"))
+	r, err := jsclass.Await(p)
+
+	if err != nil {
+		return "", "", err
+	}
+
+	if r.IsNull() || r.IsUndefined() {
+		return "", "", errors.New("key has no value")
+	}
+
+	vm := r.Get("metadata")
+	v := r.Get("value")
+
+	if vm.IsNull() || vm.IsUndefined() {
+		return v.String(), "", nil
+	}
+
+	return v.String(), vm.String(), nil
+}
+
+func (ns *Namespace) GetStrings(keys []string, opts *GetOptions) (map[string]string, error) {
+	p := ns.instance.Call("get", keys, opts.toJS("text"))
+	v, err := jsclass.Await(p)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if v.IsNull() || v.IsUndefined() {
+		return nil, errors.New("key has no value")
+	}
+
+	return jsconv.JSValueToMapString(v), nil
+}
+
 func (ns *Namespace) GetString(key string, opts *GetOptions) (string, error) {
 	p := ns.instance.Call("get", key, opts.toJS("text"))
 	v, err := jsclass.Await(p)
+
 	if err != nil {
 		return "", err
 	}
+
+	if v.IsNull() || v.IsUndefined() {
+		return "", errors.New("key has no value")
+	}
+
 	return v.String(), nil
 }
 
-// GetReader gets stream value by the specified key.
-//   - if a network error happens, returns error.
 func (ns *Namespace) GetReader(key string, opts *GetOptions) (io.ReadCloser, error) {
 	p := ns.instance.Call("get", key, opts.toJS("stream"))
 	v, err := jsclass.Await(p)

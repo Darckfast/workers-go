@@ -3,6 +3,7 @@
 package kv
 
 import (
+	"encoding/json"
 	"io"
 	"syscall/js"
 
@@ -14,9 +15,10 @@ import (
 type PutOptions struct {
 	Expiration    int
 	ExpirationTTL int
-	// Metadata // TODO: implement
+	Metadata      *map[string]any
 }
 
+// TODO: use json.Marshal instead
 func (opts *PutOptions) toJS() js.Value {
 	if opts == nil {
 		return js.Undefined()
@@ -27,6 +29,11 @@ func (opts *PutOptions) toJS() js.Value {
 	}
 	if opts.ExpirationTTL != 0 {
 		obj.Set("expirationTtl", opts.ExpirationTTL)
+	}
+	if opts.Metadata != nil {
+		b, _ := json.Marshal(opts.Metadata)
+		om, _ := jsclass.JSON.Parse(string(b))
+		obj.Set("metadata", om)
 	}
 	return obj
 }
