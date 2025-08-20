@@ -250,8 +250,8 @@ Below is a list of implemented, and not implemented Cloudflare features
 | Env                          | ✅           | All Cloudflare Worker's env are copied into `os.Environ()`, making them available at runtime with `os.Getenv()`. Only string typed values are copied |   |
 | Containers                   | 🔵          | Only the `containerFetch()` function has been implemented                                                                                        |   |
 | R2                           | 🔵          | _Options for R2 methods still not implementd_                                                                                                    |   |
-| D1                           | 🔵          |                                                                                                                                                  |   |
-| KV                           | 🔵          | _Options for KV methods still not implemented_                                                                                                   |   |
+| D1                           | ✅          |                                                                                                                                                  |   |
+| KV                           | ✅         | `get` only has `GetString`,`GetStringWithMetadata`, `GetStrings`, `GetReader` and `GetReaderWithMetadata` implemented                   |   |
 | Cache API                    | ✅           |                                                                                                                                                  |   |
 | Durable Objects              | 🔵          | _Only stub calls have been implemented_                                                                                                          |   |
 | RPC                          | ❌           | _Not implemented_                                                                                                                                |   |
