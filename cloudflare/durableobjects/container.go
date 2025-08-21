@@ -5,6 +5,7 @@ package durableobjects
 import (
 	"net/http"
 
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
 )
@@ -26,7 +27,7 @@ func (s *Container) ContainerFetch(req *http.Request) (*http.Response, error) {
 }
 
 func GetContainer(binding string, id string) (*Container, error) {
-	inst := jsclass.Env.Get(binding)
+	inst := lifecycle.Env.Get(binding)
 	donamespace := &DurableObjectNamespace{instance: inst}
 	objId := donamespace.IdFromName(id)
 	obj, err := donamespace.Get(objId)

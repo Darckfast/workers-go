@@ -7,6 +7,7 @@ import (
 	"io"
 	"syscall/js"
 
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsstream "github.com/Darckfast/workers-go/internal/stream"
 )
@@ -24,7 +25,7 @@ type Bucket struct {
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewBucket(varName string) (*Bucket, error) {
-	inst := jsclass.Env.Get(varName)
+	inst := lifecycle.Env.Get(varName)
 	if inst.IsUndefined() {
 		return nil, errors.New("%s is undefined" + varName)
 	}

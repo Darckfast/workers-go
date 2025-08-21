@@ -7,7 +7,7 @@ import (
 	"database/sql/driver"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 )
 
 type Connector struct {
@@ -21,7 +21,7 @@ var (
 // OpenConnector returns Connector of D1.
 // This method checks DB existence. If DB was not found, this function returns error.
 func OpenConnector(name string) (driver.Connector, error) {
-	v := jsclass.Env.Get(name)
+	v := lifecycle.Env.Get(name)
 	if !v.Truthy() {
 		return nil, ErrDatabaseNotFound
 	}

@@ -7,6 +7,7 @@ import (
 	"syscall/js"
 
 	"github.com/Darckfast/workers-go/cloudflare/env"
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
@@ -51,8 +52,8 @@ func init() {
 }
 
 func consumeBatch(batch, envObj, ctxObj js.Value) error {
-	jsclass.Env = envObj
-	jsclass.ExcutionContext = jsclass.ExecutionContextWrap{Ctx: ctxObj}
+	lifecycle.Env = envObj
+	lifecycle.Ctx = jsclass.ExecutionContextWrap{Ctx: ctxObj}
 
 	err := env.LoadEnvs()
 	if err != nil {

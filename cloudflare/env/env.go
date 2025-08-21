@@ -5,16 +5,16 @@ package env
 import (
 	"os"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsconv "github.com/Darckfast/workers-go/internal/conv"
 )
 
 func LoadEnvs() error {
-	if !jsclass.Env.Truthy() {
+	if !lifecycle.Env.Truthy() {
 		return nil
 	}
 
-	envs, err := jsconv.JSValueToMap(jsclass.Env)
+	envs, err := jsconv.JSValueToMap(lifecycle.Env)
 
 	if err != nil {
 		return err

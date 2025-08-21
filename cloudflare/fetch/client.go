@@ -8,6 +8,7 @@ import (
 	"syscall/js"
 	"time"
 
+	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
 )
@@ -46,6 +47,10 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 var _ http.RoundTripper = (*Transport)(nil)
 
+// Deprecated: This can be used normally, just be aware by transforming it into
+// http.Client, the compiler will also include the crypto lib, and
+// it can increase the final binary size from 5.6MB to 11MB
+// the compressed file can increase from 1.6MB to 2.8MB
 func (c *Client) ToHTTPClient() *http.Client {
 	return &http.Client{
 		Timeout:   c.Timeout,
@@ -54,7 +59,7 @@ func (c *Client) ToHTTPClient() *http.Client {
 }
 
 func (c *Client) WithBinding(bindname string) *Client {
-	c.namespace = jsclass.Env.Get(bindname)
+	c.namespace = lifecycle.Env.Get(bindname)
 	return c
 }
 
