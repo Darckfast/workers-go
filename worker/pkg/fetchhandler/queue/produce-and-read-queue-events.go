@@ -19,6 +19,9 @@ var GET_QUEUE = func(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(404)
 	}
+	if result["queue:result"] == nil {
+		w.WriteHeader(404)
+	}
 	_ = json.NewEncoder(w).Encode(map[string]any{
 		"result": result,
 	})

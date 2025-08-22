@@ -65,11 +65,7 @@ func (ns *Namespace) Get(keysRaw []string, cacheTtl int) (map[string]any, error)
 		return nil, err
 	}
 
-	size := v.Get("size").Int()
-	if size == 0 {
-		return nil, errors.New("key has no value")
-	}
-
+	jsclass.Console.Log(v)
 	return jsconv.JSMapToMap(v)
 }
 
