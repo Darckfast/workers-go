@@ -20,7 +20,7 @@ func New() {
 			v := strings.ToUpper(msg.Body.String())
 
 			namespace, _ := kv.NewNamespace("TEST_NAMESPACE")
-			err := namespace.PutString("queue:result", v, nil)
+			err := namespace.Put("queue:result", v, nil)
 
 			if err != nil {
 				return err

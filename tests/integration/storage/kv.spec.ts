@@ -128,4 +128,84 @@ describe("kv", () => {
 			expect(rs).toStrictEqual({ error: "key has no value" });
 		});
 	});
+
+	describe("get kv with metadata", () => {
+		let body;
+
+		beforeAll(async () => {
+			const key = crypto.randomUUID();
+			await SELF.fetch("http://service/kv/meta", {
+				method: "POST",
+				body: JSON.stringify({
+					key: key,
+					value: JSON.stringify({
+						$schema: "https://www.schemastore.org/tsconfig.json",
+						compilerOptions: {
+							target: "esnext",
+							module: "esnext",
+							lib: ["esnext", "dom"],
+							moduleResolution: "bundler",
+							types: [
+								"node",
+								"@cloudflare/workers-types",
+								"@cloudflare/vitest-pool-workers",
+							],
+							paths: {
+								"$wrk/*": ["./worker/*"],
+							},
+						},
+						include: [
+							"./**/*.ts",
+							"./worker/types/*.ts",
+							"./**/*.spec.ts",
+							// "worker/vite.config.ts",
+						],
+					}),
+					metadata: {
+						title: "Annual Financial Report",
+						author: "Jane Doe",
+						created: "2025-08-20T10:30:00Z",
+						modified: "2025-08-22T15:45:00Z",
+						version: "1.2",
+						description:
+							"This document provides the annual financial report for the fiscal year 2024-2025.",
+						keywords: ["finance", "report", "annual", "2025"],
+						language: "en",
+						format: "application/pdf",
+						identifier: "report-2025-financial",
+						publisher: "Acme Corporation",
+						rights: "© 2025 Acme Corporation. All rights reserved.",
+					},
+				}),
+			}).then((r) => r.text());
+
+			body = await SELF.fetch("http://service/kv/meta?key=" + key).then((r) =>
+				r.json(),
+			);
+		});
+
+		it("should have no error", async () => {
+			expect(body).toStrictEqual({
+				data: {
+					value:
+						'{"$schema":"https://www.schemastore.org/tsconfig.json","compilerOptions":{"target":"esnext","module":"esnext","lib":["esnext","dom"],"moduleResolution":"bundler","types":["node","@cloudflare/workers-types","@cloudflare/vitest-pool-workers"],"paths":{"$wrk/*":["./worker/*"]}},"include":["./**/*.ts","./worker/types/*.ts","./**/*.spec.ts"]}',
+					metadata: {
+						author: "Jane Doe",
+						created: "2025-08-20T10:30:00Z",
+						description:
+							"This document provides the annual financial report for the fiscal year 2024-2025.",
+						format: "application/pdf",
+						identifier: "report-2025-financial",
+						keywords: ["finance", "report", "annual", "2025"],
+						language: "en",
+						modified: "2025-08-22T15:45:00Z",
+						publisher: "Acme Corporation",
+						rights: "© 2025 Acme Corporation. All rights reserved.",
+						title: "Annual Financial Report",
+						version: "1.2",
+					},
+				},
+			});
+		});
+	});
 });

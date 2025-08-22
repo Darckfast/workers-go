@@ -14,7 +14,7 @@ import (
 var GET_QUEUE = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	namespace, _ := kv.NewNamespace("TEST_NAMESPACE")
-	result, err := namespace.GetString("queue:result", nil)
+	result, err := namespace.Get([]string{"queue:result"}, 0)
 
 	if err != nil {
 		w.WriteHeader(404)

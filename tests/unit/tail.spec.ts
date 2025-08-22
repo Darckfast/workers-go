@@ -1,10 +1,10 @@
-import worker from "$wrk/main";
 import {
-  createExecutionContext,
-  env,
-  waitOnExecutionContext,
+	createExecutionContext,
+	env,
+	waitOnExecutionContext,
 } from "cloudflare:test";
 import { beforeAll, describe, expect, it } from "vitest";
+import worker from "$wrk/main";
 
 describe("tail()", () => {
 	let resultSaveInKV;
@@ -74,7 +74,7 @@ describe("tail()", () => {
 	});
 
 	it("should serialize and proccess the event", async () => {
-		expect(JSON.parse(resultSaveInKV.result)).toStrictEqual([
+		expect(JSON.parse(resultSaveInKV.result["tail:result"])).toStrictEqual([
 			{
 				scriptName: "worker-producer",
 				entrypoint: "main.ts",

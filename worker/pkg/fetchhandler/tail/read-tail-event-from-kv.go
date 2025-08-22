@@ -12,9 +12,9 @@ import (
 var GET_TAIL = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	namespace, _ := kv.NewNamespace("TEST_NAMESPACE")
-	result, _ := namespace.GetString("tail:result", nil)
+	result, err := namespace.Get([]string{"tail:result"}, 0)
 
-	if result == "<null>" {
+	if err != nil {
 		w.WriteHeader(404)
 	}
 

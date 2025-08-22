@@ -24,6 +24,6 @@ describe("produces and consumers queue message", () => {
 			{ timeout: 7000 },
 		);
 
-		expect(result).toHaveProperty("result", "VALUE");
+		expect(result).toHaveProperty("queue:result", "VALUE");
 	});
 });

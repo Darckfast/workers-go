@@ -27,11 +27,16 @@ func New() {
 	http.HandleFunc("POST /application/json", httpsimple.POST_JSON)
 	http.HandleFunc("POST /application/x-www-form-urlencoded", httpsimple.POST_FORM_URLENCODED)
 	http.HandleFunc("POST /multipart/form-data", httpsimple.POST_MULTIPART_FORM_DATA)
+
 	// KV
 	http.HandleFunc("DELETE /kv", httpkv.DELETE_KV)
 	http.HandleFunc("POST /kv", httpkv.POST_KV)
+	http.HandleFunc("POST /kv/meta", httpkv.POST_KV_META)
+	http.HandleFunc("GET /kv/meta", httpkv.GET_KV_META)
 	http.HandleFunc("GET /kv", httpkv.GET_KV)
+	http.HandleFunc("GET /kvs", httpkv.GET_KVS)
 	http.HandleFunc("GET /kv/list", httpkv.GET_KV_LIST)
+
 	// R2
 	http.HandleFunc("GET /r2", httpr2.GET_R2)
 	http.HandleFunc("POST /r2", httpr2.POST_R2)
