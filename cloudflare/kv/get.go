@@ -65,7 +65,6 @@ func (ns *Namespace) Get(keysRaw []string, cacheTtl int) (map[string]any, error)
 		return nil, err
 	}
 
-	jsclass.Console.Log(v)
 	return jsconv.JSMapToMap(v)
 }
 
