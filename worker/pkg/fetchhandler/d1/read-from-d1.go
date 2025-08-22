@@ -69,9 +69,15 @@ var POST_D1 = func(w http.ResponseWriter, r *http.Request) {
 	// testing directly with wrangler dev works fine
 	result, err := db.Exec("INSERT INTO Testing (data) VALUES (?)", string(data))
 
+	if err != nil {
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"error": err.Error(),
+		})
+		return
+	}
 	id, _ := result.LastInsertId()
 	_ = json.NewEncoder(w).Encode(map[string]any{
-		"error": err,
+		"error": nil,
 		"data": map[string]int64{
 			"id": id,
 		},
