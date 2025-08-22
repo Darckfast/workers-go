@@ -17,6 +17,6 @@ func New() {
 	tail.ConsumeNonBlock(func(f *[]tail.TraceItem) error {
 		namespace, _ := kv.NewNamespace("TEST_NAMESPACE")
 		bjson, _ := json.Marshal(f)
-		return namespace.PutString("tail:result", string(bjson), nil)
+		return namespace.Put("tail:result", string(bjson), nil)
 	})
 }

@@ -57,3 +57,11 @@ func (e *ExecutionContextWrap) WaitUntil(task func() error) {
 func (e *ExecutionContextWrap) PassThroughOnException() {
 	e.Ctx.Call("passThroughOnException")
 }
+
+type ConsoleWrap struct {
+	js.Value
+}
+
+func (c *ConsoleWrap) Log(v js.Value) {
+	c.Call("log", v)
+}

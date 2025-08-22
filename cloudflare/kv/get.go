@@ -3,6 +3,7 @@
 package kv
 
 import (
+	"encoding/json"
 	"errors"
 	"io"
 	"syscall/js"
@@ -13,75 +14,63 @@ import (
 )
 
 type GetOptions struct {
-	CacheTTL int
+	Type     string `json:"type"`
+	CacheTTL int    `json:"cacheTtl,omitempty"`
 }
 
-func (opts *GetOptions) toJS(type_ string) js.Value {
-	obj := jsclass.Object.New()
-	obj.Set("type", type_)
-	if opts == nil {
-		return obj
-	}
-	if opts.CacheTTL != 0 {
-		obj.Set("cacheTtl", opts.CacheTTL)
-	}
-	return obj
+func (o *GetOptions) ToJS() js.Value {
+	b, _ := json.Marshal(o)
+	j, _ := jsclass.JSON.Parse(string(b))
+
+	return j
 }
 
-func (ns *Namespace) GetStringWithMetadata(key string, opts *GetOptions) (string, string, error) {
-	p := ns.instance.Call("get", key, opts.toJS("text"))
+type StringWithMetadata struct {
+	Value    string         `json:"value"`
+	Metadata map[string]any `json:"metadata"`
+}
+
+func (ns *Namespace) GetWithMetadata(key string, cacheTtl int) (*StringWithMetadata, error) {
+	opts := GetOptions{CacheTTL: cacheTtl, Type: "text"}
+	p := ns.instance.Call("getWithMetadata", key, opts.ToJS())
 	r, err := jsclass.Await(p)
 
 	if err != nil {
-		return "", "", err
+		return nil, err
 	}
 
 	if r.IsNull() || r.IsUndefined() {
-		return "", "", errors.New("key has no value")
+		return nil, errors.New("key has no value")
 	}
 
-	vm := r.Get("metadata")
-	v := r.Get("value")
+	s := jsclass.JSON.Stringify(r)
 
-	if vm.IsNull() || vm.IsUndefined() {
-		return v.String(), "", nil
-	}
+	var sm StringWithMetadata
 
-	return v.String(), vm.String(), nil
+	err = json.Unmarshal([]byte(s.String()), &sm)
+	return &sm, err
 }
 
-func (ns *Namespace) GetStrings(keys []string, opts *GetOptions) (map[string]string, error) {
-	p := ns.instance.Call("get", keys, opts.toJS("text"))
+func (ns *Namespace) Get(keysRaw []string, cacheTtl int) (map[string]any, error) {
+	keys := make([]any, len(keysRaw))
+	for i, v := range keysRaw {
+		keys[i] = v
+	}
+
+	opts := GetOptions{CacheTTL: cacheTtl, Type: "text"}
+	p := ns.instance.Call("get", keys, opts.ToJS())
 	v, err := jsclass.Await(p)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if v.IsNull() || v.IsUndefined() {
-		return nil, errors.New("key has no value")
-	}
-
-	return jsconv.JSValueToMapString(v)
+	return jsconv.JSMapToMap(v)
 }
 
-func (ns *Namespace) GetString(key string, opts *GetOptions) (string, error) {
-	p := ns.instance.Call("get", key, opts.toJS("text"))
-	v, err := jsclass.Await(p)
-
-	if err != nil {
-		return "", err
-	}
-
-	if v.IsNull() || v.IsUndefined() {
-		return "", errors.New("key has no value")
-	}
-
-	return v.String(), nil
-}
-
-func (ns *Namespace) GetReader(key string, opts *GetOptions) (io.ReadCloser, error) {
-	p := ns.instance.Call("get", key, opts.toJS("stream"))
+func (ns *Namespace) GetAsReader(key string, cacheTtl int) (io.ReadCloser, error) {
+	opts := GetOptions{CacheTTL: cacheTtl, Type: "stream"}
+	p := ns.instance.Call("get", key, opts.ToJS())
 	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
