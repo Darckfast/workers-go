@@ -10,43 +10,24 @@ import (
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
-// PutOptions represents Cloudflare KV namespace put options.
-//   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L958
 type PutOptions struct {
-	Expiration    int
-	ExpirationTTL int
-	Metadata      *map[string]any
+	Expiration    int            `json:"expiration,omitempty"`
+	ExpirationTTL int            `json:"expirationTtl,omitempty"`
+	Metadata      map[string]any `json:"metadata,omitempty"`
 }
 
-// TODO: use json.Marshal instead
-func (opts *PutOptions) toJS() js.Value {
-	if opts == nil {
-		return js.Undefined()
-	}
-	obj := jsclass.Object.New()
-	if opts.Expiration != 0 {
-		obj.Set("expiration", opts.Expiration)
-	}
-	if opts.ExpirationTTL != 0 {
-		obj.Set("expirationTtl", opts.ExpirationTTL)
-	}
-	if opts.Metadata != nil {
-		b, _ := json.Marshal(opts.Metadata)
-		om, _ := jsclass.JSON.Parse(string(b))
-		obj.Set("metadata", om)
-	}
-	return obj
+func (o *PutOptions) ToJS() js.Value {
+	b, _ := json.Marshal(o)
+	js, _ := jsclass.JSON.Parse(string(b))
+
+	return js
 }
 
-// PutString puts string value into KV with key.
-//   - if a network error happens, returns error.
-func (ns *Namespace) PutString(key string, value string, opts *PutOptions) error {
-	p := ns.instance.Call("put", key, value, opts.toJS())
+func (ns *Namespace) Put(key string, value string, opts *PutOptions) error {
+	p := ns.instance.Call("put", key, value, opts.ToJS())
 	_, err := jsclass.Await(p)
-	if err != nil {
-		return err
-	}
-	return nil
+
+	return err
 }
 
 // PutReader puts stream value into KV with key.
@@ -60,7 +41,7 @@ func (ns *Namespace) PutReader(key string, value io.Reader, opts *PutOptions) er
 	}
 	ua := jsclass.Uint8Array.New(len(b))
 	js.CopyBytesToJS(ua, b)
-	p := ns.instance.Call("put", key, ua.Get("buffer"), opts.toJS())
+	p := ns.instance.Call("put", key, ua.Get("buffer"), opts.ToJS())
 	_, err = jsclass.Await(p)
 	if err != nil {
 		return err

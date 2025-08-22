@@ -37,6 +37,17 @@ func MapToJSValue(v map[string]any) js.Value {
 	return jsclass.JSON.Call("parse", string(b))
 }
 
+func JSMapToMap(v js.Value) (map[string]any, error) {
+	obj := map[string]any{}
+	if !v.Truthy() {
+		return obj, nil
+	}
+
+	vm := jsclass.Object.FromEntries(v)
+
+	return JSValueToMap(vm)
+}
+
 func JSValueToMapString(v js.Value) (map[string]string, error) {
 	obj := map[string]string{}
 	if !v.Truthy() {

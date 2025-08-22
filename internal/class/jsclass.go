@@ -25,6 +25,7 @@ var (
 	Connect           js.Value
 	JSON              = JSONWrap{js.Global().Get("JSON")}
 	Object            = ObjectWrap{js.Global().Get("Object")}
+	Console           = ConsoleWrap{js.Global().Get("console")}
 	Caches            = js.Global().Get("caches")
 	Promise           = js.Global().Get("Promise")
 	AbortSignal       = js.Global().Get("AbortSignal")
