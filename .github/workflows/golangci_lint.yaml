@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  ci:
+  lint:
     strategy:
       matrix:
         go-version: [ 1.24 ]

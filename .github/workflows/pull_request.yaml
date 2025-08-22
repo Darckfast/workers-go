@@ -1,4 +1,4 @@
-name: PR
+name: PR Tests
 on: [pull_request]
 
 env:
@@ -6,7 +6,7 @@ env:
   GOARCH: wasm
 
 jobs:
-  ci:
+  tests:
     strategy:
       matrix:
         go-version: [ 1.24 ]
