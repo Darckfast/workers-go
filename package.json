@@ -16,7 +16,7 @@
 		"lint": "GOOS=js GOARCH=wasm golangci-lint run"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Darckfast",
 	"engines": {
 		"node": "22"
 	},

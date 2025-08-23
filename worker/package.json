@@ -13,7 +13,7 @@
 		"build:tiny": "GOOS=js GOARCH=wasm tinygo build -o ./bin/app.wasm ./pkg/main.go"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Darckfast",
 	"engines": {
 		"node": "22"
 	},
