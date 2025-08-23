@@ -52,7 +52,7 @@ function init() {
 
 async function fetch(req: Request, env: Env, ctx: ExecutionContext) {
   init();
-  return await globalThis.cf.fetch(req, env, ctx);
+  return await cf.fetch(req, env, ctx);
 }
 
 async function email(
@@ -61,7 +61,7 @@ async function email(
   ctx: ExecutionContext,
 ) {
   init();
-  return await globalThis.cf.email(message, env, ctx);
+  return await cf.email(message, env, ctx);
 }
 
 async function scheduled(
@@ -70,18 +70,18 @@ async function scheduled(
   ctx: ExecutionContext,
 ) {
   init();
-  new FixedLengthStream(1000).writable.getWriter()
-  return await globalThis.cf.scheduled(controler, env, ctx);
+  new FixedLengthStream(1000).writable.getWriter();
+  return await cf.scheduled(controler, env, ctx);
 }
 
 async function queue(batch: MessageBatch, env: Env, ctx: ExecutionContext) {
   init();
-  return await globalThis.cf.queue(batch, env, ctx);
+  return await cf.queue(batch, env, ctx);
 }
 
 async function tail(events: TraceItem[], env: Env, ctx: ExecutionContext) {
   init();
-  return await globalThis.cf.tail(events, env, ctx);
+  return await cf.tail(events, env, ctx);
 }
 
 /**
