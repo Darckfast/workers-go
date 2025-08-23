@@ -93,7 +93,7 @@ func toListResult(v js.Value) (*ListResult, error) {
 }
 
 func (ns *Namespace) List(opts *ListOptions) (*ListResult, error) {
-	p := ns.Value.Call("list", opts.toJS())
+	p := ns.Call("list", opts.toJS())
 	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err

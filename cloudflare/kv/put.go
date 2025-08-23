@@ -25,7 +25,7 @@ func (o *PutOptions) ToJS() js.Value {
 }
 
 func (ns *Namespace) Put(key string, value string, opts *PutOptions) error {
-	p := ns.Value.Call("put", key, value, opts.ToJS())
+	p := ns.Call("put", key, value, opts.ToJS())
 	_, err := jsclass.Await(p)
 
 	return err
@@ -33,7 +33,7 @@ func (ns *Namespace) Put(key string, value string, opts *PutOptions) error {
 
 func (ns *Namespace) PutReader(key string, value io.ReadCloser, opts *PutOptions) error {
 	stream := jsstream.ReadCloserToReadableStream(value)
-	p := ns.Value.Call("put", key, stream, opts.ToJS())
+	p := ns.Call("put", key, stream, opts.ToJS())
 	_, err := jsclass.Await(p)
 
 	return err
