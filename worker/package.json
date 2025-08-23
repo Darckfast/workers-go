@@ -9,8 +9,7 @@
 		"init": "go mod init && go mod tidy && pnpm install",
 		"dev": "vite",
 		"wd": "pnpm run build && wrangler --port 5173 dev",
-		"build": "GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ./bin/app.wasm ./pkg/main.go",
-		"build:tiny": "GOOS=js GOARCH=wasm tinygo build -o ./bin/app.wasm ./pkg/main.go"
+		"build": "GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ./bin/app.wasm ./pkg/main.go"
 	},
 	"keywords": [],
 	"author": "Darckfast",
