@@ -32,7 +32,7 @@ type StringWithMetadata struct {
 
 func (ns *Namespace) GetWithMetadata(key string, cacheTtl int) (*StringWithMetadata, error) {
 	opts := GetOptions{CacheTTL: cacheTtl, Type: "text"}
-	p := ns.instance.Call("getWithMetadata", key, opts.ToJS())
+	p := ns.Value.Call("getWithMetadata", key, opts.ToJS())
 	r, err := jsclass.Await(p)
 
 	if err != nil {
@@ -58,7 +58,7 @@ func (ns *Namespace) Get(keysRaw []string, cacheTtl int) (map[string]any, error)
 	}
 
 	opts := GetOptions{CacheTTL: cacheTtl, Type: "text"}
-	p := ns.instance.Call("get", keys, opts.ToJS())
+	p := ns.Value.Call("get", keys, opts.ToJS())
 	v, err := jsclass.Await(p)
 
 	if err != nil {
@@ -70,7 +70,7 @@ func (ns *Namespace) Get(keysRaw []string, cacheTtl int) (map[string]any, error)
 
 func (ns *Namespace) GetAsReader(key string, cacheTtl int) (io.ReadCloser, error) {
 	opts := GetOptions{CacheTTL: cacheTtl, Type: "stream"}
-	p := ns.instance.Call("get", key, opts.ToJS())
+	p := ns.Value.Call("get", key, opts.ToJS())
 	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err

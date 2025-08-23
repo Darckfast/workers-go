@@ -92,9 +92,8 @@ func toListResult(v js.Value) (*ListResult, error) {
 	}, nil
 }
 
-// List lists keys stored into the KV namespace.
 func (ns *Namespace) List(opts *ListOptions) (*ListResult, error) {
-	p := ns.instance.Call("list", opts.toJS())
+	p := ns.Value.Call("list", opts.toJS())
 	v, err := jsclass.Await(p)
 	if err != nil {
 		return nil, err
