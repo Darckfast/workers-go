@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	_ "github.com/Darckfast/workers-go/cloudflare/d1" // register driver
-
 	"github.com/Darckfast/workers-go/cloudflare/sockets"
 )
 
