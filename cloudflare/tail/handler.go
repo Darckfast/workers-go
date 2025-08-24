@@ -55,7 +55,11 @@ func handler(eventsObj, envObj, ctxObj js.Value) error {
 		return err
 	}
 
-	events := NewEvents(eventsObj)
+	events, err := NewEvents(eventsObj)
+
+	if err != nil {
+		return err
+	}
 
 	return consumer(events)
 }

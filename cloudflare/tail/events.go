@@ -96,15 +96,15 @@ type TraceItem struct {
 	ScriptVersion            *ScriptVersion                 `json:"scriptVersion,omitempty"`
 }
 
-func NewEvents(eventsJs js.Value) *[]TraceItem {
+func NewEvents(eventsJs js.Value) (*[]TraceItem, error) {
 	traces := []TraceItem{}
 
 	if !eventsJs.Truthy() {
-		return &traces
+		return &traces, nil
 	}
 
 	str := jsclass.JSON.Stringify(eventsJs)
-	json.Unmarshal([]byte(str.String()), &traces)
+	err := json.Unmarshal([]byte(str.String()), &traces)
 
-	return &traces
+	return &traces, err
 }
