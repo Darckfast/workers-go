@@ -10,6 +10,7 @@ import (
 	httpd1 "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/d1"
 	httpdurableobject "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/durable-objects"
 	httpenv "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/env"
+	errorshandler "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/errors"
 	httpsimple "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/http"
 	httpkv "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/kv"
 	httpqueue "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/queue"
@@ -60,6 +61,9 @@ func New() {
 	http.HandleFunc("GET /do", httpdurableobject.GET_DO)
 	// Env
 	http.HandleFunc("GET /env", httpenv.GET_ENV)
+
+	//Error
+	http.HandleFunc("GET /error", errorshandler.GET_ERROR)
 
 	/*
 	 * Fetch handler uses http.DefaulServeMux as default, calling this function is

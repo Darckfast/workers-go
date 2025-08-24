@@ -2,6 +2,8 @@ name = "workers-go"
 main = "./main.ts"
 compatibility_date = "2025-08-12"
 
+tail_consumers = [{ service = "workers-go" }]
+
 [vars]
 API_HOST = "example.com"
 API_ACCOUNT_ID = "example_user"

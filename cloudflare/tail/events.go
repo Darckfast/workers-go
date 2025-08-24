@@ -3,11 +3,10 @@
 package tail
 
 import (
-	"net/http"
+	"encoding/json"
 	"syscall/js"
 
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
-	jshttp "github.com/Darckfast/workers-go/internal/http"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
 type ScriptVersion struct {
@@ -24,10 +23,10 @@ type TraceItemFetchEventInfoResponse struct {
 	Status int `json:"status,omitempty"`
 }
 type TraceItemFetchEventInfoRequest struct {
-	Cf      map[string]any `json:"cf,omitempty"`
-	Headers http.Header    `json:"headers,omitempty"`
-	Method  string         `json:"method,omitempty"`
-	Url     string         `json:"url,omitempty"`
+	Cf      map[string]any    `json:"cf,omitempty"`
+	Headers map[string]string `json:"headers,omitempty"`
+	Method  string            `json:"method,omitempty"`
+	Url     string            `json:"url,omitempty"`
 }
 
 type TraceItemEvent struct {
@@ -61,9 +60,9 @@ type TraceItemGetWebSocketEvent struct {
 }
 
 type TraceLog struct {
-	Timestamp int64  `json:"timestamp,omitempty"`
-	Level     string `json:"level,omitempty"`
-	Message   string `json:"message,omitempty"`
+	Timestamp int64    `json:"timestamp,omitempty"`
+	Level     string   `json:"level,omitempty"`
+	Message   []string `json:"message"`
 }
 
 type TraceException struct {
@@ -80,192 +79,32 @@ type TraceDiagnosticeChannelEvent struct {
 }
 
 type TraceItem struct {
-	ScriptName               string                         `json:"scriptName,omitempty"`
+	ScriptName               string                         `json:"scriptName"`
 	Entrypoint               string                         `json:"entrypoint,omitempty"`
 	Event                    *TraceItemEvent                `json:"event,omitempty"`
 	EventTimeStamp           int64                          `json:"eventTimestamp,omitempty"`
-	Logs                     []TraceLog                     `json:"logs,omitempty"`
-	Exceptions               []TraceException               `json:"exceptions,omitempty"`
-	DiagnosticsChannelEvents []TraceDiagnosticeChannelEvent `json:"diagnosticsChannelEvents,omitempty"`
+	Logs                     []TraceLog                     `json:"logs"`
+	Exceptions               []TraceException               `json:"exceptions"`
+	DiagnosticsChannelEvents []TraceDiagnosticeChannelEvent `json:"diagnosticsChannelEvents"`
 	Outcome                  string                         `json:"outcome,omitempty"`
-	Truncated                bool                           `json:"truncated,omitempty"`
-	CpuTime                  int64                          `json:"cpuTime,omitempty"`
-	WallTime                 int64                          `json:"wallTime,omitempty"`
+	Truncated                bool                           `json:"truncated"`
+	CpuTime                  int64                          `json:"cpuTime"`
+	WallTime                 int64                          `json:"wallTime"`
 	ExecutionModel           string                         `json:"executionModel,omitempty"`
 	ScriptTags               []string                       `json:"scriptTags,omitempty"`
 	DispatchNamespace        string                         `json:"dispatchNamespace,omitempty"`
 	ScriptVersion            *ScriptVersion                 `json:"scriptVersion,omitempty"`
 }
 
-func parseTailItems(tracesJs js.Value) []TraceItem {
+func NewEvents(eventsJs js.Value) *[]TraceItem {
 	traces := []TraceItem{}
 
-	if !tracesJs.Truthy() {
-		return traces
+	if !eventsJs.Truthy() {
+		return &traces
 	}
 
-	// jsconv.JSValueToMap(tracesJs)
-	for j := range tracesJs.Length() {
-		traceJs := tracesJs.Index(j)
-		tailItem := TraceItem{
-			ScriptName:               traceJs.Get("scriptName").String(),
-			Entrypoint:               traceJs.Get("entrypoint").String(),
-			EventTimeStamp:           jsconv.MaybeInt64(traceJs.Get("eventTimestamp")),
-			Logs:                     []TraceLog{},
-			Exceptions:               []TraceException{},
-			Outcome:                  traceJs.Get("outcome").String(),
-			Truncated:                traceJs.Get("truncated").Bool(),
-			DiagnosticsChannelEvents: []TraceDiagnosticeChannelEvent{},
-			ScriptTags:               []string{},
-			DispatchNamespace:        traceJs.Get("dispatchNamespace").String(),
-			CpuTime:                  jsconv.MaybeInt64(traceJs.Get("cpuTime")),
-			WallTime:                 jsconv.MaybeInt64(traceJs.Get("wallTime")),
-			ExecutionModel:           traceJs.Get("executionModel").String(),
-		}
+	str := jsclass.JSON.Stringify(eventsJs)
+	json.Unmarshal([]byte(str.String()), &traces)
 
-		scriptVerJs := traceJs.Get("scriptVersion")
-
-		if scriptVerJs.Truthy() {
-			tailItem.ScriptVersion = &ScriptVersion{
-				Id:      scriptVerJs.Get("id").String(),
-				Tag:     scriptVerJs.Get("tag").String(),
-				Message: scriptVerJs.Get("message").String(),
-			}
-		}
-
-		logsJs := traceJs.Get("logs")
-		if logsJs.Truthy() {
-			for li := range logsJs.Length() {
-				item := logsJs.Index(li)
-
-				tailItem.Logs = append(tailItem.Logs, TraceLog{
-					Timestamp: jsconv.MaybeInt64(item.Get("timestamp")),
-					Level:     item.Get("level").String(),
-					Message:   item.Get("message").String(),
-				})
-			}
-		}
-
-		excJs := traceJs.Get("exceptions")
-		if excJs.Truthy() {
-			for li := range excJs.Length() {
-				item := excJs.Index(li)
-
-				tailItem.Exceptions = append(tailItem.Exceptions, TraceException{
-					Timestamp: jsconv.MaybeInt64(item.Get("timestamp")),
-					Name:      item.Get("name").String(),
-					Stack:     item.Get("stack").String(),
-					Message:   item.Get("message").String(),
-				})
-			}
-		}
-
-		diagJs := traceJs.Get("diagnosticsChannelEvents")
-		if diagJs.Truthy() {
-			for li := range diagJs.Length() {
-				item := diagJs.Index(li)
-
-				tailItem.DiagnosticsChannelEvents = append(tailItem.DiagnosticsChannelEvents, TraceDiagnosticeChannelEvent{
-					Timestamp: jsconv.MaybeInt64(item.Get("timestamp")),
-					Channel:   item.Get("channel").String(),
-					Message:   item.Get("message").String(),
-				})
-			}
-		}
-
-		tagsJs := traceJs.Get("scriptTags")
-		if tagsJs.Truthy() {
-			tailItem.ScriptTags = jsconv.MaybeStringList(tagsJs)
-		}
-
-		eventJs := traceJs.Get("event")
-
-		if eventJs.Truthy() {
-			tailItem.Event = GetEvent(eventJs)
-		}
-
-		traces = append(traces, tailItem)
-	}
-
-	return traces
-}
-
-func GetEvent(event js.Value) *TraceItemEvent {
-	if !event.Truthy() {
-		return nil
-	}
-
-	if event.Get("scheduledTime").Truthy() {
-		if event.Get("cron").Truthy() {
-			return &TraceItemEvent{
-				Type:          "cron",
-				Cron:          event.Get("cron").String(),
-				ScheduledTime: jsconv.MaybeInt64(event.Get("scheduledTime")),
-			}
-		}
-
-		return &TraceItemEvent{
-			Type: "alarm",
-			// In the Alarm types, it's defined as Date instead of number
-			ScheduledTime: jsconv.DateToTimestamp(event.Get("scheduledTime")),
-		}
-	} else if event.Get("queue").Truthy() {
-		return &TraceItemEvent{
-			Type:      "queue",
-			Queue:     event.Get("queue").String(),
-			BatchSize: event.Get("batchSize").Int(),
-		}
-	} else if event.Get("mailFrom").Truthy() {
-		return &TraceItemEvent{
-			Type:     "email",
-			MailFrom: event.Get("mailFrom").String(),
-			RcptTo:   event.Get("rcptTo").String(),
-			RawSize:  event.Get("rawSize").Int(),
-		}
-	} else if event.Get("consumedEvents").Truthy() {
-		items := event.Get("consumedEvents")
-
-		event := &TraceItemEvent{}
-		for i := range items.Length() {
-			*event.ConsumedEvents = append(*event.ConsumedEvents, TraceItemTailEventInfoTailItem{
-				ScriptName: items.Index(i).Get("scriptName").String(),
-			})
-		}
-
-		return event
-	} else if event.Get("request").Truthy() {
-		h, _ := jshttp.ToHeader(event.Get("request").Get("headers"))
-		return &TraceItemEvent{
-			Type: "fetch",
-			Response: &TraceItemFetchEventInfoResponse{
-				Status: event.Get("response").Get("status").Int(),
-			},
-			Request: &TraceItemFetchEventInfoRequest{
-				Url:     event.Get("request").Get("url").String(),
-				Method:  event.Get("request").Get("method").String(),
-				Headers: h,
-			},
-		}
-	} else if event.Get("rpcMethod").Truthy() {
-		return &TraceItemEvent{
-			Type:      "rpc",
-			RpcMethod: event.Get("rpcMethod").String(),
-		}
-	} else if event.Get("getWebSocketEvent").Truthy() {
-		return &TraceItemEvent{
-			Type: "websocket",
-			GetWebSocketEvent: &TraceItemGetWebSocketEvent{
-				WebSocketEventType: event.Get("getWebSocketEvent").Get("webSocketEventType").String(),
-				Code:               jsconv.MaybeInt(event.Get("getWebSocketEvent").Get("code")),
-				WasClean:           jsconv.MaybeBool(event.Get("getWebSocketEvent").Get("wasClean")),
-			},
-		}
-	}
-
-	return nil
-}
-
-func NewEvents(eventsJs js.Value) *[]TraceItem {
-	events := parseTailItems(eventsJs)
-	return &events
+	return &traces
 }
