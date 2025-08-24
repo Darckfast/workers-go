@@ -1,0 +1,120 @@
+workflow:
+- changed-files:
+  - any-glob-to-any-file: .github/workflows/**
+
+cloudflare/cache:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/cache/**'
+
+cloudflare/cron:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/cron/**'
+
+cloudflare/d1:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/d1/**'
+
+cloudflare/durableobjects:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/durableobjects/**'
+
+cloudflare/email:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/email/**'
+
+cloudflare/env:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/env/**'
+
+cloudflare/fetch:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/fetch/**'
+
+cloudflare/kv:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/kv/**'
+
+cloudflare/lifecycle:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/lifecycle/**'
+
+cloudflare/queues:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/queues/**'
+
+cloudflare/r2:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/r2/**'
+
+cloudflare/sockets:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/sockets/**'
+
+cloudflare/tail:
+  - changed-files:
+      - any-glob-to-any-file: 'cloudflare/tail/**'
+
+internal/class:
+  - changed-files:
+      - any-glob-to-any-file: 'internal/class/**'
+
+internal/conv:
+  - changed-files:
+      - any-glob-to-any-file: 'internal/conv/**'
+
+internal/http:
+  - changed-files:
+      - any-glob-to-any-file: 'internal/http/**'
+
+internal/runtime:
+  - changed-files:
+      - any-glob-to-any-file: 'internal/runtime/**'
+
+internal/stream:
+  - changed-files:
+      - any-glob-to-any-file: 'internal/stream/**'
+
+internal/try:
+  - changed-files:
+      - any-glob-to-any-file: 'internal/try/**'
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file: 'tests/**'
+
+worker:
+  - changed-files:
+      - any-glob-to-any-file: 'worker/**'
+
+feat:
+  - head-branch: ['^feat', 'feat']
+
+fix:
+  - head-branch: ['^fix', 'fix']
+
+chore:
+  - head-branch: ['^chore', 'chore']
+
+docs:
+  - head-branch: ['^docs', 'docs']
+
+style:
+  - head-branch: ['^style', 'style']
+
+refactor:
+  - head-branch: ['^refactor', 'refactor']
+
+perf:
+  - head-branch: ['^perf', 'perf']
+
+test:
+  - head-branch: ['^test', 'test']
+
+build:
+  - head-branch: ['^build', 'build']
+
+ci:
+  - head-branch: ['^ci', 'ci']
+
+revert:
+  - head-branch: ['^revert', 'revert']
