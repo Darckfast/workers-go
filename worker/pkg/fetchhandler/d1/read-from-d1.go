@@ -64,7 +64,6 @@ var PUT_D1 = func(w http.ResponseWriter, r *http.Request) {
 
 var POST_D1 = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	// db, _ := sql.Open("d1", "DB")
 
 	var db, _ = d1.GetDB("DB")
 	defer func() {

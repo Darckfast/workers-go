@@ -36,6 +36,8 @@ func (s *D1PreparedStatment) Bind(variable ...any) *D1PreparedStatment {
 	return s
 }
 
+// TODO: add a Typed() method for unmarshaling with a
+// provided pointer instead of any
 func (s *D1PreparedStatment) Run() (*D1Result, error) {
 	r, err := jsclass.Await(s.v.Call("run"))
 
