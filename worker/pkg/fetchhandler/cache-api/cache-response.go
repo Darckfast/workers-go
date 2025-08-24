@@ -6,8 +6,6 @@ import (
 	"io"
 	"net/http"
 
-	_ "github.com/Darckfast/workers-go/cloudflare/d1" // register driver
-
 	"github.com/Darckfast/workers-go/cloudflare/cache"
 	"github.com/Darckfast/workers-go/cloudflare/fetch"
 )
