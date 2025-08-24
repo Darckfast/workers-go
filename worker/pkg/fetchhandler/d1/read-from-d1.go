@@ -29,12 +29,17 @@ var GET_D1 = func(w http.ResponseWriter, r *http.Request) {
 	result := db.QueryRow("SELECT id, data, created_at, updated_at FROM Testing WHERE id = ?", idi)
 
 	var a TestingRow
-
 	err := result.Scan(&a.Id, &a.Data, &a.CreatedAt, &a.UpdatedAt)
-	_ = json.NewEncoder(w).Encode(map[string]any{
-		"data":  a,
-		"error": err,
-	})
+
+	if err != nil {
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"error": err.Error(),
+		})
+	} else {
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"data": a,
+		})
+	}
 }
 
 var PUT_D1 = func(w http.ResponseWriter, r *http.Request) {
