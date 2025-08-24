@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	_ "github.com/Darckfast/workers-go/cloudflare/d1" // register driver
+	"github.com/Darckfast/workers-go/cloudflare/d1/v2"
 )
 
 type TestingRow struct {
@@ -21,15 +22,14 @@ type TestingRow struct {
 
 var GET_D1 = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	db, _ := sql.Open("d1", "DB")
 
+	db, _ := d1.GetDB("DB")
 	id := r.URL.Query().Get("id")
 	idi, _ := strconv.Atoi(id)
 
-	result := db.QueryRow("SELECT id, data, created_at, updated_at FROM Testing WHERE id = ?", idi)
-
-	var a TestingRow
-	err := result.Scan(&a.Id, &a.Data, &a.CreatedAt, &a.UpdatedAt)
+	result, err := db.Prepare("SELECT id, data, created_at, updated_at FROM Testing WHERE id = ?").
+		Bind(idi).
+		Run()
 
 	if err != nil {
 		_ = json.NewEncoder(w).Encode(map[string]any{
@@ -37,7 +37,7 @@ var GET_D1 = func(w http.ResponseWriter, r *http.Request) {
 		})
 	} else {
 		_ = json.NewEncoder(w).Encode(map[string]any{
-			"data": a,
+			"data": result,
 		})
 	}
 }

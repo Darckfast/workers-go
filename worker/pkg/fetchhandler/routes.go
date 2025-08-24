@@ -48,6 +48,7 @@ func New() {
 	http.HandleFunc("POST /d1", httpd1.POST_D1)
 	http.HandleFunc("PUT /d1", httpd1.PUT_D1)
 	http.HandleFunc("DELETE /d1", httpd1.DELETE_D1)
+	http.HandleFunc("POST /d1/batch", httpd1.POST_D1_BATCH)
 	// Queue
 	http.HandleFunc("GET /queue", httpqueue.GET_QUEUE)
 	http.HandleFunc("POST /queue", httpqueue.POST_QUEUE)
