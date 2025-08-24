@@ -260,10 +260,7 @@ describe("tail()", () => {
             timestamp: 1756036035775,
           },
           {
-            message: [
-              "exit code:",
-              "", // this was a number, but we are parsing only string values
-            ],
+            message: ["exit code:", 2],
             level: "warn",
             timestamp: 1756036035775,
           },

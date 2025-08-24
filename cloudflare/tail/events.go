@@ -60,9 +60,9 @@ type TraceItemGetWebSocketEvent struct {
 }
 
 type TraceLog struct {
-	Timestamp int64    `json:"timestamp,omitempty"`
-	Level     string   `json:"level,omitempty"`
-	Message   []string `json:"message"`
+	Timestamp int64  `json:"timestamp,omitempty"`
+	Level     string `json:"level,omitempty"`
+	Message   []any  `json:"message"`
 }
 
 type TraceException struct {
