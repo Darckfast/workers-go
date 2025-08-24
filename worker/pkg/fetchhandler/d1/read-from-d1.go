@@ -3,13 +3,11 @@
 package httpd1
 
 import (
-	"database/sql"
 	"encoding/json"
 	"io"
 	"net/http"
 	"strconv"
 
-	_ "github.com/Darckfast/workers-go/cloudflare/d1" // register driver
 	"github.com/Darckfast/workers-go/cloudflare/d1/v2"
 )
 
@@ -22,8 +20,8 @@ type TestingRow struct {
 
 var GET_D1 = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	var db, _ = d1.GetDB("DB")
 
-	db, _ := d1.GetDB("DB")
 	id := r.URL.Query().Get("id")
 	idi, _ := strconv.Atoi(id)
 
@@ -44,35 +42,40 @@ var GET_D1 = func(w http.ResponseWriter, r *http.Request) {
 
 var PUT_D1 = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	db, _ := sql.Open("d1", "DB")
 
+	var db, _ = d1.GetDB("DB")
 	id := r.URL.Query().Get("id")
 	idi, _ := strconv.Atoi(id)
 
 	defer func() {
 		_ = r.Body.Close()
 	}()
+
 	data, _ := io.ReadAll(r.Body)
-	result, err := db.Exec("UPDATE Testing SET data = ?, updated_at = ( unixepoch('subsec') * 1000 ) WHERE id = ?", string(data), idi)
-	rows, _ := result.RowsAffected()
+	result, err := db.Prepare("UPDATE Testing SET data = ?, updated_at = ( unixepoch('subsec') * 1000 ) WHERE id = ?").
+		Bind(string(data), idi).
+		Run()
 
 	_ = json.NewEncoder(w).Encode(map[string]any{
 		"error": err,
-		"data":  rows,
+		"data":  result,
 	})
 }
 
 var POST_D1 = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	db, _ := sql.Open("d1", "DB")
+	// db, _ := sql.Open("d1", "DB")
 
+	var db, _ = d1.GetDB("DB")
 	defer func() {
 		_ = r.Body.Close()
 	}()
 	data, _ := io.ReadAll(r.Body)
 	// D1 seems to not work with Vite, at least it does not find the table, even though it exists
 	// testing directly with wrangler dev works fine
-	result, err := db.Exec("INSERT INTO Testing (data) VALUES (?)", string(data))
+	result, err := db.Prepare("INSERT INTO Testing (data) VALUES (?)").
+		Bind(string(data)).
+		Run()
 
 	if err != nil {
 		_ = json.NewEncoder(w).Encode(map[string]any{
@@ -80,7 +83,7 @@ var POST_D1 = func(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	id, _ := result.LastInsertId()
+	id := result.Meta.LastRowId
 	_ = json.NewEncoder(w).Encode(map[string]any{
 		"error": nil,
 		"data": map[string]int64{
@@ -91,12 +94,15 @@ var POST_D1 = func(w http.ResponseWriter, r *http.Request) {
 
 var DELETE_D1 = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	db, _ := sql.Open("d1", "DB")
 
+	var db, _ = d1.GetDB("DB")
 	id := r.URL.Query().Get("id")
 	idi, _ := strconv.Atoi(id)
-	result, err := db.Exec("DELETE FROM Testing  WHERE id = ?", idi)
-	rows, _ := result.RowsAffected()
+	result, err := db.Prepare("DELETE FROM Testing  WHERE id = ?").
+		Bind(idi).
+		Run()
+
+	rows := result.Meta.Changes
 
 	_ = json.NewEncoder(w).Encode(map[string]any{
 		"error": err,

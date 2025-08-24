@@ -12,7 +12,7 @@ import (
 )
 
 type D1Db struct {
-	js.Value
+	v js.Value
 }
 
 func GetDB(binding string) (*D1Db, error) {
@@ -22,21 +22,22 @@ func GetDB(binding string) (*D1Db, error) {
 		return nil, errors.New("d1 binding not found " + binding)
 	}
 
-	return &D1Db{v}, nil
+	return &D1Db{v: v}, nil
 }
 
 type D1PreparedStatment struct {
-	js.Value
+	v js.Value
 }
 
 func (s *D1PreparedStatment) Bind(variable ...any) *D1PreparedStatment {
-	s.Value = s.Call("bind", variable...)
+	// there might a be an issue with int64
+	s.v = s.v.Call("bind", variable...)
 
 	return s
 }
 
 func (s *D1PreparedStatment) Run() (*D1Result, error) {
-	r, err := jsclass.Await(s.Call("run"))
+	r, err := jsclass.Await(s.v.Call("run"))
 
 	if err != nil {
 		return nil, err
@@ -52,7 +53,7 @@ func (s *D1PreparedStatment) Run() (*D1Result, error) {
 func (s *D1PreparedStatment) Raw(columnNames bool) ([]any, error) {
 	arg := jsclass.Object.New()
 	arg.Set("columnNames", columnNames)
-	r, err := jsclass.Await(s.Call("raw", arg))
+	r, err := jsclass.Await(s.v.Call("raw", arg))
 
 	if err != nil {
 		return nil, err
@@ -66,7 +67,7 @@ func (s *D1PreparedStatment) Raw(columnNames bool) ([]any, error) {
 }
 
 func (s *D1PreparedStatment) First(columnName string) (*any, error) {
-	r, err := jsclass.Await(s.Call("first", columnName))
+	r, err := jsclass.Await(s.v.Call("first", columnName))
 
 	if err != nil {
 		return nil, err
@@ -80,7 +81,7 @@ func (s *D1PreparedStatment) First(columnName string) (*any, error) {
 }
 
 func (d *D1Db) Prepare(query string) *D1PreparedStatment {
-	stmtObj := d.Call("prepare", query)
+	stmtObj := d.v.Call("prepare", query)
 	return &D1PreparedStatment{stmtObj}
 }
 
@@ -113,10 +114,10 @@ func (d *D1Db) Batch(stmts []D1PreparedStatment) ([]D1Result, error) {
 	jsList := jsclass.Array.New()
 
 	for _, st := range stmts {
-		jsList.Call("push", st.Value)
+		jsList.Call("push", st.v)
 	}
 
-	batchResult, err := jsclass.Await(d.Call("batch", jsList))
+	batchResult, err := jsclass.Await(d.v.Call("batch", jsList))
 
 	if err != nil {
 		return nil, err
@@ -130,7 +131,7 @@ func (d *D1Db) Batch(stmts []D1PreparedStatment) ([]D1Result, error) {
 }
 
 func (d *D1Db) Exec(query string) (*D1ExecResult, error) {
-	result, err := jsclass.Await(d.Call("exec", query))
+	result, err := jsclass.Await(d.v.Call("exec", query))
 
 	if err != nil {
 		return nil, err
@@ -144,11 +145,11 @@ func (d *D1Db) Exec(query string) (*D1ExecResult, error) {
 }
 
 type D1DatabaseSession struct {
-	js.Value
+	v js.Value
 }
 
 func (d *D1DatabaseSession) Prepare(query string) *D1PreparedStatment {
-	stmtObj := d.Call("prepare", query)
+	stmtObj := d.v.Call("prepare", query)
 	return &D1PreparedStatment{stmtObj}
 }
 
@@ -156,10 +157,10 @@ func (d *D1DatabaseSession) Batch(stmts ...D1PreparedStatment) ([]D1Result, erro
 	jsList := jsclass.Array.New()
 
 	for _, st := range stmts {
-		jsList.Call("push", st.Value)
+		jsList.Call("push", st.v)
 	}
 
-	batchResult, err := jsclass.Await(d.Call("batch", jsList))
+	batchResult, err := jsclass.Await(d.v.Call("batch", jsList))
 
 	if err != nil {
 		return nil, err
@@ -173,12 +174,12 @@ func (d *D1DatabaseSession) Batch(stmts ...D1PreparedStatment) ([]D1Result, erro
 }
 
 func (d *D1Db) WithSession(param string) *D1DatabaseSession {
-	s := d.Call("withSession", param)
+	s := d.v.Call("withSession", param)
 	return &D1DatabaseSession{s}
 }
 
 func (d *D1DatabaseSession) GetBookmark() string {
-	str := d.Call("getBookmark")
+	str := d.v.Call("getBookmark")
 
 	if str.IsNull() {
 		return ""
