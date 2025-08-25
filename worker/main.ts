@@ -34,20 +34,28 @@ globalThis.tryCatch = (fn) => {
   }
 };
 
+const go = new Go();
+const instance = new WebAssembly.Instance(app, go.importObject);
+let initiliazed = false;
+
 /**
  * This function is what initialize your Go's compiled WASM binary
  * only after this function has finished, that the handlers will be
  * defined in the globalThis scope
  *
- * At the moment, due limitations with the getRandomData(), this block
+ * At the moment, due limitations with the getRandomData(), it
  * cannot be executed at top level, it must be contained within the handlers
  * scope
  *
  * It's REQUIRED and needs to be called before using the globalThis.cf.<handler>()
  */
 function init() {
-  const go = new Go();
-  go.run(new WebAssembly.Instance(app, go.importObject));
+  if (!initiliazed) {
+    go.run(instance).finally(() => {
+      console.log("Go process exited");
+    });
+    initiliazed = true;
+  }
 }
 
 async function fetch(req: Request, env: Env, ctx: ExecutionContext) {
@@ -70,7 +78,6 @@ async function scheduled(
   ctx: ExecutionContext,
 ) {
   init();
-  new FixedLengthStream(1000).writable.getWriter();
   return await cf.scheduled(controler, env, ctx);
 }
 
