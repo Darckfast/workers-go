@@ -5,6 +5,7 @@ on:
 jobs:
   labeler:
     permissions:
+      issues: write
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
