@@ -9,7 +9,7 @@
 		"init": "go mod init worker && GOOS=js GOARCH=wasm go get ./... && pnpm install",
 		"dev": "vite",
 		"wd": "pnpm run build && wrangler --port 5173 dev",
-		"build": "GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ./bin/app.wasm ./pkg/main.go"
+		"build": "GOOS=js GOARCH=wasm go build -trimpath -ldflags='-s -w -buildid=' -o ./bin/app.wasm ./pkg/main.go"
 	},
 	"keywords": [],
 	"author": "Darckfast",
