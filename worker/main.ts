@@ -34,10 +34,10 @@ globalThis.tryCatch = (fn) => {
   }
 };
 
-const go = new Go();
-const instance = new WebAssembly.Instance(app, go.importObject);
 let initiliazed = false;
 
+const go = new Go();
+let instance = new WebAssembly.Instance(app, go.importObject);
 /**
  * This function is what initialize your Go's compiled WASM binary
  * only after this function has finished, that the handlers will be
@@ -53,6 +53,8 @@ function init() {
   if (!initiliazed) {
     go.run(instance).finally(() => {
       console.log("Go process exited");
+      initiliazed = false; // The process and the wasm instance needs to be re-initialized
+      instance = new WebAssembly.Instance(app, go.importObject);
     });
     initiliazed = true;
   }
