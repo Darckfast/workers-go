@@ -25,7 +25,7 @@ type MessageBatch struct {
 func newMessageBatch(obj js.Value) (*MessageBatch, error) {
 	msgArr := obj.Get("messages")
 	messages := make([]*Message, msgArr.Length())
-	for i := range msgArr.Length() {
+	for i := 0; i < msgArr.Length(); i++ {
 		m, err := newMessage(msgArr.Index(i))
 		if err != nil {
 			return nil, errors.New("failed to parse message " + err.Error())

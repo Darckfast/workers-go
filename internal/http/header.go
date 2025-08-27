@@ -29,7 +29,7 @@ func ToHeader(headers js.Value) (http.Header, error) {
 	h := http.Header{}
 	for i := range hMap {
 		values := hMap[i]
-		for value := range strings.SplitSeq(values, ",") {
+		for _, value := range strings.Split(values, ",") {
 			h.Add(i, value)
 		}
 	}

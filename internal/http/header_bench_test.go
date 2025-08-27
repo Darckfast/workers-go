@@ -29,12 +29,12 @@ func BenchmarkToHeades(b *testing.B) {
 	headers.Call("append", "X-Fake-Referer", "https://fake.example.com")
 	headers.Call("append", "X-Fake-IP", "192.0.2.123")
 
-	for b.Loop() {
+	for i := 0; i < b.N; i++ {
 		_, _ = ToHeader(headers)
 	}
 }
 
-func BenchmarkToJSHeaders(t *testing.B) {
+func BenchmarkToJSHeaders(b *testing.B) {
 	headers := http.Header{}
 	headers.Set("Content-Type", "application/json")
 	headers.Set("Accept", "application/json, text/plain, */*")
@@ -53,7 +53,7 @@ func BenchmarkToJSHeaders(t *testing.B) {
 	headers.Set("X-Fake-Referer", "https://fake.example.com")
 	headers.Set("X-Fake-IP", "192.0.2.123")
 
-	for t.Loop() {
+	for i := 0; i < b.N; i++ {
 		_ = ToJSHeader(headers)
 	}
 }
