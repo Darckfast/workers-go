@@ -1,7 +1,12 @@
-color: always
 packages:
   - worker
+
+color: always
+
 onlyBuiltDependencies:
   - esbuild
   - sharp
   - workerd
+
+overrides:
+  devalue@<5.3.2: '>=5.3.2'
