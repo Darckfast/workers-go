@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  workers-go is a fork of <a href="https://github.com/syumai/workers">syumai's workers</a> ❤️ depedency free Go library, made to help interface Go's WASM with <a href="https://workers.cloudflare.com/">Cloudflare Workers</a>.
+  workers-go is  fork of <a href="https://github.com/syumai/workers">syumai's workers</a> ❤️ — a lightweight package for building and running Go on <a href="https://workers.cloudflare.com/">Cloudflare Workers</a> using WebAssembly (WASM).
 </p>
 
 <p align="center">
