@@ -71,7 +71,7 @@ type ListResult struct {
 func toListResult(v js.Value) (*ListResult, error) {
 	keysVal := v.Get("keys")
 	keys := make([]*ListKey, keysVal.Length())
-	for i := range len(keys) {
+	for i := 0; i < len(keys); i++ {
 		key, err := toListKey(keysVal.Index(i))
 		if err != nil {
 			return nil, errors.New("error converting to ListKey: " + err.Error())

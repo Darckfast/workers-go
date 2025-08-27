@@ -15,7 +15,7 @@ func ArrayFrom(v js.Value) js.Value {
 	return jsclass.Array.Call("from", v)
 }
 
-// TODO: redo this for map[string]any
+// TODO: use JSON.stringify
 func StrRecordToMap(v js.Value) map[string]string {
 	if v.IsUndefined() || v.IsNull() {
 		return map[string]string{}
@@ -23,7 +23,7 @@ func StrRecordToMap(v js.Value) map[string]string {
 	entries := jsclass.Object.Call("entries", v)
 	entriesLen := entries.Get("length").Int()
 	result := make(map[string]string, entriesLen)
-	for i := range entriesLen {
+	for i := 0; i < entriesLen; i++ {
 		entry := entries.Index(i)
 		key := entry.Index(0).String()
 		value := entry.Index(1).String()
@@ -75,8 +75,7 @@ func JSValueToMap(v js.Value) (map[string]any, error) {
 func MaybeStringList(v js.Value) []string {
 	if v.Truthy() {
 		list := []string{}
-		for i := range v.Length() {
-
+		for i := 0; i < v.Length(); i++ {
 			list = append(list, v.Index(i).String())
 		}
 

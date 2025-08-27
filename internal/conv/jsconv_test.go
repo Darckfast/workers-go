@@ -49,9 +49,6 @@ func TestJSValueToMap(t *testing.T) {
 	_ = json.Unmarshal([]byte(jStr), &j)
 
 	assert.Equal(t, j, mapValue)
-	// if !reflect.DeepEqual(j, mapValue) {
-	// 	t.Fatalf("conversion yielded different value from expected: had %s expected %s", mapValue, j)
-	// }
 }
 
 func TestMaybeString(t *testing.T) {
