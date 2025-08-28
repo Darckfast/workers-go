@@ -3,22 +3,16 @@
 package kv
 
 import (
-	"encoding/json"
 	"io"
 	"syscall/js"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	"github.com/mailru/easyjson"
 )
 
-type PutOptions struct {
-	Expiration    int            `json:"expiration,omitempty"`
-	ExpirationTTL int            `json:"expirationTtl,omitempty"`
-	Metadata      map[string]any `json:"metadata,omitempty"`
-}
-
 func (o *PutOptions) ToJS() js.Value {
-	b, _ := json.Marshal(o)
+	b, _ := easyjson.Marshal(o)
 	js, _ := jsclass.JSON.Parse(string(b))
 
 	return js

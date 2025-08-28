@@ -3,7 +3,6 @@
 package kv
 
 import (
-	"encoding/json"
 	"errors"
 	"io"
 	"syscall/js"
@@ -11,23 +10,14 @@ import (
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsconv "github.com/Darckfast/workers-go/internal/conv"
 	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	"github.com/mailru/easyjson"
 )
 
-type GetOptions struct {
-	Type     string `json:"type"`
-	CacheTTL int    `json:"cacheTtl,omitempty"`
-}
-
 func (o *GetOptions) ToJS() js.Value {
-	b, _ := json.Marshal(o)
+	b, _ := easyjson.Marshal(o)
 	j, _ := jsclass.JSON.Parse(string(b))
 
 	return j
-}
-
-type StringWithMetadata struct {
-	Value    string         `json:"value"`
-	Metadata map[string]any `json:"metadata"`
 }
 
 func (ns *Namespace) GetWithMetadata(key string, cacheTtl int) (*StringWithMetadata, error) {
@@ -47,7 +37,7 @@ func (ns *Namespace) GetWithMetadata(key string, cacheTtl int) (*StringWithMetad
 
 	var sm StringWithMetadata
 
-	err = json.Unmarshal([]byte(s.String()), &sm)
+	err = easyjson.Unmarshal([]byte(s.String()), &sm)
 	return &sm, err
 }
 

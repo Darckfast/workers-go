@@ -11,9 +11,9 @@ import (
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 )
 
-type TailConsumer func(f *[]TraceItem) error
+type TailConsumer func(f *Traces) error
 
-var consumer TailConsumer = func(_ *[]TraceItem) error {
+var consumer TailConsumer = func(_ *Traces) error {
 	return errors.New("no consumer implemented")
 }
 

@@ -3,37 +3,33 @@
 package jsconv
 
 import (
-	"encoding/json"
 	"strconv"
 	"syscall/js"
 	"time"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/mailru/easyjson"
 )
 
 func ArrayFrom(v js.Value) js.Value {
 	return jsclass.Array.Call("from", v)
 }
 
-// TODO: use JSON.stringify
-func StrRecordToMap(v js.Value) map[string]string {
+func StrRecordToMap(v js.Value) jsclass.GenericStringMap {
+	m := jsclass.GenericStringMap{}
+
 	if v.IsUndefined() || v.IsNull() {
-		return map[string]string{}
+		return m
 	}
-	entries := jsclass.Object.Call("entries", v)
-	entriesLen := entries.Get("length").Int()
-	result := make(map[string]string, entriesLen)
-	for i := 0; i < entriesLen; i++ {
-		entry := entries.Index(i)
-		key := entry.Index(0).String()
-		value := entry.Index(1).String()
-		result[key] = value
-	}
-	return result
+
+	obj := jsclass.JSON.Stringify(v)
+	_ = easyjson.Unmarshal([]byte(obj.String()), &m)
+
+	return m
 }
 
-func MapToJSValue(v map[string]any) js.Value {
-	b, _ := json.Marshal(v)
+func MapToJSValue(v jsclass.GenericAnyMap) js.Value {
+	b, _ := easyjson.Marshal(v)
 	return jsclass.JSON.Call("parse", string(b))
 }
 
@@ -48,26 +44,26 @@ func JSMapToMap(v js.Value) (map[string]any, error) {
 	return JSValueToMap(vm)
 }
 
-func JSValueToMapString(v js.Value) (map[string]string, error) {
-	obj := map[string]string{}
+func JSValueToMapString(v js.Value) (jsclass.GenericStringMap, error) {
+	obj := jsclass.GenericStringMap{}
 	if !v.Truthy() {
 		return obj, nil
 	}
 
 	jsonStr := jsclass.JSON.Stringify(v).String()
-	err := json.Unmarshal([]byte(jsonStr), &obj)
+	err := easyjson.Unmarshal([]byte(jsonStr), &obj)
 
 	return obj, err
 }
 
-func JSValueToMap(v js.Value) (map[string]any, error) {
-	obj := map[string]any{}
+func JSValueToMap(v js.Value) (jsclass.GenericAnyMap, error) {
+	obj := jsclass.GenericAnyMap{}
 	if !v.Truthy() {
 		return obj, nil
 	}
 
 	jsonStr := jsclass.JSON.Stringify(v).String()
-	err := json.Unmarshal([]byte(jsonStr), &obj)
+	err := easyjson.Unmarshal([]byte(jsonStr), &obj)
 
 	return obj, err
 }
