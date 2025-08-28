@@ -3,18 +3,19 @@
 package fetchhandler
 
 import (
-	httpcache "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/cache-api"
-	httpcontainer "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/container"
-	httpd1 "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/d1"
-	httpdurableobject "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/durable-objects"
-	httpenv "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/env"
-	errorshandler "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/errors"
-	httpsimple "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/http"
-	httpkv "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/kv"
-	httpqueue "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/queue"
-	httpr2 "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/r2"
-	httpsocket "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/sockets"
-	httptail "github.com/Darckfast/workers-go/worker/pkg/fetchhandler/tail"
+	httpcache "worker/pkg/fetchhandler/cache-api"
+	httpcontainer "worker/pkg/fetchhandler/container"
+	httpd1 "worker/pkg/fetchhandler/d1"
+	httpdurableobject "worker/pkg/fetchhandler/durable-objects"
+	httpenv "worker/pkg/fetchhandler/env"
+	errorshandler "worker/pkg/fetchhandler/errors"
+	httpsimple "worker/pkg/fetchhandler/http"
+	httpkv "worker/pkg/fetchhandler/kv"
+	httpqueue "worker/pkg/fetchhandler/queue"
+	httpr2 "worker/pkg/fetchhandler/r2"
+	httpsocket "worker/pkg/fetchhandler/sockets"
+	httptail "worker/pkg/fetchhandler/tail"
+
 	"github.com/julienschmidt/httprouter"
 
 	"github.com/Darckfast/workers-go/cloudflare/fetch"

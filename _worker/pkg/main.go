@@ -3,11 +3,11 @@
 package main
 
 import (
-	"github.com/Darckfast/workers-go/worker/pkg/cronhandler"
-	"github.com/Darckfast/workers-go/worker/pkg/emailhandler"
-	"github.com/Darckfast/workers-go/worker/pkg/fetchhandler"
-	"github.com/Darckfast/workers-go/worker/pkg/queuehandler"
-	"github.com/Darckfast/workers-go/worker/pkg/tailhandler"
+	"worker/pkg/cronhandler"
+	"worker/pkg/emailhandler"
+	"worker/pkg/fetchhandler"
+	"worker/pkg/queuehandler"
+	"worker/pkg/tailhandler"
 )
 
 func main() {
