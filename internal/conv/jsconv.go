@@ -23,7 +23,7 @@ func StrRecordToMap(v js.Value) jsclass.GenericStringMap {
 	}
 
 	obj := jsclass.JSON.Stringify(v)
-	easyjson.Unmarshal([]byte(obj.String()), &m)
+	_ = easyjson.Unmarshal([]byte(obj.String()), &m)
 
 	return m
 }
