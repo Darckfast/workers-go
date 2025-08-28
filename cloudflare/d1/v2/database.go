@@ -3,12 +3,12 @@
 package d1
 
 import (
-	"encoding/json"
 	"errors"
 	"syscall/js"
 
 	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/mailru/easyjson"
 )
 
 type D1Db struct {
@@ -36,8 +36,6 @@ func (s *D1PreparedStatment) Bind(variable ...any) *D1PreparedStatment {
 	return s
 }
 
-// TODO: add a Typed() method for unmarshaling with a
-// provided pointer instead of any
 func (s *D1PreparedStatment) Run() (*D1Result, error) {
 	r, err := jsclass.Await(s.v.Call("run"))
 
@@ -47,12 +45,12 @@ func (s *D1PreparedStatment) Run() (*D1Result, error) {
 
 	var result D1Result
 	str := jsclass.JSON.Stringify(r)
-	err = json.Unmarshal([]byte(str.String()), &result)
+	err = easyjson.Unmarshal([]byte(str.String()), &result)
 
 	return &result, err
 }
 
-func (s *D1PreparedStatment) Raw(columnNames bool) ([]any, error) {
+func (s *D1PreparedStatment) Raw(columnNames bool) (D1RawResults, error) {
 	arg := jsclass.Object.New()
 	arg.Set("columnNames", columnNames)
 	r, err := jsclass.Await(s.v.Call("raw", arg))
@@ -61,23 +59,23 @@ func (s *D1PreparedStatment) Raw(columnNames bool) ([]any, error) {
 		return nil, err
 	}
 
-	var result []any
+	var result D1RawResults
 	str := jsclass.JSON.Stringify(r)
-	err = json.Unmarshal([]byte(str.String()), &result)
+	err = easyjson.Unmarshal([]byte(str.String()), &result)
 
 	return result, err
 }
 
-func (s *D1PreparedStatment) First(columnName string) (*any, error) {
+func (s *D1PreparedStatment) First(columnName string) (*D1FirstResult, error) {
 	r, err := jsclass.Await(s.v.Call("first", columnName))
 
 	if err != nil {
 		return nil, err
 	}
 
-	var result any
+	var result D1FirstResult
 	str := jsclass.JSON.Stringify(r)
-	err = json.Unmarshal([]byte(str.String()), &result)
+	err = easyjson.Unmarshal([]byte(str.String()), &result)
 
 	return &result, err
 }
@@ -87,32 +85,7 @@ func (d *D1Db) Prepare(query string) *D1PreparedStatment {
 	return &D1PreparedStatment{stmtObj}
 }
 
-type D1ExecResult struct {
-	Count    int `json:"count"`
-	Duration int `json:"duration"`
-}
-
-type D1Result struct {
-	Success bool  `json:"success"`
-	Results []any `json:"results"`
-	Meta    struct {
-		ServedBy        string `json:"served_by"`
-		ServedByRegion  string `json:"served_by_region"`
-		ServedByPrimary bool   `json:"served_by_primary"`
-		Timings         struct {
-			SqlDurationMs int64 `json:"sql_duration_ms"`
-		} `json:"timings"`
-		Duration    int64 `json:"duration"`
-		Changes     int64 `json:"changes"`
-		LastRowId   int64 `json:"last_row_id"`
-		ChangedDb   bool  `json:"changed_db"`
-		SizeAfter   int64 `json:"size_after"`
-		RowsRead    int64 `json:"rows_read"`
-		RowsWritten int64 `json:"rows_written"`
-	} `json:"meta"`
-}
-
-func (d *D1Db) Batch(stmts []D1PreparedStatment) ([]D1Result, error) {
+func (d *D1Db) Batch(stmts []D1PreparedStatment) (D1BatchResults, error) {
 	jsList := jsclass.Array.New()
 
 	for _, st := range stmts {
@@ -125,9 +98,9 @@ func (d *D1Db) Batch(stmts []D1PreparedStatment) ([]D1Result, error) {
 		return nil, err
 	}
 
-	var results []D1Result
+	var results D1BatchResults
 	str := jsclass.JSON.Stringify(batchResult)
-	err = json.Unmarshal([]byte(str.String()), &results)
+	err = easyjson.Unmarshal([]byte(str.String()), &results)
 
 	return results, err
 }
@@ -141,7 +114,7 @@ func (d *D1Db) Exec(query string) (*D1ExecResult, error) {
 
 	var d1Result D1ExecResult
 	str := jsclass.JSON.Stringify(result)
-	err = json.Unmarshal([]byte(str.String()), &d1Result)
+	err = easyjson.Unmarshal([]byte(str.String()), &d1Result)
 
 	return &d1Result, err
 }
@@ -168,9 +141,9 @@ func (d *D1DatabaseSession) Batch(stmts ...D1PreparedStatment) ([]D1Result, erro
 		return nil, err
 	}
 
-	var results []D1Result
+	var results D1BatchResults
 	str := jsclass.JSON.Stringify(batchResult)
-	err = json.Unmarshal([]byte(str.String()), &results)
+	err = easyjson.Unmarshal([]byte(str.String()), &results)
 
 	return results, err
 }

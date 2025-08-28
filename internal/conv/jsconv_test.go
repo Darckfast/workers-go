@@ -3,12 +3,12 @@
 package jsconv
 
 import (
-	"encoding/json"
 	"math"
 	"testing"
 	"time"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/mailru/easyjson"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -45,8 +45,8 @@ func TestJSValueToMap(t *testing.T) {
 
 	mapValue, _ := JSValueToMap(obj)
 
-	var j map[string]any
-	_ = json.Unmarshal([]byte(jStr), &j)
+	var j jsclass.GenericAnyMap
+	_ = easyjson.Unmarshal([]byte(jStr), &j)
 
 	assert.Equal(t, j, mapValue)
 }

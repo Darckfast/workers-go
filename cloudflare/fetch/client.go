@@ -3,7 +3,6 @@
 package fetch
 
 import (
-	"encoding/json"
 	"net/http"
 	"syscall/js"
 	"time"
@@ -11,24 +10,8 @@ import (
 	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
+	"github.com/mailru/easyjson"
 )
-
-type RequestInitCF struct {
-	// Using json tags will use reflect
-	// by default this is slower than manually setting the values
-	// in a string template or similar, but it's easier to maintain
-	Apps             bool           `json:"apps"`
-	CacheEverything  bool           `json:"cacheEverything"`
-	CacheKey         string         `json:"cacheKey"`
-	CacheTags        []string       `json:"cacheTags"`
-	CacheTtl         int            `json:"cacheTtl"`
-	CacheTtlByStatus map[string]int `json:"cacheTtlByStatus"`
-	Mirage           bool           `json:"mirage"`
-	Polish           string         `json:"polish"`
-	ResolveOverride  string         `json:"resolveOverride"`
-	ScrapShield      bool           `json:"scrapShield"`
-	Webp             bool           `json:"webp"`
-}
 
 type Client struct {
 	RedirectMode string
@@ -80,12 +63,12 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 		c.RedirectMode = "follow"
 	}
 
-	initOptions := map[string]string{
-		"redirect":    c.RedirectMode,
-		"credentials": "omit",
+	initOptions := InitOptions{
+		Redirect:    c.RedirectMode,
+		Credentials: "omit",
 	}
 
-	initJson, _ := json.Marshal(initOptions)
+	initJson, _ := easyjson.Marshal(initOptions)
 	initObj, _ := jsclass.JSON.Parse(string(initJson))
 
 	if c.Timeout != 0 {
@@ -93,7 +76,7 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	}
 
 	if c.CF != nil {
-		cfJson, _ := json.Marshal(c.CF)
+		cfJson, _ := easyjson.Marshal(c.CF)
 		cfObj, _ := jsclass.JSON.Parse(string(cfJson))
 		initObj.Set("cf", cfObj)
 	}

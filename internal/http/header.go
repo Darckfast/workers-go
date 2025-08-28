@@ -3,12 +3,12 @@
 package jshttp
 
 import (
-	"encoding/json"
 	"net/http"
 	"strings"
 	"syscall/js"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/mailru/easyjson"
 )
 
 func ToHeader(headers js.Value) (http.Header, error) {
@@ -18,9 +18,9 @@ func ToHeader(headers js.Value) (http.Header, error) {
 
 	hObj := jsclass.Object.FromEntries(headers.Call("entries"))
 	hStr := jsclass.JSON.Stringify(hObj).String()
-	var hMap map[string]string
+	var hMap jsclass.GenericStringMap
 
-	err := json.Unmarshal([]byte(hStr), &hMap)
+	err := easyjson.Unmarshal([]byte(hStr), &hMap)
 
 	if err != nil {
 		return http.Header{}, err
@@ -38,7 +38,13 @@ func ToHeader(headers js.Value) (http.Header, error) {
 }
 
 func ToJSHeader(header http.Header) js.Value {
-	hBytes, _ := json.Marshal(header)
+	hMap := jsclass.GenericStringMap{}
+	for k, v := range header {
+		if len(v) > 0 {
+			hMap[k] = strings.Join(v, ",")
+		}
+	}
+	hBytes, _ := easyjson.Marshal(hMap)
 	hObj, _ := jsclass.JSON.Parse(string(hBytes))
 	// Returning as an object is faster, but it has problems with Get(key)
 	// on some headers keys
