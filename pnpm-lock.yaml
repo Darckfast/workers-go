@@ -43,7 +43,7 @@ importers:
         specifier: ^4.33.0
         version: 4.33.0
 
-  worker:
+  _worker:
     dependencies:
       '@cloudflare/containers':
         specifier: ^0.0.26

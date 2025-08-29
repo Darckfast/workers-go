@@ -12,7 +12,7 @@
 		"test:go": "GOOS=js GOARCH=wasm go test ./...",
 		"bench:go": "GOOS=js GOARCH=wasm go test -bench=. ./...",
 		"test:run": "pnpm worker build && vitest run",
-		"compress": "pnpm wrangler -c ./worker/wrangler.toml --dry-run --minify --outdir ./dist deploy",
+		"compress": "pnpm wrangler -c ./_worker/wrangler.toml --dry-run --minify --outdir ./dist deploy",
 		"lint": "GOOS=js GOARCH=wasm golangci-lint run"
 	},
 	"keywords": [],
