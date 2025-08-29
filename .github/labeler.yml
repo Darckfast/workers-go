@@ -84,7 +84,7 @@ tests:
 
 worker:
   - changed-files:
-      - any-glob-to-any-file: 'worker/**'
+      - any-glob-to-any-file: '_worker/**'
 
 feat:
   - head-branch: ['^feat', 'feat']
