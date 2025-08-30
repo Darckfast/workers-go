@@ -3,21 +3,21 @@
 	"name": "worker",
 	"version": "0.0.0",
 	"description": "",
-	"main": "./bin/main.ts",
+	"main": "main.ts",
 	"type": "module",
 	"scripts": {
-		"init": "go mod init worker && GOOS=js GOARCH=wasm go get ./... && pnpm install",
+		"preinstall": "GOOS=js GOARCH=wasm go get ./pkg/...",
 		"dev": "vite",
-		"wd": "pnpm run build && wrangler --port 5173 dev",
+		"start": "vite",
+		"deploy": "wrangler deploy",
+		"dev:wrangler": "pnpm run build && wrangler --port 5173 dev",
 		"build": "GOOS=js GOARCH=wasm go build -trimpath -ldflags='-s -w -buildid=' -o ./bin/app.wasm ./pkg/main.go"
 	},
-	"keywords": [],
-	"author": "Darckfast",
 	"engines": {
 		"node": "22"
 	},
 	"engineStrict": true,
-	"license": "ISC",
+	"license": "MIT",
 	"packageManager": "pnpm@10.14.0",
 	"devDependencies": {
 		"@biomejs/biome": "2.2.2",
