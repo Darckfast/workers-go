@@ -30,7 +30,6 @@ type D1PreparedStatment struct {
 }
 
 func (s *D1PreparedStatment) Bind(variable ...any) *D1PreparedStatment {
-	// there might a be an issue with int64
 	s.v = s.v.Call("bind", variable...)
 
 	return s
@@ -125,7 +124,7 @@ type D1DatabaseSession struct {
 
 func (d *D1DatabaseSession) Prepare(query string) *D1PreparedStatment {
 	stmtObj := d.v.Call("prepare", query)
-	return &D1PreparedStatment{stmtObj}
+	return &D1PreparedStatment{v: stmtObj}
 }
 
 func (d *D1DatabaseSession) Batch(stmts ...D1PreparedStatment) ([]D1Result, error) {
