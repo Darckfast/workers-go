@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://darckfast.com/docs/workers-go">
-    <img alt="workers-go" src=".github/images/banner.png">
+    <img alt="workers-go" src=".github/images/workers-go.png">
     <h1 align="center">workers-go</h1>
   </a>
 </p>
