@@ -151,6 +151,8 @@ func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
 func ReadCloserToFixedLengthStream(rc io.ReadCloser, size int64) js.Value {
 	stream := jsclass.MaybeFixedLengthStream.New(size)
 	go func(writer js.Value) {
+		defer rc.Close()
+
 		chunk := make([]byte, min(size, 16_640))
 		_, err := jsclass.Await(writer.Get("ready"))
 
