@@ -70,10 +70,12 @@ func (r *Bucket) Get(key string, opts *GetOptions) (*R2Object, error) {
 
 func (opts *PutOptions) toJS() js.Value {
 	b, _ := easyjson.Marshal(opts)
-	v := jsclass.JSON.Call("parse", string(b))
-	v.Set("httpMetadata", jshttp.ToJSHeader(opts.HTTPMetadata))
+	v, _ := jsclass.JSON.Parse(string(b))
 
-	jsclass.Console.Log(v)
+	if opts != nil {
+		v.Set("httpMetadata", jshttp.ToJSHeader(opts.HTTPMetadata))
+	}
+
 	return v
 }
 
