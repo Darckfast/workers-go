@@ -169,7 +169,7 @@ func ReadCloserToFixedLengthStream(rc io.ReadCloser, size int64) js.Value {
 			}
 
 			if err != nil {
-				jsclass.Await(writer.Get("ready"))
+				_, _ = jsclass.Await(writer.Get("ready"))
 				writer.Call("close")
 				return
 			}

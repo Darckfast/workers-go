@@ -18,8 +18,7 @@ func (j *JSONWrap) Stringify(args ...any) js.Value {
 }
 
 func (j *JSONWrap) Parse(args ...any) (js.Value, error) {
-	var cb js.Func
-	cb = js.FuncOf(func(_ js.Value, _ []js.Value) any {
+	cb := js.FuncOf(func(_ js.Value, _ []js.Value) any {
 		return j.Call("parse", args...)
 	})
 

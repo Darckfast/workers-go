@@ -42,8 +42,7 @@ func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, e
 			optionsObj.Set("secureTransport", string(opts.SecureTransport))
 		}
 	}
-	var cb js.Func
-	cb = js.FuncOf(func(_ js.Value, args []js.Value) any {
+	cb := js.FuncOf(func(_ js.Value, args []js.Value) any {
 		return connect.Invoke(addr, optionsObj)
 	})
 	defer cb.Release()
