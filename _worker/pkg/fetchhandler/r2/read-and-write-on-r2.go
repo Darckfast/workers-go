@@ -16,7 +16,7 @@ var GET_R2 = func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	bucket, _ := r2.NewBucket("TEST_BUCKET")
 
-	result, err := bucket.Get("count")
+	result, err := bucket.Get("count", nil)
 	rawBody, _ := io.ReadAll(result.Body)
 	b64 := base64.StdEncoding.EncodeToString(rawBody)
 

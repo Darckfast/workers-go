@@ -23,6 +23,7 @@ import (
 
 func New() {
 	router := httprouter.New()
+
 	// HTTP
 	router.HandlerFunc("GET", "/hello", httpsimple.GET_HELLO)
 	router.HandlerFunc("GET", "/application/json", httpsimple.GET_JSON)
@@ -30,7 +31,7 @@ func New() {
 	router.HandlerFunc("POST", "/application/x-www-form-urlencoded", httpsimple.POST_FORM_URLENCODED)
 	router.HandlerFunc("POST", "/multipart/form-data", httpsimple.POST_MULTIPART_FORM_DATA)
 
-	//", "KV
+	// KV
 	router.HandlerFunc("DELETE", "/kv", httpkv.DELETE_KV)
 	router.HandlerFunc("POST", "/kv", httpkv.POST_KV)
 	router.HandlerFunc("POST", "/kv/meta", httpkv.POST_KV_META)
@@ -39,32 +40,42 @@ func New() {
 	router.HandlerFunc("GET", "/kvs", httpkv.GET_KVS)
 	router.HandlerFunc("GET", "/kv/list", httpkv.GET_KV_LIST)
 
-	//", "R2
+	// R2
 	router.HandlerFunc("GET", "/r2", httpr2.GET_R2)
 	router.HandlerFunc("POST", "/r2", httpr2.POST_R2)
-	//", "Cache api
+	router.HandlerFunc("POST", "/r2/enc", httpr2.POST_ENC_R2)
+	router.HandlerFunc("GET", "/r2/enc", httpr2.GET_ENC_R2)
+
+	// Cache api
 	router.HandlerFunc("GET", "/cache", httpcache.GET_CACHE)
-	//", "D1
+
+	// D1
 	router.HandlerFunc("GET", "/d1", httpd1.GET_D1)
 	router.HandlerFunc("POST", "/d1", httpd1.POST_D1)
 	router.HandlerFunc("PUT", "/d1", httpd1.PUT_D1)
 	router.HandlerFunc("DELETE", "/d1", httpd1.DELETE_D1)
 	router.HandlerFunc("POST", "/d1/batch", httpd1.POST_D1_BATCH)
-	//", "Queue
+
+	// Queue
 	router.HandlerFunc("GET", "/queue", httpqueue.GET_QUEUE)
 	router.HandlerFunc("POST", "/queue", httpqueue.POST_QUEUE)
-	//", "Socket
+
+	// Socket
 	router.HandlerFunc("GET", "/socket", httpsocket.GET_SOCKET_TCPBIN)
-	//", "Tail
+
+	// Tail
 	router.HandlerFunc("GET", "/tail", httptail.GET_TAIL)
-	//", "Container
+
+	// Container
 	router.HandlerFunc("GET", "/container", httpcontainer.GET_CONTAINER)
-	//", "Durable Object
+
+	// Durable Object
 	router.HandlerFunc("GET", "/do", httpdurableobject.GET_DO)
-	//", "Env
+
+	// Env
 	router.HandlerFunc("GET", "/env", httpenv.GET_ENV)
 
-	//Error
+	// Error
 	router.HandlerFunc("GET", "/error", errorshandler.GET_ERROR)
 
 	/*
