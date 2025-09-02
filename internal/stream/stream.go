@@ -90,11 +90,13 @@ func ReadableStreamToReadCloser(stream js.Value) io.ReadCloser {
 const defaultChunkSize = 16_640
 
 func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
-	pull := js.FuncOf(func(this js.Value, args []js.Value) any {
+	var pull js.Func
+	pull = js.FuncOf(func(this js.Value, args []js.Value) any {
 		// Because the ReadableStream implemented above, this func
 		// need to be a promise, otherwise it will cause a deadlock
 		// if it tries to convert a ReadCloser that came from a Response
-		return jsclass.Promise.New(js.FuncOf(func(_ js.Value, pargs []js.Value) any {
+		var prom js.Func
+		prom = js.FuncOf(func(_ js.Value, pargs []js.Value) any {
 			go func() {
 				resolve := pargs[0]
 				controller := args[0]
@@ -113,16 +115,28 @@ func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
 				}
 
 				if err == io.EOF || err == io.ErrClosedPipe {
+					_ = reader.Close()
 					controller.Call("close")
+
+					defer func() {
+						pull.Release()
+						prom.Release()
+					}()
 				}
 
 				resolve.Invoke(true)
 			}()
+
 			return nil
-		}))
+		})
+
+		return jsclass.Promise.New(prom)
 	})
 
-	cancel := js.FuncOf(func(this js.Value, args []js.Value) any {
+	var cancel js.Func
+	cancel = js.FuncOf(func(this js.Value, args []js.Value) any {
+		defer cancel.Release()
+
 		_ = reader.Close()
 		return nil
 	})
@@ -155,7 +169,7 @@ func ReadCloserToFixedLengthStream(rc io.ReadCloser, size int64) js.Value {
 			}
 
 			if err != nil {
-				// jsclass.Await(writer.Get("ready"))
+				jsclass.Await(writer.Get("ready"))
 				writer.Call("close")
 				return
 			}

@@ -42,9 +42,13 @@ func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, e
 			optionsObj.Set("secureTransport", string(opts.SecureTransport))
 		}
 	}
-	sockVal, err := jstry.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
+	var cb js.Func
+	cb = js.FuncOf(func(_ js.Value, args []js.Value) any {
 		return connect.Invoke(addr, optionsObj)
-	}))
+	})
+	defer cb.Release()
+
+	sockVal, err := jstry.TryCatch(cb)
 	if err != nil {
 		return nil, err
 	}
