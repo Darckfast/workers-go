@@ -6,41 +6,28 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/mailru/easyjson"
 )
 
-// Objects represents Cloudflare R2 objects.
-//   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L1121
-type Objects struct {
-	Objects   []*Object
-	Truncated bool
-	// Cursor indicates next cursor of Objects.
-	//   - This becomes empty string if cursor doesn't exist.
-	Cursor            string
-	DelimitedPrefixes []string
-}
+func toObjects(v js.Value) (*R2Objects, error) {
+	var objects R2Objects
+	str := jsclass.JSON.Stringify(v)
+	err := easyjson.Unmarshal([]byte(str.String()), &objects)
 
-// toObjects converts JavaScript side's Objects to *Objects.
-//   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L1121
-func toObjects(v js.Value) (*Objects, error) {
+	if err != nil {
+		return nil, err
+	}
+
 	objectsVal := v.Get("objects")
-	objects := make([]*Object, objectsVal.Length())
-	for i := 0; i < len(objects); i++ {
+
+	for i := 0; i < len(objects.Objects); i++ {
 		obj, err := toObject(objectsVal.Index(i))
 		if err != nil {
 			return nil, errors.New("error converting to Object: " + err.Error())
 		}
-		objects[i] = obj
+		objects.Objects[i] = obj
 	}
-	prefixesVal := v.Get("delimitedPrefixes")
-	prefixes := make([]string, prefixesVal.Length())
-	for i := 0; i < len(prefixes); i++ {
-		prefixes[i] = prefixesVal.Index(i).String()
-	}
-	return &Objects{
-		Objects:           objects,
-		Truncated:         v.Get("truncated").Bool(),
-		Cursor:            jsconv.MaybeString(v.Get("cursor")),
-		DelimitedPrefixes: prefixes,
-	}, nil
+
+	return &objects, nil
 }

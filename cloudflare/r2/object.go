@@ -4,38 +4,19 @@ package r2
 
 import (
 	"errors"
-	"io"
 	"syscall/js"
-	"time"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
 	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	"github.com/mailru/easyjson"
 )
 
 // TODO: implement awsfetch for url signed => due was limitations with syscall, using the aws-sdk-go is not viable
 // afaik during init() it tries to access the home dir to load the local config, and this makes the process exit
-// Object represents Cloudflare R2 object.
-//   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L1094
 type Object struct {
-	instance       js.Value
-	Key            string
-	Version        string
-	Size           int
-	ETag           string
-	HTTPETag       string
-	Uploaded       time.Time
-	HTTPMetadata   HTTPMetadata
-	CustomMetadata map[string]string
-	// Body is a body of Object.
-	// This value is nil for the result of the `Head` or `Put` method.
-	Body io.Reader
+	instance js.Value
+	R2Object
 }
-
-// TODO: implement
-//   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L1106
-// func (o *Object) WriteHTTPMetadata(headers http.Header) {
-// }
 
 func (o *Object) BodyUsed() (bool, error) {
 	v := o.instance.Get("bodyUsed")
@@ -45,78 +26,19 @@ func (o *Object) BodyUsed() (bool, error) {
 	return v.Bool(), nil
 }
 
-// toObject converts JavaScript side's Object to *Object.
-//   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L1094
-func toObject(v js.Value) (*Object, error) {
-	uploaded := jsconv.DateToTime(v.Get("uploaded"))
-	r2Meta, err := toHTTPMetadata(v.Get("httpMetadata"))
+func toObject(v js.Value) (*R2Object, error) {
+	str := jsclass.JSON.Stringify(v)
+	var o R2Object
+	err := easyjson.Unmarshal([]byte(str.String()), &o)
+
 	if err != nil {
-		return nil, errors.New("error converting httpMetadata: " + err.Error())
+		return nil, err
 	}
+
 	bodyVal := v.Get("body")
-	var body io.Reader
-	if !bodyVal.IsUndefined() {
-		body = jsstream.ReadableStreamToReadCloser(v.Get("body"))
+	if bodyVal.Truthy() {
+		o.Body = jsstream.ReadableStreamToReadCloser(bodyVal)
 	}
-	return &Object{
-		instance:       v,
-		Key:            v.Get("key").String(),
-		Version:        v.Get("version").String(),
-		Size:           v.Get("size").Int(),
-		ETag:           v.Get("etag").String(),
-		HTTPETag:       v.Get("httpEtag").String(),
-		Uploaded:       uploaded,
-		HTTPMetadata:   r2Meta,
-		CustomMetadata: jsconv.StrRecordToMap(v.Get("customMetadata")),
-		Body:           body,
-	}, nil
-}
 
-// HTTPMetadata represents metadata of Object.
-//   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L1053
-type HTTPMetadata struct {
-	ContentType        string
-	ContentLanguage    string
-	ContentDisposition string
-	ContentEncoding    string
-	ContentLength      int64
-	CacheControl       string
-	CacheExpiry        time.Time
-}
-
-func toHTTPMetadata(v js.Value) (HTTPMetadata, error) {
-	if v.IsUndefined() || v.IsNull() {
-		return HTTPMetadata{}, nil
-	}
-	cacheExpiry := jsconv.MaybeDate(v.Get("cacheExpiry"))
-	return HTTPMetadata{
-		ContentType:        jsconv.MaybeString(v.Get("contentType")),
-		ContentLanguage:    jsconv.MaybeString(v.Get("contentLanguage")),
-		ContentDisposition: jsconv.MaybeString(v.Get("contentDisposition")),
-		ContentEncoding:    jsconv.MaybeString(v.Get("contentEncoding")),
-		ContentLength:      jsconv.MaybeInt64(v.Get("contentLength")),
-		CacheControl:       jsconv.MaybeString(v.Get("cacheControl")),
-		CacheExpiry:        cacheExpiry,
-	}, nil
-}
-
-func (md *HTTPMetadata) toJS() js.Value {
-	obj := jsclass.Object.New()
-	kv := map[string]any{
-		"contentType":        md.ContentType,
-		"contentLanguage":    md.ContentLanguage,
-		"contentLength":      md.ContentLength,
-		"contentDisposition": md.ContentDisposition,
-		"contentEncoding":    md.ContentEncoding,
-		"cacheControl":       md.CacheControl,
-	}
-	for k, v := range kv {
-		if v != "" {
-			obj.Set(k, v)
-		}
-	}
-	if !md.CacheExpiry.IsZero() {
-		obj.Set("cacheExpiry", jsconv.TimeToDate(md.CacheExpiry))
-	}
-	return obj
+	return &o, nil
 }

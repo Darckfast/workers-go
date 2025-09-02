@@ -8,6 +8,8 @@ compatibility_date = "2025-08-12"
 API_HOST = "example.com"
 API_ACCOUNT_ID = "example_user"
 SERVICE_X_DATA = { URL = "service-x-api.dev.example", MY_ID = 123 }
+ENC_KEY = "RU7VbCni&s5bE5xoOPjGR*BzK1U@yXGk"
+HMAC_KEY = "6368616e676520746869732070617373"
 
 # [triggers]
 # crons = ["* * * * *"]
