@@ -44,15 +44,20 @@ func ToRequest(req js.Value) *http.Request {
 }
 
 func ToJSRequest(req *http.Request) js.Value {
-	jsReqOptions := jsclass.Object.New()
-	jsReqOptions.Set("method", req.Method)
-	jsReqOptions.Set("headers", ToJSHeader(req.Header))
+	jsReq := JSRequest{
+		Url:     req.URL.String(),
+		Method:  req.Method,
+		Headers: HeaderToMap(req.Header),
+	}
+
+	jsReqB, _ := easyjson.Marshal(jsReq)
+	jsReqOptions, _ := jsclass.JSON.Parse(jsReqB)
 	jsReqBody := js.Undefined()
+
 	if req.Body != nil && req.Method != http.MethodGet {
 		jsReqBody = jsstream.ReadCloserToReadableStream(req.Body)
 		jsReqOptions.Set("duplex", "half")
 	}
 	jsReqOptions.Set("body", jsReqBody)
-	jsReq := jsclass.Request.New(req.URL.String(), jsReqOptions)
-	return jsReq
+	return jsclass.Request.New(req.URL.String(), jsReqOptions)
 }

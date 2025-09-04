@@ -48,6 +48,16 @@ func ToHeader(headers js.Value) (http.Header, error) {
 	return h, nil
 }
 
+func HeaderToMap(header http.Header) map[string]string {
+	hMap := jsclass.GenericStringMap{}
+	for k, v := range header {
+		if len(v) > 0 {
+			hMap[k] = strings.Join(v, ",")
+		}
+	}
+	return hMap
+}
+
 func ToJSHeader(header http.Header) js.Value {
 	hMap := jsclass.GenericStringMap{}
 	for k, v := range header {
