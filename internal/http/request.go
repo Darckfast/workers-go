@@ -8,11 +8,11 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 	"syscall/js"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	"github.com/mailru/easyjson"
 )
 
 func ToBody(body js.Value) io.ReadCloser {
@@ -24,17 +24,21 @@ func ToBody(body js.Value) io.ReadCloser {
 }
 
 func ToRequest(req js.Value) *http.Request {
-	reqUrl, _ := url.Parse(req.Get("url").String())
-	header, _ := ToHeader(req.Get("headers"))
+	reqStr := jsclass.JSON.Stringify(req, []any{"method", "url", "headers"})
+	var reqMap JSRequest
+
+	_ = easyjson.Unmarshal([]byte(reqStr.String()), &reqMap)
+	reqUrl, _ := url.Parse(reqMap.Url)
+	header, _ := MapToHeader(reqMap.Headers)
 
 	contentLength, _ := strconv.ParseInt(header.Get("Content-Length"), 10, 64)
 	return &http.Request{
-		Method:           req.Get("method").String(),
+		Method:           reqMap.Method,
 		URL:              reqUrl,
 		Header:           header,
 		Body:             ToBody(req.Get("body")),
 		ContentLength:    contentLength,
-		TransferEncoding: strings.Split(header.Get("Transfer-Encoding"), ","),
+		TransferEncoding: header["transfer-encoding"],
 		Host:             header.Get("Host"),
 	}
 }

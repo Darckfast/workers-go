@@ -63,7 +63,6 @@ func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error
 		return js.Value{}, err
 	}
 
-	//TODO: implement signal and context cancel
 	req := jshttp.ToRequest(reqObj)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

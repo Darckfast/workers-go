@@ -11,6 +11,17 @@ import (
 	"github.com/mailru/easyjson"
 )
 
+func MapToHeader(headers jsclass.GenericStringMap) (http.Header, error) {
+	h := http.Header{}
+	for i := range headers {
+		values := headers[i]
+		for _, value := range strings.Split(values, ",") {
+			h.Add(i, value)
+		}
+	}
+
+	return h, nil
+}
 func ToHeader(headers js.Value) (http.Header, error) {
 	if !headers.Truthy() {
 		return http.Header{}, nil
