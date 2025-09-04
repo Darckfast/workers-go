@@ -63,8 +63,23 @@ func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error
 		return js.Value{}, err
 	}
 
+	//TODO: implement signal and context cancel
 	req := jshttp.ToRequest(reqObj)
-	ctx := jsruntime.New(context.Background(), reqObj)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	signal := reqObj.Get("signal")
+	var cbCancel js.Func
+	defer cbCancel.Release()
+
+	cbCancel = js.FuncOf(func(this js.Value, args []js.Value) any {
+		cancel()
+		return nil
+	})
+	signal.Call("addEventListener", "abort", cbCancel)
+	ctx = context.WithValue(ctx, "signal", signal)
+
+	ctx = jsruntime.New(ctx, reqObj)
 	req = req.WithContext(ctx)
 	reader, writer := io.Pipe()
 
