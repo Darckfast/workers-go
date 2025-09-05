@@ -1,0 +1,10 @@
+import { init } from "./load-wasm";
+
+init();
+
+Deno.serve({ port: 5173 }, async (_req) => {
+  await init();
+
+  return cf.fetch(_req);
+  // return new Response("Hello, World!");
+});
