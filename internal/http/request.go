@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"syscall/js"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
@@ -24,22 +25,23 @@ func ToBody(body js.Value) io.ReadCloser {
 }
 
 func ToRequest(req js.Value) *http.Request {
-	reqStr := jsclass.JSON.Stringify(req, []any{"method", "url", "headers"})
+	reqStr := jsclass.JSON.Stringify(req, []any{"method", "url"})
 	var reqMap JSRequest
 
 	_ = easyjson.Unmarshal([]byte(reqStr.String()), &reqMap)
-	reqUrl, _ := url.Parse(reqMap.Url)
-	header, _ := MapToHeader(reqMap.Headers)
 
-	contentLength, _ := strconv.ParseInt(header.Get("Content-Length"), 10, 64)
+	reqUrl, _ := url.Parse(reqMap.Url)
+	headers, _ := ToHeader(req.Get("headers"))
+
+	contentLength, _ := strconv.ParseInt(headers.Get("Content-Length"), 10, 64)
 	return &http.Request{
 		Method:           reqMap.Method,
 		URL:              reqUrl,
-		Header:           header,
+		Header:           headers,
 		Body:             ToBody(req.Get("body")),
 		ContentLength:    contentLength,
-		TransferEncoding: header["transfer-encoding"],
-		Host:             header.Get("Host"),
+		TransferEncoding: strings.Split(headers.Get("Transfer-Encoding"), ","),
+		Host:             headers.Get("Host"),
 	}
 }
 
