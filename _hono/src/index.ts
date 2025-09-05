@@ -6,14 +6,14 @@ init()
 
 const app = new Hono()
 
-app.get('*', async (c) => {
+app.all('*', async (c) => {
   await init()
   return cf.fetch(c.req.raw)
 })
 
 serve({
   fetch: app.fetch,
-  port: 3000
+  port: 5173
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`)
 })

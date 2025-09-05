@@ -13,4 +13,4 @@ require (
 	github.com/stretchr/testify v1.11.1 // indirect
 )
 
-// replace github.com/Darckfast/workers-go => ../
+replace github.com/Darckfast/workers-go => ../
