@@ -6,3 +6,7 @@ type JSRequest struct {
 	Headers map[string]string `json:"headers"`
 	Url     string            `json:"url"`
 }
+
+//easyjson:json
+type JSResponse struct {
+}

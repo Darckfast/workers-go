@@ -1,27 +1,36 @@
-FROM node:22-alpine AS base
-
-FROM base AS builder
-
-RUN apk add --no-cache gcompat
+FROM node:20-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+COPY . /app
 WORKDIR /app
 
-COPY package*json tsconfig.json src ./
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-RUN npm ci && \
-    npm run build && \
-    npm prune --production
-
-FROM base AS runner
+FROM golang:1.21 AS build-go
 WORKDIR /app
+COPY . .
+RUN go mod download
+RUN GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o ./src/bin/app.wasm main.go
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 hono
+FROM base AS build
+COPY . .
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+COPY --from=build-go /app/src/bin/app.wasm /app/src/bin/app.wasm
+RUN pnpm run build
 
-COPY --from=builder --chown=hono:nodejs /app/node_modules /app/node_modules
-COPY --from=builder --chown=hono:nodejs /app/dist /app/dist
-COPY --from=builder --chown=hono:nodejs /app/package.json /app/package.json
+FROM base
+RUN apt update && apt install curl -y
 
-USER hono
+# COPY migrations migrations
+
+COPY package.json package.json
+COPY --from=prod-deps /app/node_modules node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build-go /app/src/bin ./dist/bin
+
 EXPOSE 3000
+HEALTHCHECK --interval=30s --timeout=30s --retries=3 --start-period=3s --start-interval=150ms CMD curl -f http://localhost:3000/health || exit 1
+CMD ["pnpm", "start"]
 
-CMD ["node", "/app/dist/index.js"]

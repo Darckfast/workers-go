@@ -3,10 +3,9 @@
 package main
 
 import (
-	"net/http"
 	"net/http/pprof"
 	_ "net/http/pprof"
-	httpd1 "worker/pkg/fetchhandler/d1"
+	httpsimple "worker/pkg/fetchhandler/http"
 
 	"github.com/Darckfast/workers-go/cloudflare/fetch"
 	"github.com/julienschmidt/httprouter"
@@ -14,15 +13,16 @@ import (
 
 func main() {
 	mux := httprouter.New()
-	mux.HandlerFunc("GET", "/d1", httpd1.GET_D1)
-	mux.HandlerFunc("GET", "/", httpd1.GET_D1_TOTAL)
+
+	mux.HandlerFunc("GET", "/hello", httpsimple.GET_HELLO)
+	mux.HandlerFunc("GET", "/application/json", httpsimple.GET_JSON)
+	mux.HandlerFunc("POST", "/application/json", httpsimple.POST_JSON)
+	mux.HandlerFunc("POST", "/application/x-www-form-urlencoded", httpsimple.POST_FORM_URLENCODED)
+	mux.HandlerFunc("POST", "/multipart/form-data", httpsimple.POST_MULTIPART_FORM_DATA)
+
 	mux.HandlerFunc("GET", "/debug/pprof", pprof.Index)
 	mux.HandlerFunc("GET", "/debug/pprof/:name", pprof.Index)
 	mux.HandlerFunc("GET", "/debug/profile", pprof.Profile)
-	mux.HandlerFunc("POST", "/d1", httpd1.POST_D1)
-	mux.HandlerFunc("GET", "/health", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("ok"))
-	})
 
 	fetch.ServeNonBlock(mux)
 	<-make(chan struct{})
