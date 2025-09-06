@@ -9,6 +9,7 @@ import (
 
 type (
 	contextKeyTriggerObj struct{}
+	CtxSignal            struct{}
 )
 
 func New(ctx context.Context, triggerObj js.Value) context.Context {

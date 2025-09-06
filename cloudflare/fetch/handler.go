@@ -82,7 +82,7 @@ func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error
 		reqObj.Call("on", "close", cbCancel)
 	}
 
-	ctx = context.WithValue(ctx, "signal", signal)
+	ctx = context.WithValue(ctx, jsruntime.CtxSignal{}, signal)
 
 	ctx = jsruntime.New(ctx, reqObj)
 	req = req.WithContext(ctx)
