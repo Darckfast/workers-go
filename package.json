@@ -1,40 +1,40 @@
 {
-	"$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
-	"name": "workers-go",
-	"version": "0.0.1",
-	"description": "",
-	"type": "module",
-	"scripts": {
-		"worker": "pnpm --filter worker",
-		"dev": "vite",
-		"wd": "pnpm worker wd",
-		"test": "pnpm worker build && vitest",
-		"test:go": "GOOS=js GOARCH=wasm go test ./...",
-		"bench:go": "GOOS=js GOARCH=wasm go test -bench=. ./...",
-		"test:run": "pnpm worker build && vitest run",
-		"compress": "pnpm wrangler -c ./_worker/wrangler.toml --dry-run --minify --outdir ./dist deploy",
-		"lint": "GOOS=js GOARCH=wasm golangci-lint run"
-	},
-	"keywords": [],
-	"author": "Darckfast",
-	"engines": {
-		"node": "22"
-	},
-	"engineStrict": true,
-	"license": "ISC",
-	"packageManager": "pnpm@10.14.0",
-	"devDependencies": {
-		"@biomejs/biome": "2.2.2",
-		"@cloudflare/vite-plugin": "^1.12.0",
-		"@cloudflare/vitest-pool-workers": "^0.8.67",
-		"@faker-js/faker": "^10.0.0",
-		"@types/node": "^24.3.0",
-		"vite": "^7.1.3",
-		"vite-plugin-watch": "^0.3.1",
-		"vitest": "^3.2.4",
-		"wrangler": "^4.33.0"
-	},
-	"dependencies": {
-		"@cloudflare/containers": "^0.0.26"
-	}
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
+  "name": "workers-go",
+  "version": "0.0.1",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "worker": "pnpm --filter worker",
+    "dev": "vite",
+    "wd": "pnpm worker wd",
+    "test": "pnpm worker build && vitest",
+    "test:go": "GOOS=js GOARCH=wasm go test -timeout 500ms ./...",
+    "bench:go": "GOOS=js GOARCH=wasm go test -bench=. ./...",
+    "test:run": "pnpm worker build && vitest run",
+    "compress": "pnpm wrangler -c ./_worker/wrangler.toml --dry-run --minify --outdir ./dist deploy",
+    "lint": "GOOS=js GOARCH=wasm golangci-lint run"
+  },
+  "keywords": [],
+  "author": "Darckfast",
+  "engines": {
+    "node": "22"
+  },
+  "engineStrict": true,
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0",
+  "devDependencies": {
+    "@biomejs/biome": "2.2.2",
+    "@cloudflare/vite-plugin": "^1.12.0",
+    "@cloudflare/vitest-pool-workers": "^0.8.67",
+    "@faker-js/faker": "^10.0.0",
+    "@types/node": "^24.3.0",
+    "vite": "^7.1.3",
+    "vite-plugin-watch": "^0.3.1",
+    "vitest": "^3.2.4",
+    "wrangler": "^4.33.0"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "^0.0.26"
+  }
 }
