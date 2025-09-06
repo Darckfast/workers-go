@@ -11,12 +11,27 @@ import (
 	"github.com/mailru/easyjson"
 )
 
+func MapToHeader(headers jsclass.GenericStringMap) (http.Header, error) {
+	h := http.Header{}
+	for i := range headers {
+		values := headers[i]
+		for _, value := range strings.Split(values, ",") {
+			h.Add(i, value)
+		}
+	}
+
+	return h, nil
+}
 func ToHeader(headers js.Value) (http.Header, error) {
 	if !headers.Truthy() {
 		return http.Header{}, nil
 	}
 
-	hObj := jsclass.Object.FromEntries(headers.Call("entries"))
+	hObj := headers
+	if headers.InstanceOf(jsclass.Headers) {
+		hObj = jsclass.Object.FromEntries(headers)
+	}
+
 	hStr := jsclass.JSON.Stringify(hObj).String()
 	var hMap jsclass.GenericStringMap
 
@@ -35,6 +50,16 @@ func ToHeader(headers js.Value) (http.Header, error) {
 	}
 
 	return h, nil
+}
+
+func HeaderToMap(header http.Header) map[string]string {
+	hMap := jsclass.GenericStringMap{}
+	for k, v := range header {
+		if len(v) > 0 {
+			hMap[k] = strings.Join(v, ",")
+		}
+	}
+	return hMap
 }
 
 func ToJSHeader(header http.Header) js.Value {

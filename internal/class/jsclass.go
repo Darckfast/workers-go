@@ -29,6 +29,7 @@ var (
 	Caches            = js.Global().Get("caches")
 	Promise           = js.Global().Get("Promise")
 	AbortSignal       = js.Global().Get("AbortSignal")
+	AbortController   = js.Global().Get("AbortController")
 	Request           = js.Global().Get("Request")
 	Boolean           = js.Global().Get("Boolean")
 	Response          = js.Global().Get("Response")
