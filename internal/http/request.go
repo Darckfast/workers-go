@@ -53,7 +53,7 @@ func ToJSRequest(req *http.Request) js.Value {
 	}
 
 	jsReqB, _ := easyjson.Marshal(jsReq)
-	jsReqOptions, _ := jsclass.JSON.Parse(jsReqB)
+	jsReqOptions, _ := jsclass.JSON.Parse(string(jsReqB))
 	jsReqBody := js.Undefined()
 
 	if req.Body != nil && req.Method != http.MethodGet {
