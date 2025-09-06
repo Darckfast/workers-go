@@ -1,14 +1,17 @@
-const { init } = require("./load-wasm");
-const express = require("ultimate-express");
+import { Readable } from "node:stream";
+import express from "ultimate-express";
+import { init } from "./load-wasm.js";
 
 init();
 
 const app = express();
 
-app.all("*", async (r) => {
-  console.log(r.header, r.headers);
+app.all("*", async (req, res) => {
   await init();
-  return cf.fetch(r);
+  const rs = await cf.fetch(req);
+
+  res.writeHead(rs.status, rs.statusText, Object.fromEntries(rs.headers));
+  Readable.fromWeb(rs.body).pipe(res);
 });
 
 app.listen(5173, () => {

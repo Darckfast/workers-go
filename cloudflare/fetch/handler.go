@@ -79,8 +79,7 @@ func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error
 	if signal.Truthy() {
 		signal.Call("addEventListener", "abort", cbCancel)
 	} else {
-		onListener := reqObj.Get("on")
-		onListener.Invoke("close", cbCancel)
+		reqObj.Call("on", "close", cbCancel)
 	}
 
 	ctx = context.WithValue(ctx, "signal", signal)
