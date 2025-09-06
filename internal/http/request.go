@@ -31,6 +31,7 @@ func ToRequest(req js.Value) *http.Request {
 	_ = easyjson.Unmarshal([]byte(reqStr.String()), &reqMap)
 
 	reqUrl, _ := url.Parse(reqMap.Url)
+	jsclass.Console.Log(req)
 	headers, _ := ToHeader(req.Get("headers"))
 
 	contentLength, _ := strconv.ParseInt(headers.Get("Content-Length"), 10, 64)

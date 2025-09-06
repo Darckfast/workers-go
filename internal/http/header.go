@@ -8,6 +8,7 @@ import (
 	"syscall/js"
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jstry "github.com/Darckfast/workers-go/internal/try"
 	"github.com/mailru/easyjson"
 )
 
@@ -27,11 +28,17 @@ func ToHeader(headers js.Value) (http.Header, error) {
 		return http.Header{}, nil
 	}
 
-	hObj := jsclass.Object.FromEntries(headers.Call("entries"))
+	hObj, err := jstry.TryCatch(js.FuncOf(func(this js.Value, args []js.Value) any {
+		return jsclass.Object.FromEntries(headers.Call("entries"))
+	}))
+
+	if err != nil {
+		hObj = headers
+	}
 	hStr := jsclass.JSON.Stringify(hObj).String()
 	var hMap jsclass.GenericStringMap
 
-	err := easyjson.Unmarshal([]byte(hStr), &hMap)
+	err = easyjson.Unmarshal([]byte(hStr), &hMap)
 
 	if err != nil {
 		return http.Header{}, err
