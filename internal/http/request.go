@@ -13,6 +13,7 @@ import (
 
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	"github.com/mailru/easyjson"
 )
 
 func ToBody(body js.Value) io.ReadCloser {
@@ -24,31 +25,41 @@ func ToBody(body js.Value) io.ReadCloser {
 }
 
 func ToRequest(req js.Value) *http.Request {
-	reqUrl, _ := url.Parse(req.Get("url").String())
-	header, _ := ToHeader(req.Get("headers"))
+	reqStr := jsclass.JSON.Stringify(req, []any{"method", "url"})
+	var reqMap JSRequest
 
-	contentLength, _ := strconv.ParseInt(header.Get("Content-Length"), 10, 64)
+	_ = easyjson.Unmarshal([]byte(reqStr.String()), &reqMap)
+
+	reqUrl, _ := url.Parse(reqMap.Url)
+	headers, _ := ToHeader(req.Get("headers"))
+
+	contentLength, _ := strconv.ParseInt(headers.Get("Content-Length"), 10, 64)
 	return &http.Request{
-		Method:           req.Get("method").String(),
+		Method:           reqMap.Method,
 		URL:              reqUrl,
-		Header:           header,
+		Header:           headers,
 		Body:             ToBody(req.Get("body")),
 		ContentLength:    contentLength,
-		TransferEncoding: strings.Split(header.Get("Transfer-Encoding"), ","),
-		Host:             header.Get("Host"),
+		TransferEncoding: strings.Split(headers.Get("Transfer-Encoding"), ","),
+		Host:             headers.Get("Host"),
 	}
 }
 
 func ToJSRequest(req *http.Request) js.Value {
-	jsReqOptions := jsclass.Object.New()
-	jsReqOptions.Set("method", req.Method)
-	jsReqOptions.Set("headers", ToJSHeader(req.Header))
+	jsReq := JSRequest{
+		Url:     req.URL.String(),
+		Method:  req.Method,
+		Headers: HeaderToMap(req.Header),
+	}
+
+	jsReqB, _ := easyjson.Marshal(jsReq)
+	jsReqOptions, _ := jsclass.JSON.Parse(string(jsReqB))
 	jsReqBody := js.Undefined()
+
 	if req.Body != nil && req.Method != http.MethodGet {
 		jsReqBody = jsstream.ReadCloserToReadableStream(req.Body)
 		jsReqOptions.Set("duplex", "half")
 	}
 	jsReqOptions.Set("body", jsReqBody)
-	jsReq := jsclass.Request.New(req.URL.String(), jsReqOptions)
-	return jsReq
+	return jsclass.Request.New(req.URL.String(), jsReqOptions)
 }

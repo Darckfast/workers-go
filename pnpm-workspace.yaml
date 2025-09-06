@@ -1,5 +1,7 @@
 packages:
   - _worker
+  - _hono
+  - _ultimate-express
 
 color: always
 

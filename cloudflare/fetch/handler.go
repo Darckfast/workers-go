@@ -21,8 +21,15 @@ var httpHandler http.Handler = http.DefaultServeMux
 func init() {
 	var handleRequestPromise = js.FuncOf(func(this js.Value, args []js.Value) any {
 		reqObj := args[0]
-		envObj := args[1]
-		ctxObj := args[2]
+		envObj := jsclass.Null
+		ctxObj := jsclass.Null
+
+		if len(args) >= 2 {
+			envObj = args[1]
+		}
+		if len(args) >= 3 {
+			ctxObj = args[2]
+		}
 		var cb js.Func
 		cb = js.FuncOf(func(_ js.Value, pArgs []js.Value) any {
 			defer cb.Release()
@@ -57,7 +64,27 @@ func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error
 	}
 
 	req := jshttp.ToRequest(reqObj)
-	ctx := jsruntime.New(context.Background(), reqObj)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	signal := reqObj.Get("signal")
+	var cbCancel js.Func
+	defer cbCancel.Release()
+
+	cbCancel = js.FuncOf(func(this js.Value, args []js.Value) any {
+		cancel()
+		return nil
+	})
+
+	if signal.Truthy() {
+		signal.Call("addEventListener", "abort", cbCancel)
+	} else {
+		reqObj.Call("on", "close", cbCancel)
+	}
+
+	ctx = context.WithValue(ctx, jsruntime.CtxSignal{}, signal)
+
+	ctx = jsruntime.New(ctx, reqObj)
 	req = req.WithContext(ctx)
 	reader, writer := io.Pipe()
 

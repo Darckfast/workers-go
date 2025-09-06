@@ -10,6 +10,7 @@ import (
 	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
+	jsruntime "github.com/Darckfast/workers-go/internal/runtime"
 	"github.com/mailru/easyjson"
 )
 
@@ -72,7 +73,11 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	initObj, _ := jsclass.JSON.Parse(string(initJson))
 
 	if c.Timeout != 0 {
-		initObj.Set("signal", jsclass.AbortSignal.Call("timeout", c.Timeout.Milliseconds()))
+		timeoutSignal := jsclass.AbortSignal.Call("timeout", c.Timeout.Milliseconds())
+		reqSignal := req.Context().Value(jsruntime.CtxSignal{}).(js.Value)
+		initObj.Set("signal", jsclass.AbortSignal.Call("any", []any{timeoutSignal, reqSignal}))
+	} else {
+		initObj.Set("signal", req.Context().Value("signal"))
 	}
 
 	if c.CF != nil {
