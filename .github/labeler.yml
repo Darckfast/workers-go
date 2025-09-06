@@ -86,6 +86,22 @@ worker:
   - changed-files:
       - any-glob-to-any-file: '_worker/**'
 
+hono:
+  - changed-files:
+      - any-glob-to-any-file: '_hono/**'
+
+deno:
+  - changed-files:
+      - any-glob-to-any-file: '_deno/**'
+
+bun:
+  - changed-files:
+      - any-glob-to-any-file: '_bun/**'
+
+express:
+  - changed-files:
+      - any-glob-to-any-file: '_express/**'
+
 feat:
   - head-branch: ['^feat', 'feat']
 
