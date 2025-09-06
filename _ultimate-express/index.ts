@@ -8,9 +8,11 @@ const app = express();
 
 app.all("*", async (req, res) => {
   await init();
-  const rs = await cf.fetch(req);
+  // @ts-ignore
+  const rs: Response = await cf.fetch(req);
 
   res.writeHead(rs.status, rs.statusText, Object.fromEntries(rs.headers));
+  // @ts-ignore
   Readable.fromWeb(rs.body).pipe(res);
 });
 

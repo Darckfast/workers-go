@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm run build:go && node --watch index.js",
+    "dev": "pnpm run build:go && tsx watch src/index.ts",
+    "build": "tsc",
     "build:go": "GOOS=js GOARCH=wasm go build -gcflags=all='-N -l' -gcflags='-dwarflocationlists=true' -o ./bin/app.wasm ./main.go"
   },
   "keywords": [],
@@ -15,5 +16,11 @@
   "packageManager": "pnpm@10.14.0",
   "dependencies": {
     "ultimate-express": "^2.0.9"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.3.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
   }
 }

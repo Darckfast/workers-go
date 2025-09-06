@@ -12,5 +12,3 @@ require (
 	github.com/mailru/easyjson v0.9.0 // indirect
 	github.com/stretchr/testify v1.11.1 // indirect
 )
-
-replace github.com/Darckfast/workers-go => ../

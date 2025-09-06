@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import "./bin/wasm_exec.js";
 
+// @ts-ignore
 globalThis.tryCatch = (fn) => {
   try {
     return { data: fn() };
@@ -12,6 +13,7 @@ globalThis.tryCatch = (fn) => {
         err = JSON.stringify(err);
       }
 
+      // @ts-ignore
       err = new Error(err || "no error message");
     }
 
@@ -28,6 +30,7 @@ export async function init() {
   }
 
   if (!initiliazed) {
+    // @ts-ignore
     const CURRENT_DIR = dirname(fileURLToPath(import.meta.url));
     const app = readFileSync(resolve(CURRENT_DIR, "./bin/app.wasm"));
     const { instance } = await WebAssembly.instantiate(app, go.importObject);
