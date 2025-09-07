@@ -100,7 +100,7 @@ bun:
 
 express:
   - changed-files:
-      - any-glob-to-any-file: '_express/**'
+      - any-glob-to-any-file: '_ultimate-express/**'
 
 feat:
   - head-branch: ['^feat', 'feat']

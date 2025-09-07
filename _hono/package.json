@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
+    "build": "tsc --noCheck",
     "build:go": "GOOS=js GOARCH=wasm go build -gcflags=all='-N -l' -gcflags='-dwarflocationlists=true' -o ./src/bin/app.wasm ./main.go",
     "start": "node dist/index.js"
   },

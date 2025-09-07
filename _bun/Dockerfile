@@ -2,7 +2,7 @@ FROM golang:1.21 AS build-go
 WORKDIR /app
 COPY . .
 RUN go mod download
-RUN GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o app.wasm main.go
+RUN GOOS=js GOARCH=wasm go build -o app.wasm main.go
 
 # use the official Bun image
 # see all versions at https://hub.docker.com/r/oven/bun/tags
@@ -27,11 +27,9 @@ FROM base AS prerelease
 COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
 
-ENV NODE_ENV=production
-# RUN bun run build
-
 # copy production dependencies and source code into final image
 FROM base AS release
+ENV NODE_ENV=production
 COPY --from=install /temp/prod/node_modules node_modules
 COPY --from=prerelease /usr/src/app/*.ts .
 COPY --from=prerelease /usr/src/app/bin ./bin
@@ -40,6 +38,6 @@ COPY --from=prerelease /usr/src/app/package.json .
 
 # run the app
 USER bun
-EXPOSE 3000/tcp
+EXPOSE 3000
 CMD [ "bun", "run", "index.ts" ]
 

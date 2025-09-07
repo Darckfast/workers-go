@@ -1,6 +1,5 @@
 ```
-pnpm install
-pnpm run dev
+deno run dev
 ```
 
 ```
