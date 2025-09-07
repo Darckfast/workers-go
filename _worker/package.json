@@ -1,32 +1,33 @@
 {
-	"$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
-	"name": "worker",
-	"version": "0.0.0",
-	"description": "",
-	"main": "main.ts",
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"start": "wrangler --port 5173 --ip 0.0.0.0 dev main.js",
-		"deploy": "wrangler deploy",
-		"dev:wrangler": "pnpm run build && wrangler --port 5173 dev",
-		"build:js": "wrangler deploy --dry-run --outdir dist --minify",
-		"build:go": "GOOS=js GOARCH=wasm go build -trimpath -ldflags='-s -w -buildid=' -o ./bin/app.wasm ./pkg/main.go"
-	},
-	"engines": {
-		"node": "22"
-	},
-	"engineStrict": true,
-	"license": "MIT",
-	"packageManager": "pnpm@10.14.0",
-	"devDependencies": {
-		"@biomejs/biome": "2.2.2",
-		"@cloudflare/vite-plugin": "^1.12.0",
-		"vite": "^7.1.3",
-		"vite-plugin-watch": "^0.3.1",
-		"wrangler": "^4.33.0"
-	},
-	"dependencies": {
-		"@cloudflare/containers": "^0.0.26"
-	}
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
+  "name": "worker",
+  "version": "0.0.0",
+  "description": "",
+  "main": "main.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "wrangler --port 5173 --ip 0.0.0.0 dev main.js",
+    "deploy": "wrangler deploy",
+    "dev:wrangler": "pnpm run build && wrangler --port 5173 dev",
+    "build": "pnpm run build:go",
+    "build:js": "wrangler deploy --dry-run --outdir dist --minify",
+    "build:go": "GOOS=js GOARCH=wasm go build -trimpath -ldflags='-s -w -buildid=' -o ./bin/app.wasm ./pkg/main.go"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "engineStrict": true,
+  "license": "MIT",
+  "packageManager": "pnpm@10.14.0",
+  "devDependencies": {
+    "@biomejs/biome": "2.2.2",
+    "@cloudflare/vite-plugin": "^1.12.0",
+    "vite": "^7.1.3",
+    "vite-plugin-watch": "^0.3.1",
+    "wrangler": "^4.33.0"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "^0.0.26"
+  }
 }
