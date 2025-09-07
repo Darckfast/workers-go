@@ -4,7 +4,7 @@ COPY . .
 RUN go mod download
 RUN GOOS=js GOARCH=wasm go build -ldflags='-s -w' -o app.wasm main.go
 
-FROM denoland/deno:latest
+FROM denoland/deno:2.4.5
 
 # Create working directory
 WORKDIR /app
