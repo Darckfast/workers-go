@@ -56,17 +56,11 @@ func (rs *ReadableStream) Read(p []byte) (n int, err error) {
 
 		select {
 		case result := <-resultCh:
-			var err error
-
-			if result.Type().String() == "number" {
-				_, err = rs.buf.Write([]byte{byte(result.Int())})
-			} else {
-				chunk := make([]byte, result.Get("byteLength").Int())
-				_ = js.CopyBytesToGo(chunk, result)
-				// The length written is always the same as the length of chunk, so it can be discarded.
-				//   - https://pkg.go.dev/bytes#Buffer.Write
-				_, err = rs.buf.Write(chunk)
-			}
+			chunk := make([]byte, result.Get("byteLength").Int())
+			_ = js.CopyBytesToGo(chunk, result)
+			// The length written is always the same as the length of chunk, so it can be discarded.
+			//   - https://pkg.go.dev/bytes#Buffer.Write
+			_, err := rs.buf.Write(chunk)
 			if err != nil {
 				return 0, err
 			}
