@@ -27,7 +27,7 @@ jobs:
           node-version: 22
 
       - run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
-      - run: pnpm i
+      - run: pnpm i --no-frozen-lockfile
 
       - name: Test Go
         shell: bash
