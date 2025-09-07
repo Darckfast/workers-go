@@ -6,12 +6,12 @@
 	"main": "main.ts",
 	"type": "module",
 	"scripts": {
-		"preinstall": "GOOS=js GOARCH=wasm go get ./pkg/...",
 		"dev": "vite",
-		"start": "vite",
+		"start": "wrangler --port 5173 --ip 0.0.0.0 dev main.js",
 		"deploy": "wrangler deploy",
 		"dev:wrangler": "pnpm run build && wrangler --port 5173 dev",
-		"build": "GOOS=js GOARCH=wasm go build -trimpath -ldflags='-s -w -buildid=' -o ./bin/app.wasm ./pkg/main.go"
+		"build:js": "wrangler deploy --dry-run --outdir dist --minify",
+		"build:go": "GOOS=js GOARCH=wasm go build -trimpath -ldflags='-s -w -buildid=' -o ./bin/app.wasm ./pkg/main.go"
 	},
 	"engines": {
 		"node": "22"

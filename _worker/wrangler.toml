@@ -40,7 +40,7 @@ max_batch_timeout = 5
 # [[containers]]
 # name = "go-container"
 # class_name = "GoContainer"
-# image = "./Dockerfile"
+# image = "./container/Dockerfile"
 # max_instances = 3
 
 # Cloudflare Container

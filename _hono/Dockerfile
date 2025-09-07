@@ -27,6 +27,6 @@ COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build-js /app/dist /app
 COPY --from=build-go /app/src/bin /app/bin
 
-EXPOSE 3000
+EXPOSE 5173
 CMD ["/app/index.js"]
 
