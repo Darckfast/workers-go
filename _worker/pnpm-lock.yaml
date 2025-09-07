@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  devalue@<5.3.2: '>=5.3.2'
-
 importers:
 
   .:
