@@ -1,4 +1,4 @@
-import { init } from "./load-wasm";
+import { init } from "./load-wasm.ts";
 
 init();
 

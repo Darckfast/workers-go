@@ -1,6 +1,3 @@
-import { readFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import "./bin/wasm_exec.js";
 
 // @ts-expect-error
@@ -30,8 +27,7 @@ export async function init() {
   }
 
   if (!initiliazed) {
-    const CURRENT_DIR = dirname(fileURLToPath(import.meta.url));
-    const app = readFileSync(resolve(CURRENT_DIR, "./bin/app.wasm"));
+    const app = await Deno.readFile("./bin/app.wasm");
     const { instance } = await WebAssembly.instantiate(app, go.importObject);
 
     go.run(instance).finally(() => {
