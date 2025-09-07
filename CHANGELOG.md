@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.2.0](https://github.com/Darckfast/workers-go/compare/v0.1.0...v0.2.0) (2025-09-07)
+
+
+### Features
+
+* add new testing endpoint for r2 with encryption ([#28](https://github.com/Darckfast/workers-go/issues/28)) ([aca215e](https://github.com/Darckfast/workers-go/commit/aca215e9a4be51c3446fe7112844ebd310f3ca69))
+* added dockerfile for bun app ([#31](https://github.com/Darckfast/workers-go/issues/31)) ([1d20239](https://github.com/Darckfast/workers-go/commit/1d202393356ded7d5bd79050fa0fa4fd7ab4edf0))
+* added signals support + perf work + more examples ([#30](https://github.com/Darckfast/workers-go/issues/30)) ([dceaaeb](https://github.com/Darckfast/workers-go/commit/dceaaeb87e4bb03dc6abb638e2940eebf97e601f))
+* simplified dockerfiles ([#35](https://github.com/Darckfast/workers-go/issues/35)) ([52ab54b](https://github.com/Darckfast/workers-go/commit/52ab54bd2c26910c7e14a508281f6283b626822e))
+
+
+### Bug Fixes
+
+* fixed poor performance when using express ([#34](https://github.com/Darckfast/workers-go/issues/34)) ([9b83c2c](https://github.com/Darckfast/workers-go/commit/9b83c2c962564e29ff3ef1bf9edc8b15d60cf8e9))
+* fixed stream copy when using express like lib (http/https) ([#33](https://github.com/Darckfast/workers-go/issues/33)) ([7150c8b](https://github.com/Darckfast/workers-go/commit/7150c8b6358b258e2f549c8fdaad5fd3c3485103))
+* minor fixes to dockerfiles ([#32](https://github.com/Darckfast/workers-go/issues/32)) ([5b4bc6e](https://github.com/Darckfast/workers-go/commit/5b4bc6e898bcea8c0c2c34932279da882c5f5b54))
+
 ## [0.1.0](https://github.com/Darckfast/workers-go/compare/v0.0.4...v0.1.0) (2025-08-30)
 
 
