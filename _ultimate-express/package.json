@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "pnpm run build:go && tsx watch src/index.ts",
+    "dev": "pnpm run build:go && tsx watch index.ts",
     "build": "tsc",
     "build:go": "GOOS=js GOARCH=wasm go build -gcflags=all='-N -l' -gcflags='-dwarflocationlists=true' -o ./bin/app.wasm ./main.go"
   },

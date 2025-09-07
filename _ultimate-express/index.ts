@@ -6,9 +6,11 @@ init();
 
 const app = express();
 
+app.use(express.raw({ type: "*/*" }))
 app.all("*", async (req, res) => {
   await init();
   // @ts-ignore
+  req.body = ReadableStream.from(req.body)
   const rs: Response = await cf.fetch(req);
 
   res.writeHead(rs.status, rs.statusText, Object.fromEntries(rs.headers));
