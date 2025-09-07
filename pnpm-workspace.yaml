@@ -4,7 +4,7 @@ packages:
   - _ultimate-express
 
 color: always
-
+sharedWorkspaceLockfile: false
 onlyBuiltDependencies:
   - esbuild
   - sharp

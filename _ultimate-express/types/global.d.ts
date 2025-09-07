@@ -1,18 +1,7 @@
+import type { Request } from "ultimate-express";
+
 declare global {
   var cf: {
-    fetch(r: Request, e?: Env | undefined, ctx?: ExecutionContext | undefined): Promise<Response>;
-    email(
-      m: ForwardableEmailMessage,
-      e: Env,
-      c: ExecutionContext,
-    ): Promise<void>;
-    scheduled(
-      c: ScheduledController,
-      e: Env,
-      ctx: ExecutionContext,
-    ): Promise<void>;
-    queue(b: MessageBatch, e: Env, ctx: ExecutionContext): Promise<void>;
-    tail(t: TraceItem[], e: Env, c: ExecutionContext): Promise<void>;
+    fetch(r: Request<any>): Promise<Response>;
   };
 }
-export { };
