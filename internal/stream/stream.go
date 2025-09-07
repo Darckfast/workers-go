@@ -56,7 +56,7 @@ func (rs *ReadableStream) Read(p []byte) (n int, err error) {
 
 		select {
 		case result := <-resultCh:
-			var err error = nil
+			var err error
 
 			if result.Type().String() == "number" {
 				_, err = rs.buf.Write([]byte{byte(result.Int())})
