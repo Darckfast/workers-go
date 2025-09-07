@@ -14,8 +14,11 @@ globalThis.tryCatch = (fn: () => any) => {
   } catch (err) {
     if (!(err instanceof Error)) {
       if (err instanceof Object) {
-        return { error: JSON.stringify(err) };
+        err = JSON.stringify(err);
       }
+
+      // @ts-expect-error
+      err = new Error(err || "no error message");
     }
 
     return { error: err };
