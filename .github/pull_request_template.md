@@ -1,8 +1,4 @@
-# Description
-
-<!-- Add a brief description of what this PR is doing -->
-
-## Changes
+# Changes
 
 <!--
 List the changes made in this PR
