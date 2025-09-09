@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "pnpm run build:go && bun run --watch index.ts",
     "test": "pnpm run build:go && bun test",
-    "build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./pkg/main.go"
+    "build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go"
   },
   "devDependencies": {
     "@types/bun": "latest"

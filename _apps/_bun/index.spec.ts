@@ -6,15 +6,15 @@ beforeAll(() => {
   serverProcess = Bun.spawn(["bun", "run", "index.ts"], {
     stdio: ["inherit", "inherit", "inherit"],
   });
-  // Give the server a moment to start up
-  return new Promise((resolve) => setTimeout(resolve, 1000));
+
+  return new Promise((resolve) => setTimeout(resolve, 500));
 });
 
 afterAll(() => {
   serverProcess.kill();
 });
 
-test("server responds to root path", async () => {
+test("should return hello from wasm", async () => {
   const response = await fetch("http://localhost:5173/hello");
   expect(response.status).toBe(200);
   expect(await response.text()).toBe("hello");

@@ -1,7 +1,9 @@
 packages:
-  - _worker
-  - _hono
-  - _ultimate-express
+  - _apps/_worker
+  - _apps/_ultimate-express
+  - _apps/_hono
+  - _apps/_bun
+  - _apps/_deno
 
 color: always
 sharedWorkspaceLockfile: false

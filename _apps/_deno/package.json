@@ -1,0 +1,6 @@
+{
+  "name": "deno",
+  "scripts": {
+    "test": "deno run test"
+  }
+}
