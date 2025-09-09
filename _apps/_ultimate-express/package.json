@@ -1,5 +1,5 @@
 {
-  "name": "_ultimate-express",
+  "name": "uws",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "pnpm run build:go && tsx watch index.ts",
     "build": "tsc --noCheck",
-    "build:go": "GOOS=js GOARCH=wasm go build -gcflags=all='-N -l' -gcflags='-dwarflocationlists=true' -o ./bin/app.wasm ./main.go"
+    "build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go"
   },
   "keywords": [],
   "author": "",
