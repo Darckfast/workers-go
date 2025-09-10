@@ -9,6 +9,7 @@
     "build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.4",
     "@types/bun": "latest"
   },
   "peerDependencies": {
