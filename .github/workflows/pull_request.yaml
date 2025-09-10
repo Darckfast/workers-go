@@ -6,33 +6,180 @@ env:
   GOARCH: wasm
 
 jobs:
-  tests:
-    strategy:
-      matrix:
-        go-version: [ 1.21 ]
-        os: [ ubuntu-latest ]
-    runs-on: ${{ matrix.os }}
+  setup:
+    name: Setup Environment & Install Deps
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: 1.21
 
       - uses: pnpm/action-setup@v4
-        name: Install pnpm
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
 
+      - name: Add Go wasm to PATH
+        run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
+
+      - name: Compute cache key
+        id: cache-key
+        run: echo "key=$(sha256sum pnpm-lock.yaml | cut -d ' ' -f1)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ steps.cache-key.outputs.key }}
+          restore-keys: |
+            deps-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+  test-bun:
+    name: Test Bun
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
       - run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
-      - run: pnpm i --no-frozen-lockfile
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ needs.setup.outputs.cache-key }}
+          restore-keys: |
+            deps-
+      - run: pnpm bun test
 
-      - name: Test Go
-        shell: bash
-        run: pnpm run test:go
+  test-deno:
+    name: Test Deno
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ needs.setup.outputs.cache-key }}
+          restore-keys: |
+            deps-
+      - run: pnpm deno test
 
-      - name: Test Worker
-        shell: bash
-        run: pnpm run test:run
+  test-hono:
+    name: Test Hono
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ needs.setup.outputs.cache-key }}
+          restore-keys: |
+            deps-
+      - run: pnpm hono install
+      - run: pnpm hono test
+
+  test-uws:
+    name: Test uWS
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ needs.setup.outputs.cache-key }}
+          restore-keys: |
+            deps-
+      - run: pnpm uws install
+      - run: pnpm uws test
+
+  test-worker:
+    name: Test Worker
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ needs.setup.outputs.cache-key }}
+          restore-keys: |
+            deps-
+      - run: pnpm worker install
+      - run: pnpm worker test
+
+  test-go:
+    name: Test Go
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.21
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ needs.setup.outputs.cache-key }}
+          restore-keys: |
+            deps-
+      - run: pnpm run test:go
+

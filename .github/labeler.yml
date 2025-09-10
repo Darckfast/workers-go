@@ -4,55 +4,55 @@ workflow:
 
 cloudflare/cache:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/cache/**'
+      - any-glob-to-any-file: '**cloudflare/cache/**'
 
 cloudflare/cron:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/cron/**'
+      - any-glob-to-any-file: '**cloudflare/cron/**'
 
 cloudflare/d1:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/d1/**'
+      - any-glob-to-any-file: '**cloudflare/d1/**'
 
 cloudflare/durableobjects:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/durableobjects/**'
+      - any-glob-to-any-file: '**cloudflare/durableobjects/**'
 
 cloudflare/email:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/email/**'
+      - any-glob-to-any-file: '**cloudflare/email/**'
 
 cloudflare/env:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/env/**'
+      - any-glob-to-any-file: '**cloudflare/env/**'
 
 cloudflare/fetch:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/fetch/**'
+      - any-glob-to-any-file: '**cloudflare/fetch/**'
 
 cloudflare/kv:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/kv/**'
+      - any-glob-to-any-file: '**cloudflare/kv/**'
 
 cloudflare/lifecycle:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/lifecycle/**'
+      - any-glob-to-any-file: '**cloudflare/lifecycle/**'
 
 cloudflare/queues:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/queues/**'
+      - any-glob-to-any-file: '**cloudflare/queues/**'
 
 cloudflare/r2:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/r2/**'
+      - any-glob-to-any-file: '**cloudflare/r2/**'
 
 cloudflare/sockets:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/sockets/**'
+      - any-glob-to-any-file: '**cloudflare/sockets/**'
 
 cloudflare/tail:
   - changed-files:
-      - any-glob-to-any-file: 'cloudflare/tail/**'
+      - any-glob-to-any-file: '**cloudflare/tail/**'
 
 internal/class:
   - changed-files:
@@ -80,27 +80,27 @@ internal/try:
 
 tests:
   - changed-files:
-      - any-glob-to-any-file: 'tests/**'
+      - any-glob-to-any-file: ['tests/**', '**test**', '**spec**']
 
 worker:
   - changed-files:
-      - any-glob-to-any-file: '_worker/**'
+      - any-glob-to-any-file: '**_worker/**'
 
 hono:
   - changed-files:
-      - any-glob-to-any-file: '_hono/**'
+      - any-glob-to-any-file: '**_hono/**'
 
 deno:
   - changed-files:
-      - any-glob-to-any-file: '_deno/**'
+      - any-glob-to-any-file: '**_deno/**'
 
 bun:
   - changed-files:
-      - any-glob-to-any-file: '_bun/**'
+      - any-glob-to-any-file: '**_bun/**'
 
 express:
   - changed-files:
-      - any-glob-to-any-file: '_ultimate-express/**'
+      - any-glob-to-any-file: '**_ultimate-express/**'
 
 feat:
   - head-branch: ['^feat', 'feat']

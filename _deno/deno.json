@@ -1,9 +1,0 @@
-{
-	"tasks": {
-		"dev": "deno run --allow-net --sloppy-imports --allow-read --watch main.ts",
-		"build:go": "GOOS=js GOARCH=wasm go build -gcflags=all='-N -l' -gcflags='-dwarflocationlists=true' -o ./bin/app.wasm ./main.go"
-	},
-	"imports": {
-		"@std/assert": "jsr:@std/assert@1"
-	}
-}

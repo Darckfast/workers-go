@@ -1,0 +1,17 @@
+{
+  "name": "bun",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm run build:go && bun run --watch index.ts",
+    "test": "pnpm run build:go && bun test",
+    "build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

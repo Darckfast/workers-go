@@ -1,0 +1,27 @@
+{
+	"name": "uws",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"dev": "pnpm run build:go && tsx watch index.ts",
+		"build": "tsc --noCheck",
+		"test": "pnpm run build:go && node --test index.spec.ts",
+		"build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.14.0",
+	"dependencies": {
+		"ultimate-express": "^2.0.9"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.3",
+		"@types/express": "^5.0.3",
+		"@types/node": "^24.3.1",
+		"tsx": "^4.20.5",
+		"typescript": "^5.9.2"
+	}
+}
