@@ -5,6 +5,6 @@
     "test": "deno run build:go && deno test --allow-run --allow-net"
   },
   "imports": {
-    "@std/assert": "jsr:@std/assert@1"
+    "@std/assert": "jsr:@std/assert@^1.0.14"
   }
 }
