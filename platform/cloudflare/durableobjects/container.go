@@ -5,9 +5,9 @@ package durableobjects
 import (
 	"net/http"
 
-	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
+	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
 type Container struct {

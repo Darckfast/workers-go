@@ -7,9 +7,9 @@ import (
 	"log"
 	"syscall/js"
 
-	"github.com/Darckfast/workers-go/cloudflare/env"
-	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/Darckfast/workers-go/platform/cloudflare/env"
+	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
 type EmailConsumer func(f *ForwardableEmailMessage) error

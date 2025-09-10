@@ -6,8 +6,8 @@ import (
 	"errors"
 	"syscall/js"
 
-	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
+	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
 	"github.com/mailru/easyjson"
 )
 

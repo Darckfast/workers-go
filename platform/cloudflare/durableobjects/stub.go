@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"syscall/js"
 
-	"github.com/Darckfast/workers-go/cloudflare/lifecycle"
 	jsclass "github.com/Darckfast/workers-go/internal/class"
 	jshttp "github.com/Darckfast/workers-go/internal/http"
 	jstry "github.com/Darckfast/workers-go/internal/try"
+	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
 type DurableObjectNamespace struct {
