@@ -112,6 +112,7 @@ jobs:
           key: deps-${{ needs.setup.outputs.cache-key }}
           restore-keys: |
             deps-
+      - run: pnpm hono install
       - run: pnpm hono test
 
   test-uws:
@@ -134,6 +135,7 @@ jobs:
           key: deps-${{ needs.setup.outputs.cache-key }}
           restore-keys: |
             deps-
+      - run: pnpm uws install
       - run: pnpm uws test
 
   test-worker:
@@ -156,7 +158,8 @@ jobs:
           key: deps-${{ needs.setup.outputs.cache-key }}
           restore-keys: |
             deps-
-      - run: pnpm run test:run
+      - run: pnpm worker install
+      - run: pnpm worker test
 
   test-go:
     name: Test Go
