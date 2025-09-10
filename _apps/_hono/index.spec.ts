@@ -7,7 +7,7 @@ describe("GET /hello", () => {
 
   before(() => {
     serverProcess = spawn("tsx", ["index.ts"]);
-    return new Promise((resolve) => setTimeout(resolve, 600));
+    return new Promise((resolve) => setTimeout(resolve, 500));
   });
 
   after(() => {
@@ -15,7 +15,7 @@ describe("GET /hello", () => {
   });
 
   it("should return hello from wasm", async () => {
-    const res = await fetch("http://localhost:5173/hello");
+    const res = await fetch("http://localhost:5173/hello").catch(console.log);
     const data = await res.text();
     assert.equal(res.status, 200);
     assert.equal(data, "hello");
