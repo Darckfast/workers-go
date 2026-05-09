@@ -1,0 +1,14 @@
+steps:
+  build:
+    when:
+      event: [pull_request]
+    image: golang
+    environment:
+      GOOS: js
+      GOARCH: wasm
+    commands:
+      - go get
+      - go build
+      # Optional: Run go tests
+      - go test
+
