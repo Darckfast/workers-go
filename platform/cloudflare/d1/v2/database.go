@@ -45,7 +45,7 @@ func (s *D1PreparedStatment) Run() (*D1Result, error) {
 	var result D1Result
 	str := jsclass.JSON.Stringify(r)
 	err = easyjson.Unmarshal([]byte(str.String()), &result)
-	result.ResultsString = str.String()
+	result.ResultsString = jsclass.JSON.Stringify(r.Get("results")).String()
 
 	return &result, err
 }

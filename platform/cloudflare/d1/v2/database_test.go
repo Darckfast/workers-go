@@ -23,11 +23,14 @@ func setupEnv() *js.Value {
       bind: function(values) {
         that.values = values
       },
+      first: function() {
+       return Promise.resolve( { "test": 2 })
+      },
       run: function() {
-        return {
-          success: true,
-          results: [ { "test": 1 } ]
-        }
+       return Promise.resolve({
+              success: true,
+              results: [ { "test": 1 } ]
+            })
       }
     }
     `))
@@ -78,5 +81,15 @@ func TestReturnResultAsString(t *testing.T) {
 	r, err := db.Prepare("SELECT * FROM mytable WHERE id = ?").Run()
 
 	assert.Nil(t, err)
-	assert.Equal(t, r.ResultsString, `[ { "test": 1 } ]`)
+	assert.Equal(t, `[{"test":1}]`, r.ResultsString)
+}
+
+func TestReturnFirstResultAsString(t *testing.T) {
+	setupEnv()
+
+	db, _ := GetDB("BINDING")
+	r, err := db.Prepare("SELECT * FROM mytable WHERE id = ?").FirstAsString("")
+
+	assert.Nil(t, err)
+	assert.Equal(t, `{"test":2}`, r)
 }
