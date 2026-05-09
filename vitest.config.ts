@@ -6,13 +6,13 @@ import path from "path";
 
 export default defineWorkersConfig(async () => {
   // Read all migrations in the `migrations` directory
-  const migrationsPath = path.join(__dirname, "./_worker/migrations");
+  const migrationsPath = path.join(__dirname, "./_apps/_worker/migrations");
   const migrations = await readD1Migrations(migrationsPath);
 
   return {
     resolve: {
       alias: {
-        $wrk: path.resolve(__dirname, "./_worker"),
+        $wrk: path.resolve(__dirname, "./_apps/_worker"),
       },
     },
     test: {
@@ -21,7 +21,7 @@ export default defineWorkersConfig(async () => {
       poolOptions: {
         workers: {
           singleWorker: true,
-          wrangler: { configPath: "./_worker/wrangler.toml" },
+          wrangler: { configPath: "./_apps/_worker/wrangler.toml" },
           miniflare: {
             kvNamespaces: ["TEST_NAMESPACE"],
             bindings: { TEST_MIGRATIONS: migrations },

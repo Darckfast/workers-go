@@ -45,6 +45,7 @@ func (s *D1PreparedStatment) Run() (*D1Result, error) {
 	var result D1Result
 	str := jsclass.JSON.Stringify(r)
 	err = easyjson.Unmarshal([]byte(str.String()), &result)
+	result.ResultsString = jsclass.JSON.Stringify(r.Get("results")).String()
 
 	return &result, err
 }
@@ -77,6 +78,18 @@ func (s *D1PreparedStatment) First(columnName string) (*D1FirstResult, error) {
 	err = easyjson.Unmarshal([]byte(str.String()), &result)
 
 	return &result, err
+}
+
+func (s *D1PreparedStatment) FirstAsString(columnName string) (string, error) {
+	r, err := jsclass.Await(s.v.Call("first", columnName))
+
+	if err != nil {
+		return "", err
+	}
+
+	str := jsclass.JSON.Stringify(r)
+
+	return str.String(), err
 }
 
 func (d *D1Db) Prepare(query string) *D1PreparedStatment {

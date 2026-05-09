@@ -8,9 +8,10 @@ type D1ExecResult struct {
 
 //easyjson:json
 type D1Result struct {
-	Success bool  `json:"success"`
-	Results []any `json:"results"`
-	Meta    struct {
+	Success       bool  `json:"success"`
+	Results       []any `json:"results"`
+	ResultsString string
+	Meta          struct {
 		ServedBy        string `json:"served_by"`
 		ServedByRegion  string `json:"served_by_region"`
 		ServedByPrimary bool   `json:"served_by_primary"`
