@@ -13,7 +13,7 @@
     "dev:worker": "vite",
     "dev:uws": "pnpm uws dev",
     "test": "pnpm worker build && vitest",
-    "test:go": "GOOS=js GOARCH=wasm go test -timeout 500ms ./...",
+    "test:go": "GOOS=js GOARCH=wasm go test --exec=./.github/workflows/wasm_exec.js -timeout 500ms ./...",
     "bench:go": "GOOS=js GOARCH=wasm go test -bench=. ./...",
     "test:cf": "pnpm worker build && vitest run",
     "lint": "GOOS=js GOARCH=wasm golangci-lint run"
