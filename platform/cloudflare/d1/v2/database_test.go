@@ -18,9 +18,18 @@ func setupEnv() *js.Value {
 	mock.Set("prepare", js.Global().Get("Function").New("query", `
     this.query = query
     const that = this
-    return { bind: function(values) {
+
+    return {
+      bind: function(values) {
         that.values = values
-    }}
+      },
+      run: function() {
+        return {
+          success: true,
+          results: [ { "test": 1 } ]
+        }
+      }
+    }
     `))
 
 	lifecycle.Env = jsclass.Object.New()
@@ -60,4 +69,14 @@ func TestMaxInt64Bind(t *testing.T) {
 	bindings := jsconv.MaybeInt64(mock.Get("values"))
 
 	assert.Equal(t, int64(math.MaxInt64), bindings)
+}
+
+func TestReturnResultAsString(t *testing.T) {
+	setupEnv()
+
+	db, _ := GetDB("BINDING")
+	r, err := db.Prepare("SELECT * FROM mytable WHERE id = ?").Run()
+
+	assert.Nil(t, err)
+	assert.Equal(t, r.ResultsString, `[ { "test": 1 } ]`)
 }
