@@ -88,7 +88,7 @@ func TestReturnFirstResultAsString(t *testing.T) {
 	setupEnv()
 
 	db, _ := GetDB("BINDING")
-	r, err := db.Prepare("SELECT * FROM mytable WHERE id = ?").FirstAsString("")
+	r, err := db.Prepare("SELECT * FROM mytable WHERE id = ?").FirstAsString(nil)
 
 	assert.Nil(t, err)
 	assert.Equal(t, `{"test":2}`, r)
