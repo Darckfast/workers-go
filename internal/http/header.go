@@ -64,9 +64,15 @@ func HeaderToMap(header http.Header) map[string]string {
 
 func ToJSHeader(header http.Header) js.Value {
 	hMap := jsclass.GenericStringMap{}
+	cookies := []string{}
+
 	for k, v := range header {
 		if len(v) > 0 {
-			hMap[k] = strings.Join(v, ",")
+			if strings.ToLower(k) == "set-cookie" {
+				cookies = append(cookies, v...)
+			} else {
+				hMap[k] = strings.Join(v, ", ")
+			}
 		}
 	}
 	hBytes, _ := easyjson.Marshal(hMap)
@@ -74,6 +80,12 @@ func ToJSHeader(header http.Header) js.Value {
 	// Returning as an object is faster, but it has problems with Get(key)
 	// on some headers keys
 	h := jsclass.Headers.New(hObj)
+
+	if len(cookies) > 0 {
+		for _, v := range cookies {
+			h.Call("append", "set-cookie", v)
+		}
+	}
 
 	return h
 }
