@@ -80,8 +80,14 @@ func (s *D1PreparedStatment) First(columnName string) (*D1FirstResult, error) {
 	return &result, err
 }
 
-func (s *D1PreparedStatment) FirstAsString(columnName string) (string, error) {
-	r, err := jsclass.Await(s.v.Call("first", columnName))
+func (s *D1PreparedStatment) FirstAsString(columnName *string) (string, error) {
+	var r js.Value
+	var err error
+	if columnName == nil {
+		r, err = jsclass.Await(s.v.Call("first"))
+	} else {
+		r, err = jsclass.Await(s.v.Call("first", columnName))
+	}
 
 	if err != nil {
 		return "", err
