@@ -1,0 +1,10 @@
+{
+  "name": "_minimal_queues_consumer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.14.0"
+}
