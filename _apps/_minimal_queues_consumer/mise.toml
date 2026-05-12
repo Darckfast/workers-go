@@ -1,0 +1,9 @@
+[tools]
+go = "1.21"
+wrangler = "latest"
+
+[tasks]
+install = "go mod download"
+build = "GOOS=js GOARCH=wasm go build -trimpath -ldflags='-s -w -buildid=' -o ./bin/app.wasm ./pkg/main.go"
+dev = "wrangler --show-interactive-dev-session false dev"
+
