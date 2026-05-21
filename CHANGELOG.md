@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.0](https://github.com/Darckfast/workers-go/compare/v0.2.2...v0.3.0) (2026-05-21)
+
+
+### Features
+
+* add minimal queues consumer app template ([32430a5](https://github.com/Darckfast/workers-go/commit/32430a5a24a10df22a5ddbd763ffcc8740a36153))
+
+
+### Bug Fixes
+
+* fixed broken test ([7ad8e29](https://github.com/Darckfast/workers-go/commit/7ad8e290d40d00eb0c1cd3099fff493e823dd67f))
+* fixed call with no column name ([95f31da](https://github.com/Darckfast/workers-go/commit/95f31dad9acff4e022baf8275e1a3452077f0685))
+* fixed missing args on durable objects stub rpc call ([dcce336](https://github.com/Darckfast/workers-go/commit/dcce3365290eda3f1a2d0d575f0706e4c4ee11fe))
+* fixed set-cookie headers not being copied correctly ([be315c0](https://github.com/Darckfast/workers-go/commit/be315c0fdd6c3c7d5472dc9626e511247588072c))
+* fixed typo ([115aaa7](https://github.com/Darckfast/workers-go/commit/115aaa7cfb7bd5c332009c076b7b269e127c1381))
+
 ## [0.2.0](https://github.com/Darckfast/workers-go/compare/v0.1.0...v0.2.0) (2025-09-07)
 
 
