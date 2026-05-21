@@ -80,8 +80,8 @@ func (s *DurableObjectStub) Fetch(req *http.Request) (*http.Response, error) {
 	return jshttp.ToResponse(jsRes), nil
 }
 
-func (s *DurableObjectStub) Call(funcName string) (any, error) {
-	promise := s.val.Call(funcName)
+func (s *DurableObjectStub) Call(funcName string, args ...any) (any, error) {
+	promise := s.val.Call(funcName, args...)
 	jsRes, err := jsclass.Await(promise)
 	if err != nil {
 		return nil, err

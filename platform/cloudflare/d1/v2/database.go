@@ -29,8 +29,8 @@ type D1PreparedStatment struct {
 	v js.Value
 }
 
-func (s *D1PreparedStatment) Bind(variable ...any) *D1PreparedStatment {
-	s.v = s.v.Call("bind", variable...)
+func (s *D1PreparedStatment) Bind(variables ...any) *D1PreparedStatment {
+	s.v = s.v.Call("bind", variables...)
 
 	return s
 }
