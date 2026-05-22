@@ -8,7 +8,7 @@ env:
 jobs:
   setup:
     name: Setup Environment & Install Deps
-    runs-on: ubuntu-latest
+    runs-on: codeberg-tiny-lazy
     outputs:
       cache-key: ${{ steps.cache-key.outputs.key }}
     steps:
@@ -45,7 +45,7 @@ jobs:
   test-bun:
     name: Test Bun
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: codeberg-tiny-lazy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -70,7 +70,7 @@ jobs:
   test-deno:
     name: Test Deno
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: codeberg-tiny-lazy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -95,7 +95,7 @@ jobs:
   test-hono:
     name: Test Hono
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: codeberg-tiny-lazy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -118,7 +118,7 @@ jobs:
   test-uws:
     name: Test uWS
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: codeberg-tiny-lazy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -141,7 +141,7 @@ jobs:
   test-worker:
     name: Test Worker
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: codeberg-tiny-lazy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -164,7 +164,7 @@ jobs:
   test-go:
     name: Test Go
     needs: setup
-    runs-on: ubuntu-latest
+    runs-on: codeberg-tiny-lazy
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
