@@ -102,5 +102,5 @@ func TestReturnFirstResultAsStringWithColumnName(t *testing.T) {
 	r, err := db.Prepare("SELECT * FROM mytable WHERE id = ?").FirstAsString(&col)
 
 	assert.Nil(t, err)
-	assert.Equal(t, `2`, r)
+	assert.Equal(t, `{"test":2}`, r)
 }
