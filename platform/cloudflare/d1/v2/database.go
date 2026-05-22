@@ -66,8 +66,14 @@ func (s *D1PreparedStatment) Raw(columnNames bool) (D1RawResults, error) {
 	return result, err
 }
 
-func (s *D1PreparedStatment) First(columnName string) (*D1FirstResult, error) {
-	r, err := jsclass.Await(s.v.Call("first", columnName))
+func (s *D1PreparedStatment) First(columnName *string) (*D1FirstResult, error) {
+	var r js.Value
+	var err error
+	if columnName == nil {
+		r, err = jsclass.Await(s.v.Call("first"))
+	} else {
+		r, err = jsclass.Await(s.v.Call("first", *columnName))
+	}
 
 	if err != nil {
 		return nil, err
@@ -86,7 +92,7 @@ func (s *D1PreparedStatment) FirstAsString(columnName *string) (string, error) {
 	if columnName == nil {
 		r, err = jsclass.Await(s.v.Call("first"))
 	} else {
-		r, err = jsclass.Await(s.v.Call("first", columnName))
+		r, err = jsclass.Await(s.v.Call("first", *columnName))
 	}
 
 	if err != nil {

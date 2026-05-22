@@ -93,3 +93,14 @@ func TestReturnFirstResultAsString(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, `{"test":2}`, r)
 }
+
+func TestReturnFirstResultAsStringWithColumnName(t *testing.T) {
+	setupEnv()
+
+	db, _ := GetDB("BINDING")
+	col := "test"
+	r, err := db.Prepare("SELECT * FROM mytable WHERE id = ?").FirstAsString(&col)
+
+	assert.Nil(t, err)
+	assert.Equal(t, `{"test":2}`, r)
+}
