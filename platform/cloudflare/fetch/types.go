@@ -48,30 +48,30 @@ type TrimBorder struct {
 
 //easyjson:json
 type Trim struct {
-	Top    int         `json:"top,omitempty"`
-	Bottom int         `json:"bottom,omitempty"`
-	Left   int         `json:"left,omitempty"`
-	Right  int         `json:"right,omitempty"`
-	Width  int         `json:"width,omitempty"`
-	Height int         `json:"height,omitempty"`
-	Border interface{} `json:"border,omitempty"`
+	Top    int    `json:"top,omitempty"`
+	Bottom int    `json:"bottom,omitempty"`
+	Left   int    `json:"left,omitempty"`
+	Right  int    `json:"right,omitempty"`
+	Width  int    `json:"width,omitempty"`
+	Height int    `json:"height,omitempty"`
+	Border Border `json:"border,omitempty"`
 }
 
 //easyjson:json
 type Draw struct {
-	URL        string      `json:"url"`
-	Opacity    float64     `json:"opacity,omitempty"`
-	Repeat     interface{} `json:"repeat,omitempty"`
-	Top        int         `json:"top,omitempty"`
-	Left       int         `json:"left,omitempty"`
-	Bottom     int         `json:"bottom,omitempty"`
-	Right      int         `json:"right,omitempty"`
-	Width      int         `json:"width,omitempty"`
-	Height     int         `json:"height,omitempty"`
-	Fit        string      `json:"fit,omitempty"`
-	Gravity    interface{} `json:"gravity,omitempty"`
-	Background string      `json:"background,omitempty"`
-	Rotate     int         `json:"rotate,omitempty"`
+	URL        string  `json:"url"`
+	Opacity    float64 `json:"opacity,omitempty"`
+	Repeat     string  `json:"repeat,omitempty"`
+	Top        int     `json:"top,omitempty"`
+	Left       int     `json:"left,omitempty"`
+	Bottom     int     `json:"bottom,omitempty"`
+	Right      int     `json:"right,omitempty"`
+	Width      int     `json:"width,omitempty"`
+	Height     int     `json:"height,omitempty"`
+	Fit        string  `json:"fit,omitempty"`
+	Gravity    string  `json:"gravity,omitempty"`
+	Background string  `json:"background,omitempty"`
+	Rotate     int     `json:"rotate,omitempty"`
 }
 
 //easyjson:json
@@ -88,30 +88,54 @@ type Minify struct {
 
 //easyjson:json
 type CFImage struct {
-	Width       int         `json:"width,omitempty"`
-	Height      int         `json:"height,omitempty"`
-	Fit         string      `json:"fit,omitempty"`
-	Gravity     interface{} `json:"gravity,omitempty"`
-	Background  string      `json:"background,omitempty"`
-	Rotate      int         `json:"rotate,omitempty"`
-	Dpr         float64     `json:"dpr,omitempty"`
-	Trim        interface{} `json:"trim,omitempty"`
-	Quality     interface{} `json:"quality,omitempty"`
-	Format      string      `json:"format,omitempty"`
-	Anim        bool        `json:"anim,omitempty"`
-	Metadata    string      `json:"metadata,omitempty"`
-	Sharpen     float64     `json:"sharpen,omitempty"`
-	Blur        float64     `json:"blur,omitempty"`
-	Draw        []Draw      `json:"draw,omitempty"`
-	Border      interface{} `json:"border,omitempty"`
-	Brightness  float64     `json:"brightness,omitempty"`
-	Contrast    float64     `json:"contrast,omitempty"`
-	Gamma       float64     `json:"gamma,omitempty"`
-	Saturation  float64     `json:"saturation,omitempty"`
-	Flip        string      `json:"flip,omitempty"`
-	Compression string      `json:"compression,omitempty"`
-	Minify      Minify      `json:"minify,omitempty"`
-	Mirage      bool        `json:"mirage,omitempty"`
-	Polish      string      `json:"polish,omitempty"`
-	R2          R2          `json:"r2,omitempty"`
+	Width       int     `json:"width,omitempty"`
+	Height      int     `json:"height,omitempty"`
+	Fit         string  `json:"fit,omitempty"`
+	Gravity     string  `json:"gravity,omitempty"`
+	Background  string  `json:"background,omitempty"`
+	Rotate      int     `json:"rotate,omitempty"`
+	Dpr         float64 `json:"dpr,omitempty"`
+	Trim        TrimImg `json:"trim,omitempty"`
+	Quality     Quality `json:"quality,omitempty"`
+	Format      string  `json:"format,omitempty"`
+	Anim        bool    `json:"anim,omitempty"`
+	Metadata    string  `json:"metadata,omitempty"`
+	Sharpen     float64 `json:"sharpen,omitempty"`
+	Blur        float64 `json:"blur,omitempty"`
+	Draw        []Draw  `json:"draw,omitempty"`
+	Border      Border  `json:"border,omitempty"`
+	Brightness  float64 `json:"brightness,omitempty"`
+	Contrast    float64 `json:"contrast,omitempty"`
+	Gamma       float64 `json:"gamma,omitempty"`
+	Saturation  float64 `json:"saturation,omitempty"`
+	Flip        string  `json:"flip,omitempty"`
+	Compression string  `json:"compression,omitempty"`
+	Minify      Minify  `json:"minify,omitempty"`
+	Mirage      bool    `json:"mirage,omitempty"`
+	Polish      string  `json:"polish,omitempty"`
+	R2          R2      `json:"r2,omitempty"`
+}
+
+//easyjson:json
+type Quality struct {
+	Quality int `json:"quality"`
+}
+
+//easyjson:json
+type TrimImg struct {
+	Top    int `json:"top"`
+	Right  int `json:"right"`
+	Bottom int `json:"bottom"`
+	Left   int `json:"left"`
+	Width  int `json:"width"`
+	Height int `json:"height"`
+}
+
+//easyjson:json
+type Border struct {
+	Color  string `json:"color"`
+	Top    int    `json:"top"`
+	Right  int    `json:"right"`
+	Bottom int    `json:"bottom"`
+	Left   int    `json:"left"`
 }
