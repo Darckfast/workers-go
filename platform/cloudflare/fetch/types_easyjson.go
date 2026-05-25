@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch(in *jlexer.Lexer, out *TrimBorder) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch(in *jlexer.Lexer, out *TrimImg) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -30,18 +30,43 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch(in *jlexer
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
-		case "color":
-			out.Color = string(in.String())
-		case "tolerance":
-			out.Tolerance = float64(in.Float64())
-		case "keep":
-			out.Keep = float64(in.Float64())
+		case "top":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Top = int(in.Int())
+			}
+		case "right":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Right = int(in.Int())
+			}
+		case "bottom":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Bottom = int(in.Int())
+			}
+		case "left":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Left = int(in.Int())
+			}
+		case "width":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Width = int(in.Int())
+			}
+		case "height":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Height = int(in.Int())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -52,7 +77,121 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch(in *jlexer
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch(out *jwriter.Writer, in TrimBorder) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch(out *jwriter.Writer, in TrimImg) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.Top != 0 {
+		const prefix string = ",\"top\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.Int(int(in.Top))
+	}
+	if in.Right != 0 {
+		const prefix string = ",\"right\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Right))
+	}
+	if in.Bottom != 0 {
+		const prefix string = ",\"bottom\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Bottom))
+	}
+	if in.Left != 0 {
+		const prefix string = ",\"left\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Left))
+	}
+	if in.Width != 0 {
+		const prefix string = ",\"width\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Width))
+	}
+	if in.Height != 0 {
+		const prefix string = ",\"height\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Height))
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v TrimImg) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *TrimImg) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch(l, v)
+}
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch1(in *jlexer.Lexer, out *TrimBorder) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		switch key {
+		case "color":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Color = string(in.String())
+			}
+		case "tolerance":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Tolerance = float64(in.Float64())
+			}
+		case "keep":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Keep = float64(in.Float64())
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch1(out *jwriter.Writer, in TrimBorder) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -87,14 +226,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch(out *jwrit
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v TrimBorder) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch1(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *TrimBorder) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch1(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch1(in *jlexer.Lexer, out *Trim) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch2(in *jlexer.Lexer, out *Trim) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -107,31 +246,48 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch1(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "top":
-			out.Top = int(in.Int())
-		case "bottom":
-			out.Bottom = int(in.Int())
-		case "left":
-			out.Left = int(in.Int())
-		case "right":
-			out.Right = int(in.Int())
-		case "width":
-			out.Width = int(in.Int())
-		case "height":
-			out.Height = int(in.Int())
-		case "border":
-			if m, ok := out.Border.(easyjson.Unmarshaler); ok {
-				m.UnmarshalEasyJSON(in)
-			} else if m, ok := out.Border.(json.Unmarshaler); ok {
-				_ = m.UnmarshalJSON(in.Raw())
+			if in.IsNull() {
+				in.Skip()
 			} else {
-				out.Border = in.Interface()
+				out.Top = int(in.Int())
+			}
+		case "bottom":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Bottom = int(in.Int())
+			}
+		case "left":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Left = int(in.Int())
+			}
+		case "right":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Right = int(in.Int())
+			}
+		case "width":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Width = int(in.Int())
+			}
+		case "height":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Height = int(in.Int())
+			}
+		case "border":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				(out.Border).UnmarshalEasyJSON(in)
 			}
 		default:
 			in.SkipRecursive()
@@ -143,7 +299,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch1(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch1(out *jwriter.Writer, in Trim) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch2(out *jwriter.Writer, in Trim) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -203,7 +359,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch1(out *jwri
 		}
 		out.Int(int(in.Height))
 	}
-	if in.Border != nil {
+	if true {
 		const prefix string = ",\"border\":"
 		if first {
 			first = false
@@ -211,27 +367,21 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch1(out *jwri
 		} else {
 			out.RawString(prefix)
 		}
-		if m, ok := in.Border.(easyjson.Marshaler); ok {
-			m.MarshalEasyJSON(out)
-		} else if m, ok := in.Border.(json.Marshaler); ok {
-			out.Raw(m.MarshalJSON())
-		} else {
-			out.Raw(json.Marshal(in.Border))
-		}
+		(in.Border).MarshalEasyJSON(out)
 	}
 	out.RawByte('}')
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Trim) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch1(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch2(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Trim) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch1(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch2(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch2(in *jlexer.Lexer, out *RequestInitCF) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(in *jlexer.Lexer, out *RequestInitCF) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -244,18 +394,25 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch2(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "apps":
-			out.Apps = bool(in.Bool())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Apps = bool(in.Bool())
+			}
 		case "cacheEverything":
-			out.CacheEverything = bool(in.Bool())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.CacheEverything = bool(in.Bool())
+			}
 		case "cacheKey":
-			out.CacheKey = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.CacheKey = string(in.String())
+			}
 		case "cacheTags":
 			if in.IsNull() {
 				in.Skip()
@@ -273,14 +430,22 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch2(in *jlexe
 				}
 				for !in.IsDelim(']') {
 					var v1 string
-					v1 = string(in.String())
+					if in.IsNull() {
+						in.Skip()
+					} else {
+						v1 = string(in.String())
+					}
 					out.CacheTags = append(out.CacheTags, v1)
 					in.WantComma()
 				}
 				in.Delim(']')
 			}
 		case "cacheTtl":
-			out.CacheTtl = int(in.Int())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.CacheTtl = int(in.Int())
+			}
 		case "cacheTtlByStatus":
 			if in.IsNull() {
 				in.Skip()
@@ -295,22 +460,46 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch2(in *jlexe
 					key := string(in.String())
 					in.WantColon()
 					var v2 int
-					v2 = int(in.Int())
+					if in.IsNull() {
+						in.Skip()
+					} else {
+						v2 = int(in.Int())
+					}
 					(out.CacheTtlByStatus)[key] = v2
 					in.WantComma()
 				}
 				in.Delim('}')
 			}
 		case "mirage":
-			out.Mirage = bool(in.Bool())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Mirage = bool(in.Bool())
+			}
 		case "polish":
-			out.Polish = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Polish = string(in.String())
+			}
 		case "resolveOverride":
-			out.ResolveOverride = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.ResolveOverride = string(in.String())
+			}
 		case "scrapShield":
-			out.ScrapShield = bool(in.Bool())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.ScrapShield = bool(in.Bool())
+			}
 		case "webp":
-			out.Webp = bool(in.Bool())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Webp = bool(in.Bool())
+			}
 		case "image":
 			if in.IsNull() {
 				in.Skip()
@@ -319,10 +508,18 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch2(in *jlexe
 				if out.Image == nil {
 					out.Image = new(CFImage)
 				}
-				(*out.Image).UnmarshalEasyJSON(in)
+				if in.IsNull() {
+					in.Skip()
+				} else {
+					(*out.Image).UnmarshalEasyJSON(in)
+				}
 			}
 		case "origin-auth":
-			out.OriginAuth = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.OriginAuth = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -333,7 +530,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch2(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch2(out *jwriter.Writer, in RequestInitCF) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(out *jwriter.Writer, in RequestInitCF) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -491,14 +688,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch2(out *jwri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v RequestInitCF) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch2(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *RequestInitCF) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch2(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch3(in *jlexer.Lexer, out *R2) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch4(in *jlexer.Lexer, out *R2) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -511,14 +708,13 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch3(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "bucketColoId":
-			out.BucketColoId = int(in.Int())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.BucketColoId = int(in.Int())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -529,7 +725,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch3(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch3(out *jwriter.Writer, in R2) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch4(out *jwriter.Writer, in R2) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -544,14 +740,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch3(out *jwri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v R2) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch3(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch4(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *R2) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch3(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch4(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch4(in *jlexer.Lexer, out *Minify) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch5(in *jlexer.Lexer, out *Quality) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -564,18 +760,13 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch4(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
-		case "javascript":
-			out.Javascript = bool(in.Bool())
-		case "css":
-			out.Css = bool(in.Bool())
-		case "html":
-			out.Html = bool(in.Bool())
+		case "quality":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Quality = int(in.Int())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -586,7 +777,71 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch4(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch4(out *jwriter.Writer, in Minify) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch5(out *jwriter.Writer, in Quality) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.Quality != 0 {
+		const prefix string = ",\"quality\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.Int(int(in.Quality))
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Quality) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch5(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Quality) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch5(l, v)
+}
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch6(in *jlexer.Lexer, out *Minify) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		switch key {
+		case "javascript":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Javascript = bool(in.Bool())
+			}
+		case "css":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Css = bool(in.Bool())
+			}
+		case "html":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Html = bool(in.Bool())
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch6(out *jwriter.Writer, in Minify) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -621,14 +876,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch4(out *jwri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Minify) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch4(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch6(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Minify) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch4(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch6(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch5(in *jlexer.Lexer, out *InitOptions) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch7(in *jlexer.Lexer, out *InitOptions) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -641,16 +896,19 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch5(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "redirect":
-			out.Redirect = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Redirect = string(in.String())
+			}
 		case "credentials":
-			out.Credentials = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Credentials = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -661,7 +919,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch5(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch5(out *jwriter.Writer, in InitOptions) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch7(out *jwriter.Writer, in InitOptions) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -686,14 +944,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch5(out *jwri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v InitOptions) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch5(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch7(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *InitOptions) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch5(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch7(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch6(in *jlexer.Lexer, out *GravityCoordinates) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch8(in *jlexer.Lexer, out *GravityCoordinates) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -706,16 +964,19 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch6(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "x":
-			out.X = float64(in.Float64())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.X = float64(in.Float64())
+			}
 		case "y":
-			out.Y = float64(in.Float64())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Y = float64(in.Float64())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -726,7 +987,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch6(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch6(out *jwriter.Writer, in GravityCoordinates) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch8(out *jwriter.Writer, in GravityCoordinates) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -751,14 +1012,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch6(out *jwri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v GravityCoordinates) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch6(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch8(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *GravityCoordinates) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch6(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch8(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch7(in *jlexer.Lexer, out *Draw) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch9(in *jlexer.Lexer, out *Draw) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -771,50 +1032,85 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch7(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "url":
-			out.URL = string(in.String())
-		case "opacity":
-			out.Opacity = float64(in.Float64())
-		case "repeat":
-			if m, ok := out.Repeat.(easyjson.Unmarshaler); ok {
-				m.UnmarshalEasyJSON(in)
-			} else if m, ok := out.Repeat.(json.Unmarshaler); ok {
-				_ = m.UnmarshalJSON(in.Raw())
+			if in.IsNull() {
+				in.Skip()
 			} else {
-				out.Repeat = in.Interface()
+				out.URL = string(in.String())
+			}
+		case "opacity":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Opacity = float64(in.Float64())
+			}
+		case "repeat":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Repeat = string(in.String())
 			}
 		case "top":
-			out.Top = int(in.Int())
-		case "left":
-			out.Left = int(in.Int())
-		case "bottom":
-			out.Bottom = int(in.Int())
-		case "right":
-			out.Right = int(in.Int())
-		case "width":
-			out.Width = int(in.Int())
-		case "height":
-			out.Height = int(in.Int())
-		case "fit":
-			out.Fit = string(in.String())
-		case "gravity":
-			if m, ok := out.Gravity.(easyjson.Unmarshaler); ok {
-				m.UnmarshalEasyJSON(in)
-			} else if m, ok := out.Gravity.(json.Unmarshaler); ok {
-				_ = m.UnmarshalJSON(in.Raw())
+			if in.IsNull() {
+				in.Skip()
 			} else {
-				out.Gravity = in.Interface()
+				out.Top = int(in.Int())
+			}
+		case "left":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Left = int(in.Int())
+			}
+		case "bottom":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Bottom = int(in.Int())
+			}
+		case "right":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Right = int(in.Int())
+			}
+		case "width":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Width = int(in.Int())
+			}
+		case "height":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Height = int(in.Int())
+			}
+		case "fit":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Fit = string(in.String())
+			}
+		case "gravity":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Gravity = string(in.String())
 			}
 		case "background":
-			out.Background = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Background = string(in.String())
+			}
 		case "rotate":
-			out.Rotate = int(in.Int())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Rotate = int(in.Int())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -825,7 +1121,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch7(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch7(out *jwriter.Writer, in Draw) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch9(out *jwriter.Writer, in Draw) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -845,7 +1141,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch7(out *jwri
 		}
 		out.Float64(float64(in.Opacity))
 	}
-	if in.Repeat != nil {
+	if in.Repeat != "" {
 		const prefix string = ",\"repeat\":"
 		if first {
 			first = false
@@ -853,13 +1149,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch7(out *jwri
 		} else {
 			out.RawString(prefix)
 		}
-		if m, ok := in.Repeat.(easyjson.Marshaler); ok {
-			m.MarshalEasyJSON(out)
-		} else if m, ok := in.Repeat.(json.Marshaler); ok {
-			out.Raw(m.MarshalJSON())
-		} else {
-			out.Raw(json.Marshal(in.Repeat))
-		}
+		out.String(string(in.Repeat))
 	}
 	if in.Top != 0 {
 		const prefix string = ",\"top\":"
@@ -931,7 +1221,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch7(out *jwri
 		}
 		out.String(string(in.Fit))
 	}
-	if in.Gravity != nil {
+	if in.Gravity != "" {
 		const prefix string = ",\"gravity\":"
 		if first {
 			first = false
@@ -939,13 +1229,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch7(out *jwri
 		} else {
 			out.RawString(prefix)
 		}
-		if m, ok := in.Gravity.(easyjson.Marshaler); ok {
-			m.MarshalEasyJSON(out)
-		} else if m, ok := in.Gravity.(json.Marshaler); ok {
-			out.Raw(m.MarshalJSON())
-		} else {
-			out.Raw(json.Marshal(in.Gravity))
-		}
+		out.String(string(in.Gravity))
 	}
 	if in.Background != "" {
 		const prefix string = ",\"background\":"
@@ -972,14 +1256,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch7(out *jwri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Draw) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch7(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch9(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Draw) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch7(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch9(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch8(in *jlexer.Lexer, out *CFImage) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch10(in *jlexer.Lexer, out *CFImage) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -992,58 +1276,91 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch8(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "width":
-			out.Width = int(in.Int())
-		case "height":
-			out.Height = int(in.Int())
-		case "fit":
-			out.Fit = string(in.String())
-		case "gravity":
-			if m, ok := out.Gravity.(easyjson.Unmarshaler); ok {
-				m.UnmarshalEasyJSON(in)
-			} else if m, ok := out.Gravity.(json.Unmarshaler); ok {
-				_ = m.UnmarshalJSON(in.Raw())
+			if in.IsNull() {
+				in.Skip()
 			} else {
-				out.Gravity = in.Interface()
+				out.Width = int(in.Int())
+			}
+		case "height":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Height = int(in.Int())
+			}
+		case "fit":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Fit = string(in.String())
+			}
+		case "gravity":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Gravity = string(in.String())
 			}
 		case "background":
-			out.Background = string(in.String())
-		case "rotate":
-			out.Rotate = int(in.Int())
-		case "dpr":
-			out.Dpr = float64(in.Float64())
-		case "trim":
-			if m, ok := out.Trim.(easyjson.Unmarshaler); ok {
-				m.UnmarshalEasyJSON(in)
-			} else if m, ok := out.Trim.(json.Unmarshaler); ok {
-				_ = m.UnmarshalJSON(in.Raw())
+			if in.IsNull() {
+				in.Skip()
 			} else {
-				out.Trim = in.Interface()
+				out.Background = string(in.String())
+			}
+		case "rotate":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Rotate = int(in.Int())
+			}
+		case "dpr":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Dpr = float64(in.Float64())
+			}
+		case "trim":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				(out.Trim).UnmarshalEasyJSON(in)
 			}
 		case "quality":
-			if m, ok := out.Quality.(easyjson.Unmarshaler); ok {
-				m.UnmarshalEasyJSON(in)
-			} else if m, ok := out.Quality.(json.Unmarshaler); ok {
-				_ = m.UnmarshalJSON(in.Raw())
+			if in.IsNull() {
+				in.Skip()
 			} else {
-				out.Quality = in.Interface()
+				(out.Quality).UnmarshalEasyJSON(in)
 			}
 		case "format":
-			out.Format = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Format = string(in.String())
+			}
 		case "anim":
-			out.Anim = bool(in.Bool())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Anim = bool(in.Bool())
+			}
 		case "metadata":
-			out.Metadata = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Metadata = string(in.String())
+			}
 		case "sharpen":
-			out.Sharpen = float64(in.Float64())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Sharpen = float64(in.Float64())
+			}
 		case "blur":
-			out.Blur = float64(in.Float64())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Blur = float64(in.Float64())
+			}
 		case "draw":
 			if in.IsNull() {
 				in.Skip()
@@ -1061,40 +1378,82 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch8(in *jlexe
 				}
 				for !in.IsDelim(']') {
 					var v6 Draw
-					(v6).UnmarshalEasyJSON(in)
+					if in.IsNull() {
+						in.Skip()
+					} else {
+						(v6).UnmarshalEasyJSON(in)
+					}
 					out.Draw = append(out.Draw, v6)
 					in.WantComma()
 				}
 				in.Delim(']')
 			}
 		case "border":
-			if m, ok := out.Border.(easyjson.Unmarshaler); ok {
-				m.UnmarshalEasyJSON(in)
-			} else if m, ok := out.Border.(json.Unmarshaler); ok {
-				_ = m.UnmarshalJSON(in.Raw())
+			if in.IsNull() {
+				in.Skip()
 			} else {
-				out.Border = in.Interface()
+				(out.Border).UnmarshalEasyJSON(in)
 			}
 		case "brightness":
-			out.Brightness = float64(in.Float64())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Brightness = float64(in.Float64())
+			}
 		case "contrast":
-			out.Contrast = float64(in.Float64())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Contrast = float64(in.Float64())
+			}
 		case "gamma":
-			out.Gamma = float64(in.Float64())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Gamma = float64(in.Float64())
+			}
 		case "saturation":
-			out.Saturation = float64(in.Float64())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Saturation = float64(in.Float64())
+			}
 		case "flip":
-			out.Flip = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Flip = string(in.String())
+			}
 		case "compression":
-			out.Compression = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Compression = string(in.String())
+			}
 		case "minify":
-			(out.Minify).UnmarshalEasyJSON(in)
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				(out.Minify).UnmarshalEasyJSON(in)
+			}
 		case "mirage":
-			out.Mirage = bool(in.Bool())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Mirage = bool(in.Bool())
+			}
 		case "polish":
-			out.Polish = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Polish = string(in.String())
+			}
 		case "r2":
-			(out.R2).UnmarshalEasyJSON(in)
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				(out.R2).UnmarshalEasyJSON(in)
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -1105,7 +1464,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch8(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwriter.Writer, in CFImage) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch10(out *jwriter.Writer, in CFImage) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1135,7 +1494,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwri
 		}
 		out.String(string(in.Fit))
 	}
-	if in.Gravity != nil {
+	if in.Gravity != "" {
 		const prefix string = ",\"gravity\":"
 		if first {
 			first = false
@@ -1143,13 +1502,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwri
 		} else {
 			out.RawString(prefix)
 		}
-		if m, ok := in.Gravity.(easyjson.Marshaler); ok {
-			m.MarshalEasyJSON(out)
-		} else if m, ok := in.Gravity.(json.Marshaler); ok {
-			out.Raw(m.MarshalJSON())
-		} else {
-			out.Raw(json.Marshal(in.Gravity))
-		}
+		out.String(string(in.Gravity))
 	}
 	if in.Background != "" {
 		const prefix string = ",\"background\":"
@@ -1181,7 +1534,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwri
 		}
 		out.Float64(float64(in.Dpr))
 	}
-	if in.Trim != nil {
+	if true {
 		const prefix string = ",\"trim\":"
 		if first {
 			first = false
@@ -1189,15 +1542,9 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwri
 		} else {
 			out.RawString(prefix)
 		}
-		if m, ok := in.Trim.(easyjson.Marshaler); ok {
-			m.MarshalEasyJSON(out)
-		} else if m, ok := in.Trim.(json.Marshaler); ok {
-			out.Raw(m.MarshalJSON())
-		} else {
-			out.Raw(json.Marshal(in.Trim))
-		}
+		(in.Trim).MarshalEasyJSON(out)
 	}
-	if in.Quality != nil {
+	if true {
 		const prefix string = ",\"quality\":"
 		if first {
 			first = false
@@ -1205,13 +1552,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwri
 		} else {
 			out.RawString(prefix)
 		}
-		if m, ok := in.Quality.(easyjson.Marshaler); ok {
-			m.MarshalEasyJSON(out)
-		} else if m, ok := in.Quality.(json.Marshaler); ok {
-			out.Raw(m.MarshalJSON())
-		} else {
-			out.Raw(json.Marshal(in.Quality))
-		}
+		(in.Quality).MarshalEasyJSON(out)
 	}
 	if in.Format != "" {
 		const prefix string = ",\"format\":"
@@ -1282,7 +1623,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwri
 			out.RawByte(']')
 		}
 	}
-	if in.Border != nil {
+	if true {
 		const prefix string = ",\"border\":"
 		if first {
 			first = false
@@ -1290,13 +1631,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwri
 		} else {
 			out.RawString(prefix)
 		}
-		if m, ok := in.Border.(easyjson.Marshaler); ok {
-			m.MarshalEasyJSON(out)
-		} else if m, ok := in.Border.(json.Marshaler); ok {
-			out.Raw(m.MarshalJSON())
-		} else {
-			out.Raw(json.Marshal(in.Border))
-		}
+		(in.Border).MarshalEasyJSON(out)
 	}
 	if in.Brightness != 0 {
 		const prefix string = ",\"brightness\":"
@@ -1403,14 +1738,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(out *jwri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v CFImage) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch8(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch10(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *CFImage) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch8(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch10(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch9(in *jlexer.Lexer, out *BorderObject) {
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch11(in *jlexer.Lexer, out *BorderObject) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1423,24 +1758,43 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch9(in *jlexe
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "color":
-			out.Color = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Color = string(in.String())
+			}
 		case "width":
-			out.Width = int(in.Int())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Width = int(in.Int())
+			}
 		case "top":
-			out.Top = int(in.Int())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Top = int(in.Int())
+			}
 		case "right":
-			out.Right = int(in.Int())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Right = int(in.Int())
+			}
 		case "bottom":
-			out.Bottom = int(in.Int())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Bottom = int(in.Int())
+			}
 		case "left":
-			out.Left = int(in.Int())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Left = int(in.Int())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -1451,7 +1805,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch9(in *jlexe
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch9(out *jwriter.Writer, in BorderObject) {
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch11(out *jwriter.Writer, in BorderObject) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1516,10 +1870,126 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch9(out *jwri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v BorderObject) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareFetch9(w, v)
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch11(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *BorderObject) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareFetch9(l, v)
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch11(l, v)
+}
+func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch12(in *jlexer.Lexer, out *Border) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		switch key {
+		case "color":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Color = string(in.String())
+			}
+		case "top":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Top = int(in.Int())
+			}
+		case "right":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Right = int(in.Int())
+			}
+		case "bottom":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Bottom = int(in.Int())
+			}
+		case "left":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Left = int(in.Int())
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch12(out *jwriter.Writer, in Border) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.Color != "" {
+		const prefix string = ",\"color\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.String(string(in.Color))
+	}
+	if in.Top != 0 {
+		const prefix string = ",\"top\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Top))
+	}
+	if in.Right != 0 {
+		const prefix string = ",\"right\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Right))
+	}
+	if in.Bottom != 0 {
+		const prefix string = ",\"bottom\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Bottom))
+	}
+	if in.Left != 0 {
+		const prefix string = ",\"left\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int(int(in.Left))
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Border) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch12(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Border) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch12(l, v)
 }
