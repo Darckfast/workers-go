@@ -52,14 +52,14 @@ let instance = new WebAssembly.Instance(app, go.importObject);
 function init() {
   if (!initiliazed) {
     go.run(instance).finally(() => {
-      initiliazed = false
+      initiliazed = false;
       instance = new WebAssembly.Instance(app, go.importObject);
     });
     initiliazed = true;
   }
 
   if (go.exited) {
-    go = new Go()
+    go = new Go();
     go.run(instance).finally(() => {
       instance = new WebAssembly.Instance(app, go.importObject);
     });
