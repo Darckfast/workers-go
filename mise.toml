@@ -1,0 +1,42 @@
+[tools]
+go = "1.21"
+pnpm = "10.14"
+
+[tasks.install]
+run = "pnpm i && go mod download"
+
+[tasks.worker]
+run = "pnpm --filter worker"
+
+[tasks.uws]
+run = "pnpm --filter uws"
+
+[tasks.hono]
+run = "pnpm --filter hono"
+
+[tasks.deno]
+run = "pnpm --filter deno"
+
+[tasks.bun]
+run = "pnpm --filter bun"
+
+[tasks."dev:worker"]
+run = "vite"
+
+[tasks."dev:uws"]
+run = "pnpm uws dev"
+
+[tasks.test]
+run = "pnpm worker build && vitest"
+
+[tasks."test:go"]
+run = "GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/misc/wasm/go_js_wasm_exec -timeout 500ms ./..."
+
+[tasks."bench:go"]
+run = "GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/misc/wasm/go_js_wasm_exec -bench=. ./..."
+
+[tasks."test:cf"]
+run = "pnpm worker build && vitest run"
+
+[tasks.lint]
+run = "GOOS=js GOARCH=wasm golangci-lint run"
