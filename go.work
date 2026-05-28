@@ -1,0 +1,6 @@
+go 1.21.13
+
+use (
+	.
+	./_apps/_worker
+)
