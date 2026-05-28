@@ -8,15 +8,9 @@ env:
 jobs:
   test-bun:
     name: Test Bun
-    needs: setup
     runs-on: codeberg-small-lazy
     steps:
-      - uses: actions/cache@v6
-        with:
-          path: node_modules
-          key: deps-${{ needs.setup.outputs.cache-key }}
-          restore-keys: |
-            deps-
+      - uses: actions/checkout@v6
       - name: Install mise
         run: |
           curl https://mise.run | sh
@@ -24,15 +18,9 @@ jobs:
 
   test-deno:
     name: Test Deno
-    needs: setup
     runs-on: codeberg-small-lazy
     steps:
-      - uses: actions/cache@v6
-        with:
-          path: node_modules
-          key: deps-${{ needs.setup.outputs.cache-key }}
-          restore-keys: |
-            deps-
+      - uses: actions/checkout@v6
       - name: Install mise
         run: |
           curl https://mise.run | sh
@@ -40,15 +28,9 @@ jobs:
 
   test-hono:
     name: Test Hono
-    needs: setup
     runs-on: codeberg-small-lazy
     steps:
-      - uses: actions/cache@v6
-        with:
-          path: node_modules
-          key: deps-${{ needs.setup.outputs.cache-key }}
-          restore-keys: |
-            deps-
+      - uses: actions/checkout@v6
       - name: Install mise
         run: |
           curl https://mise.run | sh
@@ -56,15 +38,9 @@ jobs:
 
   test-uws:
     name: Test uWS
-    needs: setup
     runs-on: codeberg-small-lazy
     steps:
-      - uses: actions/cache@v6
-        with:
-          path: node_modules
-          key: deps-${{ needs.setup.outputs.cache-key }}
-          restore-keys: |
-            deps-
+      - uses: actions/checkout@v6
       - name: Install mise
         run: |
           curl https://mise.run | sh
@@ -75,12 +51,6 @@ jobs:
     runs-on: codeberg-small-lazy
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: deps-${{ needs.setup.outputs.cache-key }}
-          restore-keys: |
-            deps-
       - name: Install mise
         run: |
           curl https://mise.run | sh
