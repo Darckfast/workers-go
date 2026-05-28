@@ -1,4 +1,4 @@
-import worker from "$wrk/main";
+import WorkerEntrypoint from "$wrk/main";
 import {
   createExecutionContext,
   env,
@@ -147,6 +147,8 @@ describe("tail()", () => {
         },
       },
     ];
+
+    const worker = new WorkerEntrypoint(ctx, env);
 
     await worker.tail(events, env, ctx);
     await waitOnExecutionContext(ctx);
