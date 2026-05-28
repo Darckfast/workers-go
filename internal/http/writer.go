@@ -59,19 +59,21 @@ func (w *ResponseWriter) Flush() {
 	// no-op
 }
 
+func (w *ResponseWriter) ToReadableStream() js.Value {
+	if jsclass.MaybeFixedLengthStream.Truthy() && w.Length > 0 {
+		return jsstream.ReadCloserToFixedLengthStream(w.Reader, w.Length)
+	} else {
+		return jsstream.ReadCloserToReadableStream(w.Reader)
+	}
+}
+
 func (w *ResponseWriter) ToJSResponse() js.Value {
 	// JSON.parse would be faster
 	respInit := jsclass.Object.New()
 	respInit.Set("status", w.StatusCode)
 	respInit.Set("statusText", http.StatusText(w.StatusCode))
 	respInit.Set("headers", ToJSHeader(w.HeaderValue))
-	var readableStream js.Value
-
-	if jsclass.MaybeFixedLengthStream.Truthy() && w.Length > 0 {
-		readableStream = jsstream.ReadCloserToFixedLengthStream(w.Reader, w.Length)
-	} else {
-		readableStream = jsstream.ReadCloserToReadableStream(w.Reader)
-	}
+	var readableStream = w.ToReadableStream()
 
 	return jsclass.Response.New(readableStream, respInit)
 }
