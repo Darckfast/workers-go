@@ -7,27 +7,35 @@ go = "1.21"
 run = "bun i && go mod download"
 
 [tasks.worker]
+depends = ["install"]
 run = "bun --filter worker"
 
 [tasks.uws]
+depends = ["install"]
 run = "bun --filter uws"
 
 [tasks.hono]
+depends = ["install"]
 run = "bun --filter hono"
 
 [tasks.deno]
+depends = ["install"]
 run = "bun --filter deno"
 
 [tasks.bun]
+depends = ["install"]
 run = "bun --cwd _apps/_bun test"
 
 [tasks."dev:worker"]
+depends = ["install"]
 run = "vite"
 
 [tasks."dev:uws"]
+depends = ["install"]
 run = "bun uws dev"
 
 [tasks.test]
+depends = ["install"]
 run = "bun --filter worker build && bun vitest"
 
 [tasks."test:go"]
