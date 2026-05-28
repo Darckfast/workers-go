@@ -15,7 +15,7 @@ describe("fetch handler", () => {
     const request = new IncomingRequest("http://example.com/");
     // Create an empty context to pass to `worker.fetch()`
     const ctx = createExecutionContext();
-    let worker = new WorkerEntrypoint(ctx, env);
+    const worker = new WorkerEntrypoint(ctx, env);
     const response: Response = await worker.fetch(request, env, ctx);
     // Wait for all `Promise`s passed to `ctx.waitUntil()` to settle before running test assertions
     await waitOnExecutionContext(ctx);

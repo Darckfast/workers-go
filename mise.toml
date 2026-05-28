@@ -19,7 +19,7 @@ run = "bun --filter hono"
 run = "bun --filter deno"
 
 [tasks.bun]
-run = "bun --filter bun"
+run = "bun --cwd _apps/_bun test"
 
 [tasks."dev:worker"]
 run = "vite"
@@ -35,9 +35,6 @@ run = "GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/misc/wasm/go_js_wasm_e
 
 [tasks."bench:go"]
 run = "GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/misc/wasm/go_js_wasm_exec -bench=. ./..."
-
-[tasks."test:cf"]
-run = "bun worker build && vitest run"
 
 [tasks.lint]
 run = "GOOS=js GOARCH=wasm golangci-lint run"

@@ -44,6 +44,10 @@
         "typescript": "^5.8.3",
       },
     },
+    "_apps/_minimal_queues_consumer": {
+      "name": "_minimal_queues_consumer",
+      "version": "1.0.0",
+    },
     "_apps/_ultimate-express": {
       "name": "uws",
       "version": "1.0.0",
@@ -378,6 +382,8 @@
     "@vitest/spy": ["@vitest/spy@4.1.7", "", {}, "sha512-kbkI5LMWakyuTIvs6fUJ5qdIVb1XVKsYJAT4OJ938cHMROYMSfmoQdZy0aaAnjbbc8F61vkoTqz/Az+/HiIu5Q=="],
 
     "@vitest/utils": ["@vitest/utils@4.1.7", "", { "dependencies": { "@vitest/pretty-format": "4.1.7", "convert-source-map": "2.0.0", "tinyrainbow": "3.1.0" } }, "sha512-T532WBu791cBxJlCl6SO+J14l81DQx6uQHm1bQbmCDY7nqlEIgkza/UFnSBNaUtSf41unldDFjdOBYEQC4b5Hw=="],
+
+    "_minimal_queues_consumer": ["_minimal_queues_consumer@workspace:_apps/_minimal_queues_consumer"],
 
     "accepts": ["accepts@1.3.8", "", { "dependencies": { "mime-types": "~2.1.34", "negotiator": "0.6.3" } }, "sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw=="],
 
