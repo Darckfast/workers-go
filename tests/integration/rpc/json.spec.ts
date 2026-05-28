@@ -1,4 +1,5 @@
-import { SELF } from "cloudflare:test";
+// import { SELF } from "cloudflare:test";
+import { env, exports } from "cloudflare:workers";
 import { beforeAll, describe, expect, it } from "vitest";
 
 const payload = JSON.stringify({
@@ -13,7 +14,7 @@ describe("RPC", () => {
     let rHttp, rRpc;
 
     beforeAll(async () => {
-      let rs = await SELF.fetch("http://dummy/echo", {
+      let rs = await exports.default.fetch("http://dummy/echo", {
         body: payload,
         method: "POST",
         headers: {
@@ -22,15 +23,8 @@ describe("RPC", () => {
       });
 
       rHttp = await rs.text();
-      rs = await SELF.fetch("http://dummy/rpc", {
-        body: payload,
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-      });
-
-      rRpc = await rs.text();
+      rs = await exports.default.echo(new TextEncoder().encode(payload));
+      rRpc = new TextDecoder().decode(rs);
     });
 
     it("should yeild the same output for both calls", () => {
