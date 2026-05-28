@@ -19,7 +19,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/Darckfast/workers-go/cloudflare/r2"
+	"github.com/Darckfast/workers-go/platform/cloudflare/r2"
 )
 
 const BUFFER_SIZE int = 4096

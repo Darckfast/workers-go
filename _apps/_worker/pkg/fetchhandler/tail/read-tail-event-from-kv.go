@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Darckfast/workers-go/cloudflare/kv"
+	"github.com/Darckfast/workers-go/platform/cloudflare/kv"
 )
 
 var GET_TAIL = func(w http.ResponseWriter, r *http.Request) {

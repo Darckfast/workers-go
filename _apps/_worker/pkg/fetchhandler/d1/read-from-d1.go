@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Darckfast/workers-go/cloudflare/d1/v2"
+	"github.com/Darckfast/workers-go/platform/cloudflare/d1/v2"
 )
 
 type TestingRow struct {

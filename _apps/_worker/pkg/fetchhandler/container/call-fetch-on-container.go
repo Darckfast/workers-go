@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Darckfast/workers-go/cloudflare/durableobjects"
+	"github.com/Darckfast/workers-go/platform/cloudflare/durableobjects"
 )
 
 var GET_CONTAINER = func(w http.ResponseWriter, r *http.Request) {

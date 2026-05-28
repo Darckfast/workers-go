@@ -3,6 +3,8 @@
 package fetchhandler
 
 import (
+	"io"
+	"net/http"
 	httpcache "worker/pkg/fetchhandler/cache-api"
 	httpcontainer "worker/pkg/fetchhandler/container"
 	httpd1 "worker/pkg/fetchhandler/d1"
@@ -18,7 +20,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"github.com/Darckfast/workers-go/cloudflare/fetch"
+	"github.com/Darckfast/workers-go/platform/cloudflare/fetch"
 )
 
 func New() {
@@ -77,6 +79,15 @@ func New() {
 
 	// Error
 	router.HandlerFunc("GET", "/error", errorshandler.GET_ERROR)
+
+	// Echo
+	router.HandlerFunc("POST", "/echo", func(w http.ResponseWriter, r *http.Request) {
+		defer r.Body.Close()
+
+		b, _ := io.ReadAll(r.Body)
+		w.WriteHeader(200)
+		w.Write(b)
+	})
 
 	/*
 	 * Fetch handler uses http.DefaulServeMux as default, calling this function is
