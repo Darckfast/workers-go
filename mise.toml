@@ -1,4 +1,6 @@
 [tools]
+bun = "1.3.14"
+deno = "2.8.1"
 go = "1.21"
 pnpm = "10.14"
 
@@ -27,7 +29,7 @@ run = "vite"
 run = "pnpm uws dev"
 
 [tasks.test]
-run = "pnpm worker build && vitest"
+run = "pnpm worker build && pnpm vitest"
 
 [tasks."test:go"]
 run = "GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/misc/wasm/go_js_wasm_exec -timeout 500ms ./..."
