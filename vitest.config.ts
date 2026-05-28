@@ -33,6 +33,7 @@ export default defineConfig({
     },
   },
   test: {
+    dir: "./tests",
     setupFiles: ["./tests/apply-migrations.ts"],
     testTimeout: 10000,
   },

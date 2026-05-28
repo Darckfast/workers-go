@@ -137,29 +137,22 @@ jobs:
   #           deps-
   #     - run: pnpm uws install
   #     - run: pnpm uws test
-  #
-  # test-worker:
-  #   name: Test Worker
-  #   needs: setup
-  #   runs-on: codeberg-small-lazy
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: actions/setup-go@v5
-  #       with:
-  #         go-version: 1.21
-  #     - uses: pnpm/action-setup@v4
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22
-  #     - run: echo "$(go env GOROOT)/misc/wasm" >> $GITHUB_PATH
-  #     - uses: actions/cache@v4
-  #       with:
-  #         path: node_modules
-  #         key: deps-${{ needs.setup.outputs.cache-key }}
-  #         restore-keys: |
-  #           deps-
-  #     - run: pnpm worker install
-  #     - run: pnpm worker test
+
+  test-worker:
+    name: Test Worker
+    runs-on: codeberg-small-lazy
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: deps-${{ needs.setup.outputs.cache-key }}
+          restore-keys: |
+            deps-
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+      - run: /root/.local/bin/mise test
 
   test-go:
     name: Test Go
@@ -169,7 +162,5 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-          echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
-      # - uses: https://github.com/jdx/mise-action@v4
       - run: /root/.local/bin/mise test:go
 

@@ -28,7 +28,7 @@ run = "vite"
 run = "bun uws dev"
 
 [tasks.test]
-run = "bun worker build && pnpm vitest"
+run = "bun --filter worker build && bun vitest"
 
 [tasks."test:go"]
 run = "GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/misc/wasm/go_js_wasm_exec -timeout 500ms ./..."
