@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-Powered by <img src="https://vite.dev/logo.svg" style="height: 1rem; place-self: center;"/> Vite and <img src="https://developers.cloudflare.com/_astro/logo.DAG2yejx.svg" style="height: 1rem"/> Cloudflare Wrangler
+Powered by Vite and Cloudflare Wrangler
 </p>
 
 <p align="center">
