@@ -6,7 +6,7 @@ import { watch } from "vite-plugin-watch";
 export default defineConfig({
   resolve: {
     alias: {
-      $wrk: path.resolve(__dirname, "./worker"),
+      $wrk: path.resolve(__dirname, "./_apps/_worker"),
     },
   },
   plugins: [
@@ -14,6 +14,6 @@ export default defineConfig({
       pattern: "/**/*.go",
       command: "pnpm worker build",
     }),
-    cloudflare({ configPath: "./_worker/wrangler.toml" }),
+    cloudflare({ configPath: "./_apps/_worker/wrangler.toml" }),
   ],
 });

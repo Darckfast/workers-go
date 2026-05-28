@@ -1,4 +1,7 @@
+import type { WorkerEntrypoint } from "cloudflare:workers";
+
 declare global {
+  var workerapp: WorkerEntrypoint;
   var cf: {
     fetch(r: Request, e: Env, ctx: ExecutionContext): Promise<Response>;
     email(
@@ -15,4 +18,3 @@ declare global {
     tail(t: TraceItem[], e: Env, c: ExecutionContext): Promise<void>;
   };
 }
-export { };

@@ -34,7 +34,7 @@ binding = "TEST_QUEUE"
 [[queues.consumers]]
 queue = "TEST-QUEUE"
 max_batch_size = 10
-max_batch_timeout = 5
+max_batch_timeout = 0
 
 # Cloudflare Container
 # [[containers]]

@@ -1,0 +1,9 @@
+go 1.21.13
+
+use (
+	.
+	./_apps/_deno
+	./_apps/_hono
+	./_apps/_ultimate-express
+	./_apps/_worker
+)

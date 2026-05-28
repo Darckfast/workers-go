@@ -1,0 +1,48 @@
+[tools]
+bun = "1.3.14"
+deno = "2.8.1"
+go = "1.21"
+
+[tasks.install]
+run = "bun i && go mod download"
+
+[tasks.worker]
+depends = ["install"]
+run = "bun --filter worker"
+
+[tasks.uws]
+depends = ["install"]
+run = "bun --filter uws"
+
+[tasks.hono]
+depends = ["install"]
+run = "bun --filter hono"
+
+[tasks.deno]
+depends = ["install"]
+run = "bun --filter deno"
+
+[tasks.bun]
+depends = ["install"]
+run = "bun --cwd _apps/_bun test"
+
+[tasks."dev:worker"]
+depends = ["install"]
+run = "vite"
+
+[tasks."dev:uws"]
+depends = ["install"]
+run = "bun uws dev"
+
+[tasks.test]
+depends = ["install"]
+run = "bun --filter worker build && bun vitest"
+
+[tasks."test:go"]
+run = "GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/misc/wasm/go_js_wasm_exec -timeout 500ms ./..."
+
+[tasks."bench:go"]
+run = "GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/misc/wasm/go_js_wasm_exec -bench=. ./..."
+
+[tasks.lint]
+run = "GOOS=js GOARCH=wasm golangci-lint run"

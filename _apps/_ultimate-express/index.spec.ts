@@ -6,7 +6,7 @@ describe("GET /hello", () => {
   let serverProcess: ChildProcessWithoutNullStreams;
 
   before(() => {
-    serverProcess = spawn("tsx", ["index.ts"]);
+    serverProcess = spawn("bun", ["tsx", "index.ts"]);
     return new Promise((resolve) => setTimeout(resolve, 550));
   });
 

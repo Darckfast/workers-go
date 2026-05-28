@@ -1,0 +1,96 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@std/assert@*": "1.0.14",
+    "jsr:@std/assert@^1.0.13": "1.0.14",
+    "jsr:@std/internal@^1.0.10": "1.0.10",
+    "jsr:@std/testing@*": "1.0.15"
+  },
+  "jsr": {
+    "@std/assert@1.0.14": {
+      "integrity": "68d0d4a43b365abc927f45a9b85c639ea18a9fab96ad92281e493e4ed84abaa4",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/internal@1.0.10": {
+      "integrity": "e3be62ce42cab0e177c27698e5d9800122f67b766a0bea6ca4867886cbde8cf7"
+    },
+    "@std/testing@1.0.15": {
+      "integrity": "a490169f5ccb0f3ae9c94fbc69d2cd43603f2cffb41713a85f99bbb0e3087cbc",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.13",
+        "jsr:@std/internal"
+      ]
+    }
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@biomejs/biome@2.4.16",
+        "npm:@cloudflare/containers@^0.0.26",
+        "npm:@cloudflare/vite-plugin@^1.39.0",
+        "npm:@cloudflare/vitest-pool-workers@~0.16.10",
+        "npm:@faker-js/faker@^10.4.0",
+        "npm:@types/bun@^1.3.14",
+        "npm:@types/node@^25.9.1",
+        "npm:vite-plugin-watch@~0.3.1",
+        "npm:vite@^8.0.14",
+        "npm:vitest@^4.1.7",
+        "npm:wrangler@^4.95.0"
+      ],
+      "overrides": {
+        "devalue@<5.3.2": ">=5.3.2"
+      }
+    },
+    "members": {
+      "_apps/_bun": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@types/bun@latest"
+          ]
+        }
+      },
+      "_apps/_deno": {
+        "dependencies": [
+          "jsr:@std/assert@1"
+        ]
+      },
+      "_apps/_hono": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@hono/node-server@^1.19.0",
+            "npm:@types/node@^20.11.17",
+            "npm:hono@^4.9.6",
+            "npm:tsx@^4.7.1",
+            "npm:typescript@^5.8.3"
+          ]
+        }
+      },
+      "_apps/_ultimate-express": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@biomejs/biome@2.2.3",
+            "npm:@types/express@^5.0.3",
+            "npm:@types/node@^24.3.1",
+            "npm:tsx@^4.20.5",
+            "npm:typescript@^5.9.2",
+            "npm:ultimate-express@^2.0.9"
+          ]
+        }
+      },
+      "_apps/_worker": {
+        "packageJson": {
+          "dependencies": [
+            "npm:@biomejs/biome@2.2.2",
+            "npm:@cloudflare/containers@^0.0.26",
+            "npm:@cloudflare/vite-plugin@^1.12.0",
+            "npm:vite-plugin-watch@~0.3.1",
+            "npm:vite@^7.1.3",
+            "npm:wrangler@^4.33.0"
+          ]
+        }
+      }
+    }
+  }
+}

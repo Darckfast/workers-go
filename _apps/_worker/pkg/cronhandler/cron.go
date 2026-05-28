@@ -5,8 +5,8 @@ package cronhandler
 import (
 	"fmt"
 
-	"github.com/Darckfast/workers-go/cloudflare/cron"
-	"github.com/Darckfast/workers-go/cloudflare/kv"
+	"github.com/Darckfast/workers-go/platform/cloudflare/cron"
+	"github.com/Darckfast/workers-go/platform/cloudflare/kv"
 )
 
 func New() {

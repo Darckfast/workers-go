@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/Darckfast/workers-go/cloudflare/d1/v2"
+	"github.com/Darckfast/workers-go/platform/cloudflare/d1/v2"
 )
 
 var POST_D1_BATCH = func(w http.ResponseWriter, r *http.Request) {

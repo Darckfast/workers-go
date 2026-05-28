@@ -1,4 +1,5 @@
 import { connect } from "cloudflare:sockets";
+import { WorkerEntrypoint } from "cloudflare:workers";
 import app from "./bin/app.wasm";
 import "./bin/wasm_exec.js";
 
@@ -52,61 +53,60 @@ let instance = new WebAssembly.Instance(app, go.importObject);
 function init() {
   if (!initiliazed) {
     go.run(instance).finally(() => {
-      initiliazed = false
+      initiliazed = false;
       instance = new WebAssembly.Instance(app, go.importObject);
     });
     initiliazed = true;
   }
 
   if (go.exited) {
-    go = new Go()
+    go = new Go();
     go.run(instance).finally(() => {
       instance = new WebAssembly.Instance(app, go.importObject);
     });
   }
 }
 
-async function fetch(req: Request, env: Env, ctx: ExecutionContext) {
-  init();
-  return await cf.fetch(req, env, ctx);
-}
-
-async function email(
-  message: ForwardableEmailMessage,
-  env: Env,
-  ctx: ExecutionContext,
-) {
-  init();
-  return await cf.email(message, env, ctx);
-}
-
-async function scheduled(
-  controler: ScheduledController,
-  env: Env,
-  ctx: ExecutionContext,
-) {
-  init();
-  return await cf.scheduled(controler, env, ctx);
-}
-
-async function queue(batch: MessageBatch, env: Env, ctx: ExecutionContext) {
-  init();
-  return await cf.queue(batch, env, ctx);
-}
-
-async function tail(events: TraceItem[], env: Env, ctx: ExecutionContext) {
-  init();
-  return await cf.tail(events, env, ctx);
-}
-
 /**
  * All handlers are available in this template, but feel free to keep
  * only the ones that will be used
  */
-export default {
-  fetch,
-  email,
-  scheduled,
-  queue,
-  tail,
-} satisfies ExportedHandler<Env>;
+export default class extends WorkerEntrypoint {
+  constructor(ctx, env) {
+    super(ctx, env);
+
+    globalThis.workerapp = this;
+    init();
+
+    // Required to make RPC stubs available
+    const prototype = Object.getPrototypeOf(this);
+    for (const [k, v] of Object.entries(cf.rpc)) {
+      prototype[k] = v;
+    }
+  }
+
+  async email(message: ForwardableEmailMessage) {
+    return await cf.email(message, this.env, this.ctx);
+  }
+
+  async scheduled(controler: ScheduledController) {
+    return await cf.scheduled(controler, this.env, this.ctx);
+  }
+
+  async queue(batch: MessageBatch) {
+    return await cf.queue(batch, this.env, this.ctx);
+  }
+
+  async tail(events: TraceItem[]) {
+    return await cf.tail(events, this.env, this.ctx);
+  }
+
+  async fetch(request: Request): Response | Promise<Response> {
+    if (request.url.endsWith("rpc")) {
+      const data = await this.echo(new Uint8Array(await request.arrayBuffer()));
+      return new Response(data);
+    } else {
+      return await cf.fetch(request, this.env, this.ctx);
+    }
+  }
+}

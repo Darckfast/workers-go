@@ -7,6 +7,7 @@ import (
 	"worker/pkg/emailhandler"
 	"worker/pkg/fetchhandler"
 	"worker/pkg/queuehandler"
+	"worker/pkg/rpchandler"
 	"worker/pkg/tailhandler"
 )
 
@@ -21,6 +22,8 @@ func main() {
 	queuehandler.New()
 	// Initialize the consumer for the globalThis.cf.tail()
 	tailhandler.New()
+	// Initialize the RPC stubs for the globalThis.cf.<stub-name>()
+	rpchandler.New()
 
 	/**
 	 * This code below is REQUIRED, it's what will keep your Go's WASM process

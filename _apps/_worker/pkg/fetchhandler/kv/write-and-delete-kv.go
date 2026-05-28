@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Darckfast/workers-go/cloudflare/kv"
+	"github.com/Darckfast/workers-go/platform/cloudflare/kv"
 )
 
 var GET_KV_LIST = func(w http.ResponseWriter, r *http.Request) {

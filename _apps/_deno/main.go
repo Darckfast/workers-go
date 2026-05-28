@@ -7,7 +7,7 @@ import (
 	_ "net/http/pprof"
 	httpsimple "worker/pkg/fetchhandler/http"
 
-	"github.com/Darckfast/workers-go/cloudflare/fetch"
+	"github.com/Darckfast/workers-go/platform/cloudflare/fetch"
 	"github.com/julienschmidt/httprouter"
 )
 

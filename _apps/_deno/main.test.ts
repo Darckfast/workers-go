@@ -1,3 +1,4 @@
+/// <reference lib="deno.ns" />
 import { assertEquals } from "jsr:@std/assert";
 import { afterAll, beforeAll, describe, it } from "jsr:@std/testing/bdd";
 
@@ -11,7 +12,7 @@ describe("GET /hello", () => {
       stdout: "piped",
     }).spawn();
 
-    return new Promise((resolve) => setTimeout(resolve, 100));
+    return new Promise((resolve) => setTimeout(resolve, 500));
   });
 
   afterAll(async () => {

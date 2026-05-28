@@ -6,8 +6,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Darckfast/workers-go/cloudflare/cache"
-	"github.com/Darckfast/workers-go/cloudflare/fetch"
+	"github.com/Darckfast/workers-go/platform/cloudflare/cache"
+	"github.com/Darckfast/workers-go/platform/cloudflare/fetch"
 )
 
 var GET_CACHE = func(w http.ResponseWriter, r *http.Request) {

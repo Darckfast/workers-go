@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/Darckfast/workers-go/cloudflare/email"
+	"github.com/Darckfast/workers-go/platform/cloudflare/email"
 )
 
 func New() {
