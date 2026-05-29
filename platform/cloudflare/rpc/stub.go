@@ -104,11 +104,11 @@ func RPCStub(name string, h RPCStubFunc) {
 
 				out := h(ctx, bufs)
 
-				dstArr := jsclass.Array.New()
-				for _, o := range out {
+				dstArr := jsclass.Array.New(len(out))
+				for i, o := range out {
 					dst := jsclass.Uint8Array.New(len(o))
 					js.CopyBytesToJS(dst, o)
-					dstArr.Call("push", dst)
+					dstArr.SetIndex(i, dst)
 				}
 
 				resolve.Invoke(dstArr)
