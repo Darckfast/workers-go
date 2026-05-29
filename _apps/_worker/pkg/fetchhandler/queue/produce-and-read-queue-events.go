@@ -7,8 +7,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/kv"
-	"github.com/Darckfast/workers-go/platform/cloudflare/queues"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/kv"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/queues"
 )
 
 var GET_QUEUE = func(w http.ResponseWriter, r *http.Request) {

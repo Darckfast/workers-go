@@ -5,7 +5,7 @@ package jsclass
 import (
 	"syscall/js"
 
-	jstry "github.com/Darckfast/workers-go/internal/try"
+	jstry "codeberg.org/darckfast/workers-go/internal/try"
 )
 
 // JSON.stringify and JSON.parse

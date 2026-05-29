@@ -6,7 +6,7 @@ import (
 	"syscall/js"
 	"time"
 
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
 )
 
 type CronEvent struct {

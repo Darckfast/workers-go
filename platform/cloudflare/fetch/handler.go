@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jshttp "github.com/Darckfast/workers-go/internal/http"
-	jsruntime "github.com/Darckfast/workers-go/internal/runtime"
-	"github.com/Darckfast/workers-go/platform/cloudflare/env"
-	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jshttp "codeberg.org/darckfast/workers-go/internal/http"
+	jsruntime "codeberg.org/darckfast/workers-go/internal/runtime"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
 var httpHandler http.Handler = http.DefaultServeMux

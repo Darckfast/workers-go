@@ -5,8 +5,8 @@ package tailhandler
 import (
 	"encoding/json"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/kv"
-	"github.com/Darckfast/workers-go/platform/cloudflare/tail"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/kv"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/tail"
 )
 
 func New() {

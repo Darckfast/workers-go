@@ -7,9 +7,9 @@ import (
 	"syscall/js"
 	"testing"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
-	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 	"github.com/stretchr/testify/assert"
 )
 

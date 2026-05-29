@@ -7,9 +7,9 @@ import (
 	"io"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
-	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
+	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
 	"github.com/mailru/easyjson"
 )
 

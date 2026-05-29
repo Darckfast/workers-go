@@ -8,8 +8,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jstry "github.com/Darckfast/workers-go/internal/try"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jstry "codeberg.org/darckfast/workers-go/internal/try"
 )
 
 type SecureTransport string

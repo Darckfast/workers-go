@@ -7,10 +7,10 @@ import (
 	"io"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jshttp "github.com/Darckfast/workers-go/internal/http"
-	jsstream "github.com/Darckfast/workers-go/internal/stream"
-	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jshttp "codeberg.org/darckfast/workers-go/internal/http"
+	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 	"github.com/mailru/easyjson"
 )
 
@@ -23,7 +23,7 @@ type Bucket struct {
 
 // NewBucket returns Bucket for given variable name.
 //   - variable name must be defined in wrangler.toml.
-//   - see example: https://github.com/Darckfast/workers-go/tree/main/_examples/r2-image-viewer
+//   - see example: https://codeberg.org/darckfast/workers-go/tree/main/_examples/r2-image-viewer
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewBucket(varName string) (*Bucket, error) {

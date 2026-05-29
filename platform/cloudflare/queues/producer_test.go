@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
 )
 
 func validatingProducer(t *testing.T, validateFn func(message js.Value, options js.Value) error) *Producer {

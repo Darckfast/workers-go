@@ -6,8 +6,8 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
 	"github.com/mailru/easyjson"
 )
 

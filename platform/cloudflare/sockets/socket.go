@@ -11,8 +11,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
 )
 
 func newSocket(ctx context.Context, sockVal js.Value, readDeadline, writeDeadline time.Time) *Socket {
