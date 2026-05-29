@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     watch({
       pattern: "/**/*.go",
-      command: "pnpm worker build",
+      command: "bun worker build",
     }),
     cloudflare({ configPath: "./_apps/_worker/wrangler.toml" }),
   ],

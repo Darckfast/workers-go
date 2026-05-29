@@ -5,6 +5,5 @@
   "main": "main.ts",
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.14.0"
+  "license": "ISC"
 }

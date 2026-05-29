@@ -110,10 +110,10 @@ func (d *D1Db) Prepare(query string) *D1PreparedStatment {
 }
 
 func (d *D1Db) Batch(stmts []D1PreparedStatment) (D1BatchResults, error) {
-	jsList := jsclass.Array.New()
+	jsList := jsclass.Array.New(len(stmts))
 
-	for _, st := range stmts {
-		jsList.Call("push", st.v)
+	for i, st := range stmts {
+		jsList.SetIndex(i, st.v)
 	}
 
 	batchResult, err := jsclass.Await(d.v.Call("batch", jsList))
@@ -153,10 +153,10 @@ func (d *D1DatabaseSession) Prepare(query string) *D1PreparedStatment {
 }
 
 func (d *D1DatabaseSession) Batch(stmts ...D1PreparedStatment) ([]D1Result, error) {
-	jsList := jsclass.Array.New()
+	jsList := jsclass.Array.New(len(stmts))
 
-	for _, st := range stmts {
-		jsList.Call("push", st.v)
+	for i, st := range stmts {
+		jsList.SetIndex(i, st.v)
 	}
 
 	batchResult, err := jsclass.Await(d.v.Call("batch", jsList))

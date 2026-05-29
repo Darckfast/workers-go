@@ -29,6 +29,7 @@ func init() {
 }
 
 type RPCStubStreamFunc func(c context.Context, w http.ResponseWriter, body io.ReadCloser, args [][]byte)
+type RPCStubFunc func(c context.Context, args [][]byte) [][]byte
 
 func RPCStubStream(name string, h RPCStubStreamFunc) {
 	var hrp = js.FuncOf(func(this js.Value, args []js.Value) any {
@@ -84,8 +85,6 @@ func RPCStubStream(name string, h RPCStubStreamFunc) {
 	js.Global().Get("cf").Get("rpc").Set(name, hrp)
 }
 
-type RPCStubFunc func(c context.Context, args [][]byte) []byte
-
 func RPCStub(name string, h RPCStubFunc) {
 	var hrp = js.FuncOf(func(this js.Value, args []js.Value) any {
 		bufs := make([][]byte, len(args))
@@ -101,14 +100,18 @@ func RPCStub(name string, h RPCStubFunc) {
 			resolve := pArgs[0]
 
 			go func() {
-				ctx, cancel := context.WithCancel(context.Background())
-				defer cancel()
+				ctx := context.Background()
 
 				out := h(ctx, bufs)
 
-				dst := jsclass.Uint8Array.New(len(out))
-				js.CopyBytesToJS(dst, out)
-				resolve.Invoke(dst)
+				dstArr := jsclass.Array.New(len(out))
+				for i, o := range out {
+					dst := jsclass.Uint8Array.New(len(o))
+					js.CopyBytesToJS(dst, o)
+					dstArr.SetIndex(i, dst)
+				}
+
+				resolve.Invoke(dstArr)
 			}()
 
 			return nil

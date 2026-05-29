@@ -8,23 +8,23 @@ run = "bun i && go mod download"
 
 [tasks.worker]
 depends = ["install"]
-run = "bun --filter worker"
+run = "bun --cwd _apps/_worker"
 
 [tasks.uws]
 depends = ["install"]
-run = "bun --filter uws"
+run = "bun --cwd _apps/_ultimate-express"
 
 [tasks.hono]
 depends = ["install"]
-run = "bun --filter hono"
+run = "bun --cwd _apps/_hono"
 
 [tasks.deno]
 depends = ["install"]
-run = "bun --filter deno"
+run = "bun --cwd _apps/_deno"
 
 [tasks.bun]
 depends = ["install"]
-run = "bun --cwd _apps/_bun test"
+run = "bun --cwd _apps/_bun"
 
 [tasks."dev:worker"]
 depends = ["install"]
