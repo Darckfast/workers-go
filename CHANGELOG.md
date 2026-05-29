@@ -1,6 +1,16 @@
 # Changelog
 
-## [0.2.6](https://github.com/Darckfast/workers-go/compare/v0.2.2...v0.2.6) (2026-05-29)
+## [0.2.7](https://github.com/Darckfast/workers-go/compare/v0.2.2...v0.2.7) (2026-05-29)
+
+### 🚀 Features
+
+- Changed the return type from RPCStub to [][]byte, this allows to return multiple values
+
+### ⚙️ Miscellaneous Tasks
+
+- Removed unused workflows and files
+
+## [0.2.6](https://github.com/Darckfast/workers-go/compare/v0.2.2...v0.2.6) (2026-05-28)
 
 ### 🐛 Bug Fixes
 
