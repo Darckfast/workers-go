@@ -6,6 +6,10 @@
 
 - Changed the return type from RPCStub to [][]byte, this allows to return multiple values
 
+### ⚡ Performance
+
+- Replaced `.Call('push',...)` with `.SetIndex(i,...)` to reduced the overhead when inserting new elements in a list
+
 ### ⚙️ Miscellaneous Tasks
 
 - Removed unused workflows and files
