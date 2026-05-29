@@ -1,6 +1,6 @@
 ```
-pnpm install
-pnpm run dev
+bun install
+bun run dev
 ```
 
 ```

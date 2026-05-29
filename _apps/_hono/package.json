@@ -6,7 +6,7 @@
     "build": "tsc --noCheck",
     "build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go",
     "start": "node dist/index.js",
-    "test": "pnpm run build:go && node --test index.spec.ts"
+    "test": "bun run build:go && node --test index.spec.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.0",
