@@ -6,7 +6,7 @@ import (
 	"math"
 	"testing"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
 )
 
 func BenchmarkStrRecordToMap(b *testing.B) {

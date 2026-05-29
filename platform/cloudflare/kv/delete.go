@@ -3,7 +3,7 @@
 package kv
 
 import (
-	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
 )
 
 func (ns *Namespace) Delete(key string) error {

@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jshttp "github.com/Darckfast/workers-go/internal/http"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jshttp "codeberg.org/darckfast/workers-go/internal/http"
 )
 
 type Cache struct {

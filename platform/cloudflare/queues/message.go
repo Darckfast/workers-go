@@ -7,8 +7,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
 )
 
 // Message represents a message of the batch received by the consumer.

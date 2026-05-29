@@ -7,7 +7,7 @@ import (
 	"io"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
 )
 
 type ReadableStream struct {

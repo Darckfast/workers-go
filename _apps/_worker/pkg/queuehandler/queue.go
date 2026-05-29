@@ -5,8 +5,8 @@ package queuehandler
 import (
 	"strings"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/kv"
-	"github.com/Darckfast/workers-go/platform/cloudflare/queues"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/kv"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/queues"
 )
 
 func New() {

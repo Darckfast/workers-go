@@ -5,8 +5,8 @@ package env
 import (
 	"os"
 
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
-	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
+	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
 func LoadEnvs() error {

@@ -7,10 +7,10 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jshttp "github.com/Darckfast/workers-go/internal/http"
-	jsruntime "github.com/Darckfast/workers-go/internal/runtime"
-	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jshttp "codeberg.org/darckfast/workers-go/internal/http"
+	jsruntime "codeberg.org/darckfast/workers-go/internal/runtime"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 	"github.com/mailru/easyjson"
 )
 

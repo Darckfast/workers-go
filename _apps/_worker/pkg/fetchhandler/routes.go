@@ -20,7 +20,7 @@ import (
 
 	"github.com/julienschmidt/httprouter"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/fetch"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/fetch"
 )
 
 func New() {

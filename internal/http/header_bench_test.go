@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"testing"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
 )
 
 func BenchmarkToHeades(b *testing.B) {

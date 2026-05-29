@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
 	"github.com/stretchr/testify/assert"
 )
 

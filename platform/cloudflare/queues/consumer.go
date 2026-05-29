@@ -6,9 +6,9 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	"github.com/Darckfast/workers-go/platform/cloudflare/env"
-	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
 // Consumer is a function that received a batch of messages from Cloudflare Queues.

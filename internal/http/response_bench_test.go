@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsconv "github.com/Darckfast/workers-go/internal/conv"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
 )
 
 // BenchmarkToJSResponse       4382            260885 ns/op

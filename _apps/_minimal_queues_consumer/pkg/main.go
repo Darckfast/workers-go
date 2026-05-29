@@ -5,7 +5,7 @@ package main
 import (
 	"log"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/queues"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/queues"
 )
 
 func main() {

@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"syscall/js"
 
-	jsclass "github.com/Darckfast/workers-go/internal/class"
-	jsstream "github.com/Darckfast/workers-go/internal/stream"
+	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
 )
 
 func ToResponse(res js.Value) *http.Response {

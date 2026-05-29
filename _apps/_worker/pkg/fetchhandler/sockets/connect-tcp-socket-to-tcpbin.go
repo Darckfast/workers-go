@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/sockets"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/sockets"
 )
 
 var GET_SOCKET_TCPBIN = func(w http.ResponseWriter, r *http.Request) {

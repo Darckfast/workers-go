@@ -7,7 +7,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/rpc"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/rpc"
 )
 
 func New() {

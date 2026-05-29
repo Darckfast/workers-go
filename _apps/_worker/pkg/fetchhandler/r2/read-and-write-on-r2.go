@@ -9,7 +9,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/r2"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/r2"
 )
 
 var GET_R2 = func(w http.ResponseWriter, r *http.Request) {

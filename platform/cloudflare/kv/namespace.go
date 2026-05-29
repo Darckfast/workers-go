@@ -6,7 +6,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	"github.com/Darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
 type Namespace struct {

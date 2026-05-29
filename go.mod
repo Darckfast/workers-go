@@ -1,8 +1,9 @@
-module github.com/Darckfast/workers-go
+module codeberg.org/darckfast/workers-go
 
 go 1.21
 
 require (
+	codeberg.org/darckfast/workers-go v0.2.6
 	github.com/mailru/easyjson v0.9.2
 	github.com/stretchr/testify v1.11.1
 )
