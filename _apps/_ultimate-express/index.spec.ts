@@ -7,7 +7,7 @@ describe("GET /hello", () => {
 
   before(() => {
     serverProcess = spawn("bun", ["tsx", "index.ts"]);
-    return new Promise((resolve) => setTimeout(resolve, 550));
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   });
 
   after(() => {
