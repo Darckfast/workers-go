@@ -1,7 +1,42 @@
 # Changelog
 
-## [0.2.0](https://github.com/Darckfast/workers-go/compare/v0.1.0...v0.2.0) (2025-09-07)
+## [0.2.6](https://github.com/Darckfast/workers-go/compare/v0.2.2...v0.2.6) (2026-05-29)
 
+### 🐛 Bug Fixes
+
+- Fixed set-cookie headers not being copied correctly
+- Fixed call with no column name
+- Fixed broken test
+- Fixed typo
+- Fixed missing args on durable objects stub rpc call
+- Fixed pointer reference with calling JS binding
+- Fixed worker test CI
+- Fixed tests and CI
+- Fixed broken confs on yml
+- Add depends on install before running tests
+
+### 🧪 Testing
+
+- Fixed test result
+- Add test for rpc stubs
+- Fixed broken tests
+- Added RPC stub test
+
+### ⚙️ Miscellaneous Tasks
+
+- Added missing package.json
+- Fixed arg name
+- Updated workflows
+- Bump easyjson dep
+- Removed labaler ci
+- Updated deps and configs
+- Reduce queue timeout for testing
+- Bump workers-go version and imports
+- Updated test:go workflow to use mise
+- Updated workflows and removes unused .js
+- Updated README.md
+
+## [0.2.0](https://github.com/Darckfast/workers-go/compare/v0.1.0...v0.2.0) (2025-09-07)
 
 ### Features
 
