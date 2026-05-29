@@ -104,7 +104,7 @@ export default class extends WorkerEntrypoint {
   async fetch(request: Request): Response | Promise<Response> {
     if (request.url.endsWith("rpc")) {
       const data = await this.echo(new Uint8Array(await request.arrayBuffer()));
-      return new Response(data);
+      return new Response(data[0]);
     } else {
       return await cf.fetch(request, this.env, this.ctx);
     }

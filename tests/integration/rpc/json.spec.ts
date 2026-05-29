@@ -1,5 +1,4 @@
-// import { SELF } from "cloudflare:test";
-import { env, exports } from "cloudflare:workers";
+import { exports } from "cloudflare:workers";
 import { beforeAll, describe, expect, it } from "vitest";
 
 const payload = JSON.stringify({
@@ -24,7 +23,7 @@ describe("RPC", () => {
 
       rHttp = await rs.text();
       rs = await exports.default.echo(new TextEncoder().encode(payload));
-      rRpc = new TextDecoder().decode(rs);
+      rRpc = new TextDecoder().decode(rs[0]);
     });
 
     it("should yeild the same output for both calls", () => {
