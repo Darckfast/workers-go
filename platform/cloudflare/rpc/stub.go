@@ -90,8 +90,12 @@ func RPCStub(name string, h RPCStubFunc) {
 		bufs := make([][]byte, len(args))
 
 		for i, a := range args {
-			bufs[i] = make([]byte, a.Length())
-			js.CopyBytesToGo(bufs[i], a)
+			if a.Truthy() {
+				bufs[i] = make([]byte, a.Length())
+				js.CopyBytesToGo(bufs[i], a)
+			} else {
+				bufs[i] = nil
+			}
 		}
 
 		var cb js.Func
