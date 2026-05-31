@@ -62,7 +62,8 @@ func TestCreateNewRPCStubStream(t *testing.T) {
 		b, _ := io.ReadAll(body)
 		assert.Equal(t, `{"test":2}`, string(b))
 
-		w.Write([]byte("writer response from rpc"))
+		_, err := w.Write([]byte("writer response from rpc"))
+		assert.Nil(t, err)
 	})
 
 	req := jsclass.Request.New("http://dummy", map[string]any{
@@ -77,7 +78,6 @@ func TestCreateNewRPCStubStream(t *testing.T) {
 	js.CopyBytesToJS(arg1, b1)
 
 	r, _ := jsclass.Await(app.Call("test-stream", req.Get("body"), js.Null(), js.Undefined(), arg1))
-
 	result, _ := jsclass.Await(r.Call("getReader").Call("read"))
 
 	br := result.Get("value")
