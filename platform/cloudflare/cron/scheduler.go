@@ -3,6 +3,7 @@
 package cron
 
 import (
+	"context"
 	"errors"
 	"syscall/js"
 
@@ -11,9 +12,9 @@ import (
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
-type Task func(evt *CronEvent) error
+type Task func(c context.Context, evt *CronEvent) error
 
-var scheduledTask Task = func(_ *CronEvent) error {
+var scheduledTask Task = func(c context.Context, _ *CronEvent) error {
 	return errors.New("no scheduled implemented")
 }
 
@@ -26,7 +27,8 @@ func runScheduler(jsEvent js.Value, envObj js.Value, ctxObj js.Value) error {
 	}
 	event := NewEvent(jsEvent)
 
-	return scheduledTask(event)
+	ctx := context.Background()
+	return scheduledTask(ctx, event)
 }
 
 func init() {

@@ -3,6 +3,7 @@
 package tail
 
 import (
+	"context"
 	"errors"
 	"syscall/js"
 
@@ -11,9 +12,9 @@ import (
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
-type TailConsumer func(f *Traces) error
+type TailConsumer func(c context.Context, f *Traces) error
 
-var consumer TailConsumer = func(_ *Traces) error {
+var consumer TailConsumer = func(c context.Context, _ *Traces) error {
 	return errors.New("no consumer implemented")
 }
 
@@ -61,7 +62,8 @@ func handler(eventsObj, envObj, ctxObj js.Value) error {
 		return err
 	}
 
-	return consumer(events)
+	ctx := context.Background()
+	return consumer(ctx, events)
 }
 
 func ConsumeNonBlock(c TailConsumer) {
