@@ -5,7 +5,6 @@ package sockets
 import (
 	"context"
 	"net"
-	"syscall/js"
 	"time"
 
 	jsclass "codeberg.org/darckfast/workers-go/internal/class"
@@ -42,12 +41,12 @@ func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, e
 			optionsObj.Set("secureTransport", string(opts.SecureTransport))
 		}
 	}
-	cb := js.FuncOf(func(_ js.Value, args []js.Value) any {
-		return connect.Invoke(addr, optionsObj)
-	})
-	defer cb.Release()
+	// cb := js.FuncOf(func(_ js.Value, args []js.Value) any {
+	// 	return connect.Invoke(addr, optionsObj)
+	// })
+	// defer cb.Release()
 
-	sockVal, err := jstry.TryCatch(cb)
+	sockVal, err := jstry.TryCatch(connect, "", addr, optionsObj)
 	if err != nil {
 		return nil, err
 	}

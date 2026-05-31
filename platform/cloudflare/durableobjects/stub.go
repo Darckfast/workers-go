@@ -31,10 +31,7 @@ func (ns *DurableObjectNamespace) IdFromName(name string) *DurableObjectId {
 }
 
 func (ns *DurableObjectNamespace) IdFromString(id string) (*DurableObjectId, error) {
-	idStr, err := jstry.TryCatch(js.FuncOf(func(_ js.Value, args []js.Value) any {
-		return ns.instance.Call("idFromString", id)
-	}))
-
+	idStr, err := jstry.TryCatch(ns.instance, "idFromString", id)
 	if err != nil {
 		return nil, err
 	}
