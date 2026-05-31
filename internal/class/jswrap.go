@@ -36,6 +36,10 @@ func (o *ObjectWrap) FromEntries(args ...any) js.Value {
 	return o.Call("fromEntries", args...)
 }
 
+func (o *ObjectWrap) GetPrototypeOf(arg js.Value) js.Value {
+	return o.Call("getPrototypeOf", arg)
+}
+
 type ExecutionContextWrap struct {
 	Ctx js.Value
 }
