@@ -5,24 +5,6 @@ import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 import "./bin/wasm_exec.js";
 
-// @ts-ignore
-globalThis.tryCatch = (fn) => {
-  try {
-    return { data: fn() };
-  } catch (err) {
-    if (!(err instanceof Error)) {
-      if (err instanceof Object) {
-        err = JSON.stringify(err);
-      }
-
-      // @ts-ignore
-      err = new Error(err || "no error message");
-    }
-
-    return { error: err };
-  }
-};
-
 let go = new Go();
 let initiliazed = false;
 

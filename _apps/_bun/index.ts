@@ -1,23 +1,5 @@
 import "./bin/wasm_exec.js";
 
-// @ts-expect-error
-globalThis.tryCatch = (fn) => {
-  try {
-    return { data: fn() };
-  } catch (err) {
-    if (!(err instanceof Error)) {
-      if (err instanceof Object) {
-        err = JSON.stringify(err);
-      }
-
-      // @ts-expect-error
-      err = new Error(err || "no error message");
-    }
-
-    return { error: err };
-  }
-};
-
 const go = new Go();
 let initiliazed = false;
 const app = await Bun.file("./bin/app.wasm").arrayBuffer();
