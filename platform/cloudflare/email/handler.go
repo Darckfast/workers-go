@@ -3,6 +3,7 @@
 package email
 
 import (
+	"context"
 	"errors"
 	"log"
 	"syscall/js"
@@ -12,9 +13,9 @@ import (
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
-type EmailConsumer func(f *ForwardableEmailMessage) error
+type EmailConsumer func(c context.Context, f *ForwardableEmailMessage) error
 
-var consumer EmailConsumer = func(_ *ForwardableEmailMessage) error {
+var consumer EmailConsumer = func(c context.Context, _ *ForwardableEmailMessage) error {
 	return errors.New("no consumer implemented")
 }
 
@@ -63,7 +64,8 @@ func handler(emailObj, envObj, ctxObj js.Value) error {
 		}
 	}()
 
-	return consumer(email)
+	ctx := context.Background()
+	return consumer(ctx, email)
 }
 
 func ConsumeNonBlock(c EmailConsumer) {

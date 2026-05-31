@@ -13,32 +13,11 @@ globalThis.cf = {
   connect,
 };
 
-/**
- * A REQUIRED nice to have function, since errors thrown within the JS runtime
- * inside Go's will cause the process to exit
- *
- * It's just a try...catch with error normalization
- */
-globalThis.tryCatch = (fn) => {
-  try {
-    return { data: fn() };
-  } catch (err) {
-    if (!(err instanceof Error)) {
-      if (err instanceof Object) {
-        err = JSON.stringify(err);
-      }
-
-      err = new Error(err || "no error message");
-    }
-
-    return { error: err };
-  }
-};
-
 let initiliazed = false;
 
 let go = new Go();
 let instance = new WebAssembly.Instance(app, go.importObject);
+
 /**
  * This function is what initialize your Go's compiled WASM binary
  * only after this function has finished, that the handlers will be
@@ -75,14 +54,10 @@ export default class extends WorkerEntrypoint {
   constructor(ctx, env) {
     super(ctx, env);
 
+    // Required to init tne `env` and `ctx` variables
+    // and populate this class's prototype with RPC stubs
     globalThis.workerapp = this;
     init();
-
-    // Required to make RPC stubs available
-    const prototype = Object.getPrototypeOf(this);
-    for (const [k, v] of Object.entries(cf.rpc)) {
-      prototype[k] = v;
-    }
   }
 
   async email(message: ForwardableEmailMessage) {

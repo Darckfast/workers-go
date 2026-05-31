@@ -6,41 +6,35 @@ import (
 	"syscall/js"
 )
 
-var catchThis = js.Global().Get("tryCatch")
+var catchThis js.Value
 
 func init() {
-	if !catchThis.Truthy() {
-		fn := js.Global().Get("Function")
+	catchThis = js.Global().Get("Function").New("o", "fn", "args", `{
+  try {
+    if (fn) {
+     return { data: o[fn](...args) };
+    }
 
-		// Sync fn with JS error normalization
-		// This is only to go test run without crashing
-		catchThis = fn.New("fn", `{
-      try {
-      return {
-      data: fn(),
-      };
-      } catch (e) {
-      if (!(e instanceof Error)) {
-      if (e instanceof Object) {
-      e = JSON.stringify(e)
+    return { data: o(...args) };
+  } catch (err) {
+    if (!(err instanceof Error)) {
+      if (err instanceof Object) {
+        err = JSON.stringify(err);
       }
-      e = new Error(e || 'no error message')
-      }
-      return {
-      error: e,
-      };
-      }
-      }`)
-	}
+      err = new Error(err || "no error message");
+    }
+    return { error: err };
+  }
+}`)
 }
 
-func TryCatch(fn js.Func) (js.Value, error) {
-	fnResult := catchThis.Invoke(fn)
+func TryCatch(o js.Value, fn string, args ...any) (js.Value, error) {
+	fnResult := catchThis.Invoke(o, fn, args)
 	resultVal := fnResult.Get("data")
 	errorVal := fnResult.Get("error")
 
-	if !errorVal.IsUndefined() {
-		return js.Value{}, js.Error{Value: errorVal}
+	if errorVal.Truthy() {
+		return js.Undefined(), js.Error{Value: errorVal}
 	}
 
 	return resultVal, nil

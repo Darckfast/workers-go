@@ -11,7 +11,12 @@ import (
 )
 
 var GET_SOCKET_TCPBIN = func(w http.ResponseWriter, r *http.Request) {
-	conn, _ := sockets.Connect(r.Context(), "tcpbin.com:4242", nil)
+	conn, err := sockets.Connect(r.Context(), "tcpbin.com:4242", nil)
+
+	if err != nil {
+		panic(err)
+	}
+
 	defer func() {
 		_ = conn.Close()
 	}()

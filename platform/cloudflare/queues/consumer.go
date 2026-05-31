@@ -3,6 +3,7 @@
 package queues
 
 import (
+	"context"
 	"errors"
 	"syscall/js"
 
@@ -16,9 +17,9 @@ import (
 // A returned error will cause the batch to be retried (unless the batch or individual messages are acked).
 // NOTE: to do long-running message processing task within the Consumer, use cloudflare.WaitUntil, this will postpone the message
 // acknowledgment until the task is completed witout blocking the queue consumption.
-type Consumer func(batch *MessageBatch) error
+type Consumer func(c context.Context, batch *MessageBatch) error
 
-var consumer Consumer = func(batch *MessageBatch) error {
+var consumer Consumer = func(c context.Context, batch *MessageBatch) error {
 	return errors.New("no consumer implemented")
 }
 
@@ -66,7 +67,8 @@ func consumeBatch(batch, envObj, ctxObj js.Value) error {
 		return err
 	}
 
-	if err := consumer(b); err != nil {
+	ctx := context.Background()
+	if err := consumer(ctx, b); err != nil {
 		return err
 	}
 

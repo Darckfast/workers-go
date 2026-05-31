@@ -3,6 +3,7 @@
 package emailhandler
 
 import (
+	"context"
 	"io"
 	"strconv"
 	"strings"
@@ -14,7 +15,7 @@ func New() {
 	/*
 	 * ConsumeNonBlock must be called to instantiate a email handler consumer
 	 */
-	email.ConsumeNonBlock(func(f *email.ForwardableEmailMessage) error {
+	email.ConsumeNonBlock(func(c context.Context, f *email.ForwardableEmailMessage) error {
 		f.Headers.Add("x-test-id", "12345-asdfg-56789-ghjkl")
 
 		err := f.Forward("<YOUR_EMAIL>", &f.Headers)

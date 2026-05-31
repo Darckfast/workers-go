@@ -7,24 +7,6 @@ import { fileURLToPath } from "node:url";
 import express from "ultimate-express";
 import "./bin/wasm_exec.js";
 
-// @ts-expect-error
-globalThis.tryCatch = (fn: () => any) => {
-  try {
-    return { data: fn() };
-  } catch (err) {
-    if (!(err instanceof Error)) {
-      if (err instanceof Object) {
-        err = JSON.stringify(err);
-      }
-
-      // @ts-expect-error
-      err = new Error(err || "no error message");
-    }
-
-    return { error: err };
-  }
-};
-
 const CURRENT_DIR = dirname(fileURLToPath(import.meta.url));
 const binary = readFileSync(resolve(CURRENT_DIR, "./bin/app.wasm"));
 const go = new Go();

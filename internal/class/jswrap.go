@@ -18,13 +18,7 @@ func (j *JSONWrap) Stringify(args ...any) js.Value {
 }
 
 func (j *JSONWrap) Parse(args ...any) (js.Value, error) {
-	cb := js.FuncOf(func(_ js.Value, _ []js.Value) any {
-		return j.Call("parse", args...)
-	})
-
-	defer cb.Release()
-
-	return jstry.TryCatch(cb)
+	return jstry.TryCatch(j.Value, "parse", args)
 }
 
 // Object.fromEntries
@@ -34,6 +28,10 @@ type ObjectWrap struct {
 
 func (o *ObjectWrap) FromEntries(args ...any) js.Value {
 	return o.Call("fromEntries", args...)
+}
+
+func (o *ObjectWrap) GetPrototypeOf(arg js.Value) js.Value {
+	return o.Call("getPrototypeOf", arg)
 }
 
 type ExecutionContextWrap struct {
