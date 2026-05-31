@@ -75,14 +75,10 @@ export default class extends WorkerEntrypoint {
   constructor(ctx, env) {
     super(ctx, env);
 
+    // Required to init tne `env` and `ctx` variables
+    // and populate this class's prototype with RPC stubs
     globalThis.workerapp = this;
     init();
-
-    // Required to make RPC stubs available
-    const prototype = Object.getPrototypeOf(this);
-    for (const [k, v] of Object.entries(cf.rpc)) {
-      prototype[k] = v;
-    }
   }
 
   async email(message: ForwardableEmailMessage) {
