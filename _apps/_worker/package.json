@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "start": "wrangler --port 5173 --ip 0.0.0.0 dev main.js",
+    "start": "wrangler --port 5173 --ip 0.0.0.0 dev main.ts",
     "deploy": "wrangler deploy",
     "dev:wrangler": "bun run build && wrangler --port 5173 dev",
     "build": "bun run build:go",
