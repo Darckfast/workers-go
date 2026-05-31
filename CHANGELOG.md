@@ -1,5 +1,37 @@
 # Changelog
 
+## [0.4.0](https://codeberg.org/darckfast/workers-go/compare/v0.3.0...v0.4.0) (2026-05-31)
+### 🚀 Features
+
+- Add truthy check on args before trying to copying JS bytes into Go - this allows null and undefined values to be used
+- Create and pass context.Background on handlers calls
+- Improved `ctx` and `env` copy on RPC stub creation
+- Add `getPrototypeOf` js func call
+
+### 🐛 Bug Fixes
+
+- Fixed spread on args
+
+### 🧪 Testing
+
+- Add tests cases for rpc stub creation
+
+### ⚙️ Miscellaneous Tasks
+
+- Updated handlers to accept `ctx` from workers-go inner libs
+- Add fixed node ver on mise.toml
+- Removed unused code block
+- Cleanup commented code
+- Fixed linting error
+
+## [0.3.0](https://codeberg.org/darckfast/workers-go/compare/v0.2.7...v0.3.0) (2026-05-29)
+
+### ⚙️ Miscellaneous Tasks
+
+- Migrated package to codeberg
+- Bump workers-go ver no queue template
+- Removed unused mod dependencies
+
 ## [0.2.7](https://github.com/Darckfast/workers-go/compare/v0.2.2...v0.2.7) (2026-05-29)
 
 ### 🚀 Features
