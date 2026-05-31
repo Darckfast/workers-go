@@ -13,18 +13,24 @@ import (
 	jshttp "codeberg.org/darckfast/workers-go/internal/http"
 	jsruntime "codeberg.org/darckfast/workers-go/internal/runtime"
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
-func init() {
-	js.Global().Get("cf").Set("rpc", jsclass.Object.Value)
-	lifecycle.Env = js.Global().Get("workerapp").Get("env")
-	lifecycle.Ctx = jsclass.ExecutionContextWrap{Ctx: js.Global().Get("workerapp").Get("ctx")}
+var js_prototype js.Value
 
-	err := env.LoadEnvs()
+func init_prototype() {
+	if !js_prototype.Truthy() {
+		jsWorkerapp := js.Global().Get("workerapp")
 
-	if err != nil {
-		log.Println("error loading envs: " + err.Error())
+		if !jsWorkerapp.Truthy() {
+			log.Panicln("using RPC but globalThis.workerapp is undefined")
+		}
+
+		js_prototype = jsclass.Object.GetPrototypeOf(jsWorkerapp)
+
+		err := env.LoadEnvs()
+		if err != nil {
+			log.Println("error loading envs: " + err.Error())
+		}
 	}
 }
 
@@ -32,12 +38,18 @@ type RPCStubStreamFunc func(c context.Context, w http.ResponseWriter, body io.Re
 type RPCStubFunc func(c context.Context, args [][]byte) [][]byte
 
 func RPCStubStream(name string, h RPCStubStreamFunc) {
+	init_prototype()
+
 	var hrp = js.FuncOf(func(this js.Value, args []js.Value) any {
 		bufs := make([][]byte, len(args[1:]))
 
 		for i, a := range args[1:] {
-			bufs[i] = make([]byte, a.Length())
-			js.CopyBytesToGo(bufs[i], a)
+			if a.Truthy() {
+				bufs[i] = make([]byte, a.Length())
+				js.CopyBytesToGo(bufs[i], a)
+			} else {
+				bufs[i] = nil
+			}
 		}
 
 		var cb js.Func
@@ -82,10 +94,12 @@ func RPCStubStream(name string, h RPCStubStreamFunc) {
 		return jsclass.Promise.New(cb)
 	})
 
-	js.Global().Get("cf").Get("rpc").Set(name, hrp)
+	js_prototype.Set(name, hrp)
 }
 
 func RPCStub(name string, h RPCStubFunc) {
+	init_prototype()
+
 	var hrp = js.FuncOf(func(this js.Value, args []js.Value) any {
 		bufs := make([][]byte, len(args))
 
@@ -124,5 +138,5 @@ func RPCStub(name string, h RPCStubFunc) {
 		return jsclass.Promise.New(cb)
 	})
 
-	js.Global().Get("cf").Get("rpc").Set(name, hrp)
+	js_prototype.Set(name, hrp)
 }
