@@ -66,10 +66,14 @@ func (p *Producer) send(body js.Value, contentType contentType, opts ...SendOpti
 
 	prom := p.queue.Call("send", body, options.toJS())
 	r, err := jsclass.Await(prom)
+
+	if err != nil {
+		return nil, err
+	}
 	s := jsclass.JSON.Stringify(r).String()
 
 	var qr QueueSendResult
-	easyjson.Unmarshal([]byte(s), &qr)
+	err = easyjson.Unmarshal([]byte(s), &qr)
 
 	return &qr, err
 }
@@ -88,11 +92,14 @@ func (p *Producer) SendBatch(messages []*MessageSendRequest, opts ...BatchSendOp
 
 	prom := p.queue.Call("sendBatch", jsArray, options.toJS())
 	r, err := jsclass.Await(prom)
+	if err != nil {
+		return nil, err
+	}
 
 	s := jsclass.JSON.Stringify(r).String()
 
 	var qr QueueSendResult
-	easyjson.Unmarshal([]byte(s), &qr)
+	err = easyjson.Unmarshal([]byte(s), &qr)
 	return &qr, err
 }
 
@@ -100,10 +107,14 @@ func (p *Producer) Metrics() (*QueueMetrics, error) {
 	prom := p.queue.Call("metrics")
 	r, err := jsclass.Await(prom)
 
+	if err != nil {
+		return nil, err
+	}
+
 	s := jsclass.JSON.Stringify(r).String()
 
 	var qr QueueMetrics
-	easyjson.Unmarshal([]byte(s), &qr)
+	err = easyjson.Unmarshal([]byte(s), &qr)
 
 	return &qr, err
 }
