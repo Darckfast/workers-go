@@ -10,14 +10,12 @@ func init() {
 	cf := js.Global().Get("cf")
 	if cf.IsUndefined() {
 		// is faster to JSON.parse than create an object
-		cfObj, _ := JSON.Parse(`{"ctx":{},"env":{},"handlers":{},"connect":{}}`)
+		cfObj, _ := JSON.Parse(`{}`)
 		js.Global().Set("cf", cfObj)
 
 		return
 	}
 
-	// Env = cf.Get("env")
-	// ExcutionContext = ExecutionContextWrap{Ctx: cf.Get("ctx")}
 	Connect = cf.Get("connect")
 }
 
@@ -37,6 +35,7 @@ var (
 	String            = js.Global().Get("String")
 	Array             = js.Global().Get("Array")
 	Number            = js.Global().Get("Number")
+	ArrayBuffer       = js.Global().Get("ArrayBuffer")
 	Uint8Array        = js.Global().Get("Uint8Array")
 	Uint8ClampedArray = js.Global().Get("Uint8ClampedArray")
 	Error             = js.Global().Get("Error")
