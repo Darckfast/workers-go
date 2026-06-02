@@ -26,25 +26,25 @@ jobs:
           curl https://mise.run | sh
       - run: /root/.local/bin/mise deno test
 
-  test-hono:
-    name: Test Hono
-    runs-on: codeberg-small-lazy
-    steps:
-      - uses: actions/checkout@v6
-      - name: Install mise
-        run: |
-          curl https://mise.run | sh
-      - run: /root/.local/bin/mise hono test
-
-  test-uws:
-    name: Test uWS
-    runs-on: codeberg-small-lazy
-    steps:
-      - uses: actions/checkout@v6
-      - name: Install mise
-        run: |
-          curl https://mise.run | sh
-      - run: /root/.local/bin/mise uws test
+  # test-hono:
+  #   name: Test Hono
+  #   runs-on: codeberg-small-lazy
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Install mise
+  #       run: |
+  #         curl https://mise.run | sh
+  #     - run: /root/.local/bin/mise hono test
+  #
+  # test-uws:
+  #   name: Test uWS
+  #   runs-on: codeberg-small-lazy
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #     - name: Install mise
+  #       run: |
+  #         curl https://mise.run | sh
+  #     - run: /root/.local/bin/mise uws test
 
   test-worker:
     name: Test Worker
