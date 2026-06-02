@@ -10,23 +10,41 @@ import (
 	"time"
 
 	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"github.com/mailru/easyjson"
+	"github.com/stretchr/testify/assert"
 )
 
+var startTime = time.Now().Unix()
+
 func validatingProducer(t *testing.T, validateFn func(message js.Value, options js.Value) error) *Producer {
-	sendFn := js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-		sendArg := args[0] // this should be batch (in case of SendBatch) or a single message (in case of Send)
+	sendFn := js.FuncOf(func(this js.Value, sargs []js.Value) interface{} {
+		sendArg := sargs[0] // this should be batch (in case of SendBatch) or a single message (in case of Send)
 		var options js.Value
-		if len(args) > 1 {
-			options = args[1]
+		if len(sargs) > 1 {
+			options = sargs[1]
 		}
 		return jsclass.Promise.New(js.FuncOf(func(this js.Value, args []js.Value) interface{} {
 			resolve := args[0]
+
 			go func() {
+				uint := js.Global().Get("TextEncoder").New().Call("encode", jsclass.JSON.Stringify(sendArg))
+				sr := QueueSendResult{
+					Metadata: Metadata{
+						Metrics: QueueMetrics{
+							BacklogCount:           int64(len(sargs) - 1),
+							BacklogBytes:           int64(uint.Length()),
+							OldestMessageTimestamp: time.Now().Unix(),
+						},
+					},
+				}
+
+				bj, _ := easyjson.Marshal(sr)
+				jsV, _ := jsclass.JSON.Parse(string(bj))
 				if err := validateFn(sendArg, options); err != nil {
 					// must be non-fatal to avoid a deadlock
 					t.Errorf("validation failed: %v", err)
 				}
-				resolve.Invoke(js.Undefined())
+				resolve.Invoke(jsV)
 			}()
 			return js.Undefined()
 		}))
@@ -55,10 +73,14 @@ func TestSend(t *testing.T) {
 		}
 
 		producer := validatingProducer(t, validation)
-		err := producer.SendText("hello")
+		evt, err := producer.SendText("hello")
 		if err != nil {
 			t.Fatalf("Send failed: %v", err)
 		}
+
+		assert.Equal(t, int64(1), evt.Metadata.Metrics.BacklogCount)
+		assert.Equal(t, int64(7), evt.Metadata.Metrics.BacklogBytes)
+		assert.GreaterOrEqual(t, startTime, evt.Metadata.Metrics.OldestMessageTimestamp)
 	})
 
 	t.Run("json content type", func(t *testing.T) {
@@ -76,10 +98,14 @@ func TestSend(t *testing.T) {
 		}
 
 		producer := validatingProducer(t, validation)
-		err := producer.SendJSON("hello")
+		evt, err := producer.SendJSON("hello")
 		if err != nil {
 			t.Fatalf("Send failed: %v", err)
 		}
+
+		assert.Equal(t, int64(1), evt.Metadata.Metrics.BacklogCount)
+		assert.Equal(t, int64(7), evt.Metadata.Metrics.BacklogBytes)
+		assert.GreaterOrEqual(t, startTime, evt.Metadata.Metrics.OldestMessageTimestamp)
 	})
 }
 
@@ -116,10 +142,14 @@ func TestSendBatch(t *testing.T) {
 	}
 
 	producer := validatingProducer(t, validation)
-	err := producer.SendBatch(batch)
+	evt, err := producer.SendBatch(batch)
 	if err != nil {
 		t.Fatalf("SendBatch failed: %v", err)
 	}
+
+	assert.Equal(t, int64(1), evt.Metadata.Metrics.BacklogCount)
+	assert.Equal(t, int64(101), evt.Metadata.Metrics.BacklogBytes)
+	assert.GreaterOrEqual(t, startTime, evt.Metadata.Metrics.OldestMessageTimestamp)
 }
 
 func TestSendBatch_Options(t *testing.T) {
@@ -135,8 +165,12 @@ func TestSendBatch_Options(t *testing.T) {
 	}
 
 	producer := validatingProducer(t, validation)
-	err := producer.SendBatch(batch, WithBatchDelaySeconds(5*time.Second))
+	evt, err := producer.SendBatch(batch, WithBatchDelaySeconds(5*time.Second))
 	if err != nil {
 		t.Fatalf("SendBatch failed: %v", err)
 	}
+
+	assert.Equal(t, int64(1), evt.Metadata.Metrics.BacklogCount)
+	assert.Equal(t, int64(51), evt.Metadata.Metrics.BacklogBytes)
+	assert.GreaterOrEqual(t, startTime, evt.Metadata.Metrics.OldestMessageTimestamp)
 }

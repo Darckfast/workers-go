@@ -8,6 +8,7 @@ import (
 
 	jsclass "codeberg.org/darckfast/workers-go/internal/class"
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"github.com/mailru/easyjson"
 )
 
 type Producer struct {
@@ -28,12 +29,12 @@ func NewProducer(queueName string) (*Producer, error) {
 }
 
 // SendText sends a single text message to a queue.
-func (p *Producer) SendText(body string, opts ...SendOption) error {
+func (p *Producer) SendText(body string, opts ...SendOption) (*QueueSendResult, error) {
 	return p.send(js.ValueOf(body), contentTypeText, opts...)
 }
 
 // SendBytes sends a single byte array message to a queue.
-func (p *Producer) SendBytes(body []byte, opts ...SendOption) error {
+func (p *Producer) SendBytes(body []byte, opts ...SendOption) (*QueueSendResult, error) {
 	ua := jsclass.Uint8Array.New(len(body))
 	js.CopyBytesToJS(ua, body)
 	// accortind to docs, "bytes" type requires an ArrayBuffer to be sent, however practical experience shows that ArrayBufferView should
@@ -42,12 +43,12 @@ func (p *Producer) SendBytes(body []byte, opts ...SendOption) error {
 }
 
 // SendJSON sends a single JSON message to a queue.
-func (p *Producer) SendJSON(body any, opts ...SendOption) error {
+func (p *Producer) SendJSON(body any, opts ...SendOption) (*QueueSendResult, error) {
 	return p.send(js.ValueOf(body), contentTypeJSON, opts...)
 }
 
 // SendV8 sends a single raw JS value message to a queue.
-func (p *Producer) SendV8(body js.Value, opts ...SendOption) error {
+func (p *Producer) SendV8(body js.Value, opts ...SendOption) (*QueueSendResult, error) {
 	return p.send(body, contentTypeV8, opts...)
 }
 
@@ -55,7 +56,7 @@ func (p *Producer) SendV8(body js.Value, opts ...SendOption) error {
 // This function allows setting send options for the message.
 //   - https://developers.cloudflare.com/queues/configuration/javascript-apis/#producer
 //   - https://developers.cloudflare.com/queues/configuration/javascript-apis/#queuesendoptions
-func (p *Producer) send(body js.Value, contentType contentType, opts ...SendOption) error {
+func (p *Producer) send(body js.Value, contentType contentType, opts ...SendOption) (*QueueSendResult, error) {
 	options := sendOptions{
 		ContentType: contentType,
 	}
@@ -64,12 +65,17 @@ func (p *Producer) send(body js.Value, contentType contentType, opts ...SendOpti
 	}
 
 	prom := p.queue.Call("send", body, options.toJS())
-	_, err := jsclass.Await(prom)
-	return err
+	r, err := jsclass.Await(prom)
+	s := jsclass.JSON.Stringify(r).String()
+
+	var qr QueueSendResult
+	easyjson.Unmarshal([]byte(s), &qr)
+
+	return &qr, err
 }
 
 // SendBatch sends multiple messages to a queue. This function allows setting options for each message.
-func (p *Producer) SendBatch(messages []*MessageSendRequest, opts ...BatchSendOption) error {
+func (p *Producer) SendBatch(messages []*MessageSendRequest, opts ...BatchSendOption) (*QueueSendResult, error) {
 	var options batchSendOptions
 	for _, opt := range opts {
 		opt(&options)
@@ -81,6 +87,23 @@ func (p *Producer) SendBatch(messages []*MessageSendRequest, opts ...BatchSendOp
 	}
 
 	prom := p.queue.Call("sendBatch", jsArray, options.toJS())
-	_, err := jsclass.Await(prom)
-	return err
+	r, err := jsclass.Await(prom)
+
+	s := jsclass.JSON.Stringify(r).String()
+
+	var qr QueueSendResult
+	easyjson.Unmarshal([]byte(s), &qr)
+	return &qr, err
+}
+
+func (p *Producer) Metrics() (*QueueMetrics, error) {
+	prom := p.queue.Call("metrics")
+	r, err := jsclass.Await(prom)
+
+	s := jsclass.JSON.Stringify(r).String()
+
+	var qr QueueMetrics
+	easyjson.Unmarshal([]byte(s), &qr)
+
+	return &qr, err
 }
