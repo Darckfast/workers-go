@@ -52,7 +52,7 @@ jobs:
 
   test-worker:
     name: Test Worker Integration
-    runs-on: codeberg-medium-lazy
+    runs-on: codeberg-small-lazy
     steps:
       - uses: actions/checkout@v6
       - name: Install mise
