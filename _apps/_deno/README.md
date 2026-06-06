@@ -1,7 +1,9 @@
-```
-deno run dev
+# Developing
+
+First install [mise](https://mise.jdx.dev/getting-started.html) then run:
+
+```bash
+mise dev
 ```
 
-```
-open http://localhost:5173
-```
+*Access or cURL http://localhost:5173/hello*

@@ -1,0 +1,21 @@
+[tools]
+deno = "2.8.1"
+go = "1.24"
+
+[tasks.install]
+run = "deno install && go mod download"
+
+[tasks.test]
+depends = ["install"]
+run = "deno run test"
+
+[tasks.build]
+depends = ["install"]
+run = """
+  cp $(go env GOROOT)/lib/wasm/wasm_exec.js ./bin/wasm_exec.js
+  GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go
+"""
+
+[tasks.dev]
+depends = ["install", "build"]
+run = "deno run --watch main.ts"
