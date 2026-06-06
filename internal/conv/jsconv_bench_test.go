@@ -27,7 +27,8 @@ func BenchmarkJSValueToMap(b *testing.B) {
 
 func BenchmarkMaybeInt64(b *testing.B) {
 	obj := jsclass.Object.New()
-	obj.Set("value", math.MaxInt64)
+	n := int64(math.MaxInt64)
+	obj.Set("value", n)
 
 	for i := 0; i < b.N; i++ {
 		_ = MaybeInt64(obj.Get("value"))
@@ -36,7 +37,8 @@ func BenchmarkMaybeInt64(b *testing.B) {
 
 func BenchmarkMaybeInt(b *testing.B) {
 	obj := jsclass.Object.New()
-	obj.Set("value", math.MaxInt64)
+	n := int64(math.MaxInt64)
+	obj.Set("value", n)
 
 	for i := 0; i < b.N; i++ {
 		_ = MaybeInt64(obj.Get("value"))
