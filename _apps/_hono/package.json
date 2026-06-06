@@ -1,13 +1,6 @@
 {
   "name": "hono",
   "type": "module",
-  "scripts": {
-    "dev": "tsx watch index.ts",
-    "build": "tsc --noCheck",
-    "build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go",
-    "start": "node dist/index.js",
-    "test": "bun run build:go && node --test index.spec.ts"
-  },
   "dependencies": {
     "@hono/node-server": "^1.19.0",
     "hono": "^4.9.6"
