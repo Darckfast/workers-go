@@ -1,5 +1,41 @@
 # Changelog
 
+## [0.4.2](https://codeberg.org/darckfast/workers-go/compare/v0.4.1...v0.4.2) (2026-06-06)
+
+### 🚀 Features
+- Bump Golang version to `1.24` to be compatible with `tinygo@0.41.1`
+- Add `.metrics()` function, and return correct values when calling the queue producer `.send()`
+- Updated app `worker`, `bun`, `deno`, `ultimate-express` and `minimal-queue` tooling to use `mise`
+- Removed hard-coded `wasm_exec.js` and `bin` directory
+- Updated lib and apps `mise` commands to setup and copy the necessary files at build time
+- Add DEVELOPING.md with basic instructions to run and develop this project
+- Add `--tiny` arg when using `_worker` or `_minimal_queues_consumer`, this will compile and use `tinygo`
+```bash
+mise dev --tiny
+```
+
+### 🐛 Bug Fixes
+
+- Queue function `BytesBody()` now accepts `ArrayBuffer`
+- Fixed wrong conversion from 64 to 32 when compiled using `tinygo`
+- Fixed wrong value comparison when running tests with `tinygo`
+- Fixed `mise` command path on CI
+- Create missing directory during build
+
+### ⚙️ Miscellaneous Tasks
+- Remove `biome` and `vite`
+- Re-enabled uws and hono testing suit on CI
+- Removed unused configs and files
+- Updated `_apps` `.gitignore` and `.dockerignore`
+- Add env MISE_EXPERIMENTAL=1 on CI
+- Updated CI workflow's actions and run commands
+
+## [0.4.1](https://codeberg.org/darckfast/workers-go/compare/v0.4.0...v0.4.1) (2026-05-31)
+
+### 🐛 Bug Fixes
+
+- Fixed function `tryCatch` not being created correctly
+
 ## [0.4.0](https://codeberg.org/darckfast/workers-go/compare/v0.3.0...v0.4.0) (2026-05-31)
 ### 🚀 Features
 
