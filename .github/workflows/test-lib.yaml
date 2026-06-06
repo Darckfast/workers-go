@@ -1,0 +1,24 @@
+name: Test Lib
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "platform/**"
+      - "internal/**"
+env:
+  GOOS: js
+  GOARCH: wasm
+  MISE_EXPERIMENTAL: true
+
+jobs:
+  test-go:
+    name: Test Lib
+    runs-on: codeberg-small-lazy
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //:test-lib
