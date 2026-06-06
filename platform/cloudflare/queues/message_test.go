@@ -29,7 +29,7 @@ func TestNewConsumerMessage(t *testing.T) {
 	assert.Equal(t, "hello", got.Body.String())
 	assert.Equal(t, id, got.ID)
 	assert.Equal(t, 1, got.Attempts)
-	assert.True(t, ts.Equal(got.Timestamp))
+	assert.Equal(t, ts.Unix(), got.Timestamp.Unix())
 }
 
 func TestConsumerMessage_Ack(t *testing.T) {
