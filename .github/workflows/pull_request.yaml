@@ -54,7 +54,7 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: /root/.local/bin/mise test-integration
+      - run: /root/.local/bin/mise //:test-integration
 
   test-go:
     name: Test Go Lib
@@ -64,4 +64,4 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: /root/.local/bin/mise test-lib
+      - run: /root/.local/bin/mise //:test-lib
