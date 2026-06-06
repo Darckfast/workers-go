@@ -15,7 +15,7 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: echo "/root/.local/bin" >> $GITHUB_PATH
+          echo "/root/.local/bin" >> $GITHUB_PATH
       - run: mise //_apps/_bun:test
 
   test-deno:
@@ -26,7 +26,7 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: echo "/root/.local/bin" >> $GITHUB_PATH
+          echo "/root/.local/bin" >> $GITHUB_PATH
       - run: mise //_apps/_deno:test
 
   test-hono:
@@ -37,7 +37,7 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: echo "/root/.local/bin" >> $GITHUB_PATH
+          echo "/root/.local/bin" >> $GITHUB_PATH
       - run: mise //_apps/_hono:test
   test-uws:
     name: Test uWS
@@ -47,18 +47,18 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: echo "/root/.local/bin" >> $GITHUB_PATH
+          echo "/root/.local/bin" >> $GITHUB_PATH
       - run: mise //_apps/_ultimate-express:test
 
   test-worker:
     name: Test Worker Integration
-    runs-on: codeberg-small-lazy
+    runs-on: codeberg-medium-lazy
     steps:
       - uses: actions/checkout@v6
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: echo "/root/.local/bin" >> $GITHUB_PATH
+          echo "/root/.local/bin" >> $GITHUB_PATH
       - run: mise //:test-integration
 
   test-go:
@@ -69,5 +69,5 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: echo "/root/.local/bin" >> $GITHUB_PATH
+          echo "/root/.local/bin" >> $GITHUB_PATH
       - run: mise //:test-lib

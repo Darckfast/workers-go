@@ -12,11 +12,11 @@ jobs:
   lint:
     strategy:
       matrix:
-        go-version: [ 1.21 ]
-        os: [ codeberg-tiny-lazy ]
+        go-version: [1.24]
+        os: [codeberg-tiny-lazy]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: actions/setup-go@v5
         with:
