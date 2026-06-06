@@ -1,0 +1,30 @@
+name: Test Deno
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "platform/**"
+      - "internal/**"
+      - "_apps/_deno/**"
+      - "!**.md"
+      - "!**.toml"
+      - "!Dockerfile"
+      - "!**.d.ts"
+
+env:
+  GOOS: js
+  GOARCH: wasm
+  MISE_EXPERIMENTAL: true
+
+jobs:
+  test-bun:
+    name: Test Deno
+    runs-on: codeberg-small-lazy
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //_apps/_deno:test

@@ -1,6 +1,12 @@
 name: Lint
-on: [pull_request]
 
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "platform/**"
+      - "internal/**"
 env:
   GOOS: js
   GOARCH: wasm

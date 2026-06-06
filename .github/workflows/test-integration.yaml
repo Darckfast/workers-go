@@ -1,0 +1,31 @@
+name: Test Integration
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "platform/**"
+      - "internal/**"
+      - "tests/**"
+      - "_apps/_worker/**"
+      - "_apps/_worker/wrangler.toml"
+      - "!**.md"
+      - "!**.toml"
+      - "!Dockerfile"
+      - "!**.d.ts"
+env:
+  GOOS: js
+  GOARCH: wasm
+  MISE_EXPERIMENTAL: true
+
+jobs:
+  test-go:
+    name: Test Integration
+    runs-on: codeberg-small-lazy
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //:test-integration

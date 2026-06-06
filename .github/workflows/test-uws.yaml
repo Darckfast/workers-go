@@ -1,0 +1,30 @@
+name: Test uWS
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "platform/**"
+      - "internal/**"
+      - "_apps/_ultimate-express/**"
+      - "!**.md"
+      - "!**.toml"
+      - "!Dockerfile"
+      - "!**.d.ts"
+
+env:
+  GOOS: js
+  GOARCH: wasm
+  MISE_EXPERIMENTAL: true
+
+jobs:
+  test-bun:
+    name: Test Ultimate Express
+    runs-on: codeberg-small-lazy
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //_apps/_ultimate-express:test

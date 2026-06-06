@@ -1,0 +1,30 @@
+name: Test bun
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "platform/**"
+      - "internal/**"
+      - "_apps/_bun/**"
+      - "!**.md"
+      - "!**.toml"
+      - "!Dockerfile"
+      - "!**.d.ts"
+
+env:
+  GOOS: js
+  GOARCH: wasm
+  MISE_EXPERIMENTAL: true
+
+jobs:
+  test-bun:
+    name: Test Bun
+    runs-on: codeberg-small-lazy
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //_apps/_bun:test
