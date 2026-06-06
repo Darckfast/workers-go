@@ -10,13 +10,20 @@
 </p>
 
 <p align="center">
-Powered by Vite and Cloudflare Wrangler
+Powered by Cloudflare Wrangler
 </p>
 
 <p align="center">
- 📜 <a href="https://darckfast.com/docs/workers-go"><strong>workers-go docs</strong></a>
+  <a href="https://darckfast.com/docs/workers-go"><strong>📜 docs</strong></a>
+  <a href="https://codeberg.org/darckfast/workers-go"><strong>🧬 main repository</strong></a>
+  <a href="https://github.com/Darckfast/workers-go"><strong>🪞 mirror repository</strong></a>
+</p>
+
+<p align="center">
+  <i>GitHub is a mirror, all development is centered on codeberg.org. Issues are welcomed on both</i>
 </p>
 
 ---
 
-[Check the documentation for more details](https://darckfast.com/docs/workers-go)
+
+[Check the documentation](https://darckfast.com/docs/workers-go)
