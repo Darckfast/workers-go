@@ -8,6 +8,9 @@ run = "npm i && go mod download"
 [tasks.build]
 depends = ["install"]
 run = """
+  pwd
+  echo {{config_root}}
+  ls -l
   cp $(go env GOROOT)/lib/wasm/wasm_exec.js ./bin/wasm_exec.js
   GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go
 """
