@@ -11,6 +11,7 @@ dev = "wrangler --show-interactive-dev-session false dev"
 depends = ["install"]
 run = """
 #!/usr/bin/env bash
+mkdir -p bin
 if [ "$1" = "--tiny" ]; then
   # build binary
   GOOS=js GOARCH=wasm tinygo build -o ./bin/app.wasm ./pkg/main.go

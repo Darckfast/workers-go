@@ -12,6 +12,7 @@ run = "deno run test"
 [tasks.build]
 depends = ["install"]
 run = """
+  mkdir -p bin
   cp $(go env GOROOT)/lib/wasm/wasm_exec.js ./bin/wasm_exec.js
   GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go
 """
