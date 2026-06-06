@@ -16,7 +16,7 @@ jobs:
         run: |
           curl https://mise.run | sh
       - run: echo "/root/.local/bin" >> $GITHUB_PATH
-      - run: /root/.local/bin/mise //_apps/_bun:test
+      - run: mise //_apps/_bun:test
 
   test-deno:
     name: Test Deno
@@ -27,7 +27,7 @@ jobs:
         run: |
           curl https://mise.run | sh
       - run: echo "/root/.local/bin" >> $GITHUB_PATH
-      - run: /root/.local/bin/mise //_apps/_deno:test
+      - run: mise //_apps/_deno:test
 
   test-hono:
     name: Test Hono
@@ -38,7 +38,7 @@ jobs:
         run: |
           curl https://mise.run | sh
       - run: echo "/root/.local/bin" >> $GITHUB_PATH
-      - run: /root/.local/bin/mise //_apps/_hono:test
+      - run: mise //_apps/_hono:test
   test-uws:
     name: Test uWS
     runs-on: codeberg-small-lazy
@@ -48,7 +48,7 @@ jobs:
         run: |
           curl https://mise.run | sh
       - run: echo "/root/.local/bin" >> $GITHUB_PATH
-      - run: /root/.local/bin/mise //_apps/_uws:test
+      - run: mise //_apps/_ultimate-express:test
 
   test-worker:
     name: Test Worker Integration
@@ -59,7 +59,7 @@ jobs:
         run: |
           curl https://mise.run | sh
       - run: echo "/root/.local/bin" >> $GITHUB_PATH
-      - run: /root/.local/bin/mise //:test-integration
+      - run: mise //:test-integration
 
   test-go:
     name: Test Go Lib
@@ -70,4 +70,4 @@ jobs:
         run: |
           curl https://mise.run | sh
       - run: echo "/root/.local/bin" >> $GITHUB_PATH
-      - run: /root/.local/bin/mise //:test-lib
+      - run: mise //:test-lib
