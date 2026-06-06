@@ -4,6 +4,7 @@ on: [pull_request]
 env:
   GOOS: js
   GOARCH: wasm
+  MISE_EXPERIMENTAL: true
 
 jobs:
   test-bun:
