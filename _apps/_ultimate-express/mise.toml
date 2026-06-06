@@ -1,0 +1,22 @@
+[tools]
+node = "24"
+go = "1.24"
+
+[tasks.install]
+run = "npm i && go mod download"
+
+[tasks.build]
+depends = ["install"]
+run = """
+  mkdir -p bin
+  cp $(go env GOROOT)/lib/wasm/wasm_exec.js ./bin/wasm_exec.js
+  GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go
+"""
+
+[tasks.test]
+depends = ["build"]
+run = "node --test index.spec.ts"
+
+[tasks.dev]
+depends = ["build"]
+run = "npx tsx watch index.ts"

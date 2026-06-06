@@ -1,15 +1,9 @@
-# _bun
+# Developing
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
+First install [mise](https://mise.jdx.dev/getting-started.html) then run:
 
 ```bash
-bun run index.ts
+mise dev
 ```
 
-This project was created using `bun init` in bun v1.2.21. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+*Access or cURL http://localhost:5173/hello*

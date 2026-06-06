@@ -22,7 +22,7 @@ globalThis.cf = {
  * This cannot be initialized within Go code, due Cloudflare workers
  * limits
  */
-globalThis.tryCatch = function(o, fn, args) {
+globalThis.tryCatch = (o, fn, args) => {
   try {
     if (fn) {
       return { data: o[fn](...args) };
@@ -38,7 +38,7 @@ globalThis.tryCatch = function(o, fn, args) {
     }
     return { error: err };
   }
-}
+};
 
 let initiliazed = false;
 

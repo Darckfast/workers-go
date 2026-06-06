@@ -27,4 +27,5 @@ lerna-debug.log*
 # misc
 .DS_Store
 
+wasm_exec.js
 *.wasm

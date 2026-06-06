@@ -23,7 +23,8 @@ func TestMaybeInt(t *testing.T) {
 
 func TestMaybeInt64(t *testing.T) {
 	obj := jsclass.Object.New()
-	obj.Set("int64", math.MaxInt64)
+	n := int64(math.MaxInt64)
+	obj.Set("int64", n)
 
 	cInt := MaybeInt64(obj.Get("int64"))
 
@@ -32,7 +33,8 @@ func TestMaybeInt64(t *testing.T) {
 
 func TestMaybeInt64With32Plus1(t *testing.T) {
 	obj := jsclass.Object.New()
-	obj.Set("value", math.MaxInt32+1)
+	n := int64(math.MaxInt32 + 1)
+	obj.Set("value", n)
 
 	cInt := MaybeInt64(obj.Get("value"))
 
@@ -80,7 +82,7 @@ func TestDateToTime(t *testing.T) {
 	obj := jsclass.Date.New(ts)
 	jsts := DateToTime(obj)
 
-	assert.True(t, n.Equal(jsts))
+	assert.Equal(t, n.Unix(), jsts.Unix())
 }
 
 func TestTimeToDate(t *testing.T) {

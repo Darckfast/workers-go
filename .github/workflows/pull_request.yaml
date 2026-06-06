@@ -4,6 +4,7 @@ on: [pull_request]
 env:
   GOOS: js
   GOARCH: wasm
+  MISE_EXPERIMENTAL: true
 
 jobs:
   test-bun:
@@ -14,7 +15,8 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: /root/.local/bin/mise bun test
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //_apps/_bun:test
 
   test-deno:
     name: Test Deno
@@ -24,45 +26,48 @@ jobs:
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: /root/.local/bin/mise deno test
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //_apps/_deno:test
 
-  # test-hono:
-  #   name: Test Hono
-  #   runs-on: codeberg-small-lazy
-  #   steps:
-  #     - uses: actions/checkout@v6
-  #     - name: Install mise
-  #       run: |
-  #         curl https://mise.run | sh
-  #     - run: /root/.local/bin/mise hono test
-  #
-  # test-uws:
-  #   name: Test uWS
-  #   runs-on: codeberg-small-lazy
-  #   steps:
-  #     - uses: actions/checkout@v6
-  #     - name: Install mise
-  #       run: |
-  #         curl https://mise.run | sh
-  #     - run: /root/.local/bin/mise uws test
+  test-hono:
+    name: Test Hono
+    runs-on: codeberg-small-lazy
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //_apps/_hono:test
+  test-uws:
+    name: Test uWS
+    runs-on: codeberg-small-lazy
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //_apps/_ultimate-express:test
 
   test-worker:
-    name: Test Worker
+    name: Test Worker Integration
     runs-on: codeberg-small-lazy
     steps:
       - uses: actions/checkout@v6
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: /root/.local/bin/mise test
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //:test-integration
 
   test-go:
-    name: Test Go
+    name: Test Go Lib
     runs-on: codeberg-small-lazy
     steps:
       - uses: actions/checkout@v6
       - name: Install mise
         run: |
           curl https://mise.run | sh
-      - run: /root/.local/bin/mise test:go
-
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise //:test-lib

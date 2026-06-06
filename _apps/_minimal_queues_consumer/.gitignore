@@ -5,3 +5,4 @@ node_modules
 .dev.vars
 .env
 .vite
+wasm_exec.js

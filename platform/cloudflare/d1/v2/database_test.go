@@ -67,7 +67,8 @@ func TestMaxInt64Bind(t *testing.T) {
 	mock := setupEnv()
 
 	db, _ := GetDB("BINDING")
-	db.Prepare("").Bind(math.MaxInt64)
+	n := int64(math.MaxInt64)
+	db.Prepare("").Bind(n)
 
 	bindings := jsconv.MaybeInt64(mock.Get("values"))
 
