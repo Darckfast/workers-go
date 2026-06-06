@@ -18,5 +18,5 @@ run = """
 """
 
 [tasks.dev]
-depends = ["install", "build"]
+depends = ["build"]
 run = "deno run --watch main.ts"
