@@ -8,7 +8,6 @@ import (
 	jstry "codeberg.org/darckfast/workers-go/internal/try"
 )
 
-// JSON.stringify and JSON.parse
 type JSONWrap struct {
 	js.Value
 }
@@ -21,7 +20,6 @@ func (j *JSONWrap) Parse(args ...any) (js.Value, error) {
 	return jstry.TryCatch(j.Value, "parse", args)
 }
 
-// Object.fromEntries
 type ObjectWrap struct {
 	js.Value
 }

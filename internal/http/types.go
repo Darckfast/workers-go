@@ -4,9 +4,8 @@ package jshttp
 type JSRequest struct {
 	Method  string            `json:"method"`
 	Headers map[string]string `json:"headers"`
-	Url     string            `json:"url"`
+	URL     string            `json:"url"`
 }
 
-//easyjson:json
-type JSResponse struct {
-}
+// //easyjson:json
+// type JSResponse struct {}

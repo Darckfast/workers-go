@@ -30,13 +30,13 @@ func ToRequest(req js.Value) *http.Request {
 
 	_ = easyjson.Unmarshal([]byte(reqStr.String()), &reqMap)
 
-	reqUrl, _ := url.Parse(reqMap.Url)
+	reqURL, _ := url.Parse(reqMap.URL)
 	headers, _ := ToHeader(req.Get("headers"))
 
 	contentLength, _ := strconv.ParseInt(headers.Get("Content-Length"), 10, 64)
 	return &http.Request{
 		Method:           reqMap.Method,
-		URL:              reqUrl,
+		URL:              reqURL,
 		Header:           headers,
 		Body:             ToBody(req.Get("body")),
 		ContentLength:    contentLength,
@@ -47,7 +47,7 @@ func ToRequest(req js.Value) *http.Request {
 
 func ToJSRequest(req *http.Request) js.Value {
 	jsReq := JSRequest{
-		Url:     req.URL.String(),
+		URL:     req.URL.String(),
 		Method:  req.Method,
 		Headers: HeaderToMap(req.Header),
 	}

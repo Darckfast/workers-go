@@ -1,0 +1,50 @@
+version: "2"
+linters:
+  default: none
+  enable:
+    - errcheck
+    - staticcheck
+    - ineffassign
+    - unused
+    - govet
+    - noctx
+    - wastedassign
+    - nilerr
+    - gocritic
+    - exhaustive
+  settings:
+    govet:
+      enable-all: true
+    staticcheck:
+      checks:
+        - "all"
+        - "-ST1000"
+    unused:
+      # Mark all struct fields that have been written to as used.
+      # Default: true
+      field-writes-are-uses: false
+      # Treat IncDec statement (e.g. `i++` or `i--`) as both read and write operation instead of just write.
+      # Default: false
+      post-statements-are-reads: true
+      # Mark all exported fields as used.
+      # default: true
+      exported-fields-are-used: false
+      # Mark all function parameters as used.
+      # default: true
+      # parameters-are-used: false
+      # Mark all local variables as used.
+      # default: true
+      local-variables-are-used: false
+  exclusions:
+    rules:
+      - path: "_test\\.go"
+        linters:
+          - noctx
+          - staticcheck
+          - unused
+          - errcheck
+          - gocritic
+run:
+  build-tags:
+    - js
+    - wasm

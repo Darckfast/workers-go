@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package queues is the glue code for Cloudflare's Queues producer and consumer
+*/
 package queues
 
 import (

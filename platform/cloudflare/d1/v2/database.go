@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package d1 is the glue code for Cloudflare's D1 bindings
+*/
 package d1
 
 import (

@@ -4,6 +4,7 @@ package tail
 
 import (
 	json "encoding/json"
+
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
@@ -439,7 +440,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareTail5(in *jlexer
 		case "method":
 			out.Method = string(in.String())
 		case "url":
-			out.Url = string(in.String())
+			out.URL = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -514,7 +515,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareTail5(out *jwrit
 		}
 		out.String(string(in.Method))
 	}
-	if in.Url != "" {
+	if in.URL != "" {
 		const prefix string = ",\"url\":"
 		if first {
 			first = false
@@ -522,7 +523,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareTail5(out *jwrit
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.Url))
+		out.String(string(in.URL))
 	}
 	out.RawByte('}')
 }
@@ -556,7 +557,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareTail6(in *jlexer
 		}
 		switch key {
 		case "rpcMethod":
-			out.RpcMethod = string(in.String())
+			out.RPCMethod = string(in.String())
 		case "mailFrom":
 			out.MailFrom = string(in.String())
 		case "rcptTo":
@@ -646,7 +647,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareTail6(out *jwrit
 	out.RawByte('{')
 	first := true
 	_ = first
-	if in.RpcMethod != "" {
+	if in.RPCMethod != "" {
 		const prefix string = ",\"rpcMethod\":"
 		if first {
 			first = false
@@ -654,7 +655,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareTail6(out *jwrit
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.RpcMethod))
+		out.String(string(in.RPCMethod))
 	}
 	if in.MailFrom != "" {
 		const prefix string = ",\"mailFrom\":"
@@ -898,7 +899,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareTail7(in *jlexer
 		case "truncated":
 			out.Truncated = bool(in.Bool())
 		case "cpuTime":
-			out.CpuTime = int64(in.Int64())
+			out.CPUTime = int64(in.Int64())
 		case "wallTime":
 			out.WallTime = int64(in.Int64())
 		case "executionModel":
@@ -1065,7 +1066,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareTail7(out *jwrit
 		}
 		out.Bool(bool(in.Truncated))
 	}
-	if in.CpuTime != 0 {
+	if in.CPUTime != 0 {
 		const prefix string = ",\"cpuTime\":"
 		if first {
 			first = false
@@ -1073,7 +1074,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareTail7(out *jwrit
 		} else {
 			out.RawString(prefix)
 		}
-		out.Int64(int64(in.CpuTime))
+		out.Int64(int64(in.CPUTime))
 	}
 	if in.WallTime != 0 {
 		const prefix string = ",\"wallTime\":"
@@ -1332,7 +1333,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoCloudflareTail10(in *jlexe
 		}
 		switch key {
 		case "id":
-			out.Id = string(in.String())
+			out.ID = string(in.String())
 		case "tag":
 			out.Tag = string(in.String())
 		case "message":
@@ -1351,11 +1352,11 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoCloudflareTail10(out *jwri
 	out.RawByte('{')
 	first := true
 	_ = first
-	if in.Id != "" {
+	if in.ID != "" {
 		const prefix string = ",\"id\":"
 		first = false
 		out.RawString(prefix[1:])
-		out.String(string(in.Id))
+		out.String(string(in.ID))
 	}
 	if in.Tag != "" {
 		const prefix string = ",\"tag\":"

@@ -13,18 +13,18 @@ import (
 )
 
 type EmailMessage struct {
+	Raw  io.ReadCloser
 	From string
 	To   string
-	Raw  io.ReadCloser
 }
 
 type ForwardableEmailMessage struct {
+	Raw     io.ReadCloser
+	Headers http.Header
+	self    *js.Value
 	From    string
 	To      string
-	Headers http.Header
-	Raw     io.ReadCloser
 	RawSize int
-	self    *js.Value
 }
 
 func (f *ForwardableEmailMessage) SetReject(reason string) {

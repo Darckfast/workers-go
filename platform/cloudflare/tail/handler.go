@@ -12,9 +12,9 @@ import (
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 )
 
-type TailConsumer func(c context.Context, f *Traces) error
+type TailConsumer func(ctx context.Context, traces *Traces) error
 
-var consumer TailConsumer = func(c context.Context, _ *Traces) error {
+var consumer TailConsumer = func(_ context.Context, _ *Traces) error {
 	return errors.New("no consumer implemented")
 }
 

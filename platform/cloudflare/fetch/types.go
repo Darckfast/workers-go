@@ -8,19 +8,19 @@ type InitOptions struct {
 
 //easyjson:json
 type RequestInitCF struct {
-	Apps             bool           `json:"apps"`
-	CacheEverything  bool           `json:"cacheEverything"`
-	CacheKey         string         `json:"cacheKey"`
-	CacheTags        []string       `json:"cacheTags"`
-	CacheTtl         int            `json:"cacheTtl"`
-	CacheTtlByStatus map[string]int `json:"cacheTtlByStatus"`
-	Mirage           bool           `json:"mirage"`
-	Polish           string         `json:"polish"`
+	CacheTTLByStatus map[string]int `json:"cacheTtlByStatus"`
+	Image            *CFImage       `json:"image,omitempty"`
 	ResolveOverride  string         `json:"resolveOverride"`
+	OriginAuth       string         `json:"origin-auth,omitempty"`
+	CacheKey         string         `json:"cacheKey"`
+	Polish           string         `json:"polish"`
+	CacheTags        []string       `json:"cacheTags"`
+	CacheTTL         int            `json:"cacheTtl"`
+	Mirage           bool           `json:"mirage"`
 	ScrapShield      bool           `json:"scrapShield"`
 	Webp             bool           `json:"webp"`
-	Image            *CFImage       `json:"image,omitempty"`
-	OriginAuth       string         `json:"origin-auth,omitempty"`
+	Apps             bool           `json:"apps"`
+	CacheEverything  bool           `json:"cacheEverything"`
 }
 
 //easyjson:json
@@ -48,72 +48,72 @@ type TrimBorder struct {
 
 //easyjson:json
 type Trim struct {
+	Border Border `json:"border,omitempty"`
 	Top    int    `json:"top,omitempty"`
 	Bottom int    `json:"bottom,omitempty"`
 	Left   int    `json:"left,omitempty"`
 	Right  int    `json:"right,omitempty"`
 	Width  int    `json:"width,omitempty"`
 	Height int    `json:"height,omitempty"`
-	Border Border `json:"border,omitempty"`
 }
 
 //easyjson:json
 type Draw struct {
-	URL        string  `json:"url"`
-	Opacity    float64 `json:"opacity,omitempty"`
+	Fit        string  `json:"fit,omitempty"`
+	Background string  `json:"background,omitempty"`
 	Repeat     string  `json:"repeat,omitempty"`
+	URL        string  `json:"url"`
+	Gravity    string  `json:"gravity,omitempty"`
 	Top        int     `json:"top,omitempty"`
-	Left       int     `json:"left,omitempty"`
-	Bottom     int     `json:"bottom,omitempty"`
 	Right      int     `json:"right,omitempty"`
 	Width      int     `json:"width,omitempty"`
 	Height     int     `json:"height,omitempty"`
-	Fit        string  `json:"fit,omitempty"`
-	Gravity    string  `json:"gravity,omitempty"`
-	Background string  `json:"background,omitempty"`
+	Bottom     int     `json:"bottom,omitempty"`
+	Left       int     `json:"left,omitempty"`
+	Opacity    float64 `json:"opacity,omitempty"`
 	Rotate     int     `json:"rotate,omitempty"`
 }
 
 //easyjson:json
 type R2 struct {
-	BucketColoId int `json:"bucketColoId,omitempty"`
+	BucketColoID int `json:"bucketColoId,omitempty"`
 }
 
 //easyjson:json
 type Minify struct {
 	Javascript bool `json:"javascript"`
-	Css        bool `json:"css"`
-	Html       bool `json:"html"`
+	CSS        bool `json:"css"`
+	HTML       bool `json:"html"`
 }
 
 //easyjson:json
 type CFImage struct {
-	Width       int     `json:"width,omitempty"`
-	Height      int     `json:"height,omitempty"`
+	Metadata    string  `json:"metadata,omitempty"`
+	Polish      string  `json:"polish,omitempty"`
 	Fit         string  `json:"fit,omitempty"`
 	Gravity     string  `json:"gravity,omitempty"`
 	Background  string  `json:"background,omitempty"`
-	Rotate      int     `json:"rotate,omitempty"`
-	Dpr         float64 `json:"dpr,omitempty"`
-	Trim        TrimImg `json:"trim,omitempty"`
-	Quality     Quality `json:"quality,omitempty"`
+	Compression string  `json:"compression,omitempty"`
+	Flip        string  `json:"flip,omitempty"`
 	Format      string  `json:"format,omitempty"`
-	Anim        bool    `json:"anim,omitempty"`
-	Metadata    string  `json:"metadata,omitempty"`
-	Sharpen     float64 `json:"sharpen,omitempty"`
-	Blur        float64 `json:"blur,omitempty"`
 	Draw        []Draw  `json:"draw,omitempty"`
 	Border      Border  `json:"border,omitempty"`
+	Trim        TrimImg `json:"trim,omitempty"`
+	Sharpen     float64 `json:"sharpen,omitempty"`
+	Gamma       float64 `json:"gamma,omitempty"`
+	Blur        float64 `json:"blur,omitempty"`
+	R2          R2      `json:"r2,omitempty"`
+	Quality     Quality `json:"quality,omitempty"`
 	Brightness  float64 `json:"brightness,omitempty"`
 	Contrast    float64 `json:"contrast,omitempty"`
-	Gamma       float64 `json:"gamma,omitempty"`
+	Width       int     `json:"width,omitempty"`
 	Saturation  float64 `json:"saturation,omitempty"`
-	Flip        string  `json:"flip,omitempty"`
-	Compression string  `json:"compression,omitempty"`
+	Dpr         float64 `json:"dpr,omitempty"`
+	Rotate      int     `json:"rotate,omitempty"`
+	Height      int     `json:"height,omitempty"`
 	Minify      Minify  `json:"minify,omitempty"`
 	Mirage      bool    `json:"mirage,omitempty"`
-	Polish      string  `json:"polish,omitempty"`
-	R2          R2      `json:"r2,omitempty"`
+	Anim        bool    `json:"anim,omitempty"`
 }
 
 //easyjson:json

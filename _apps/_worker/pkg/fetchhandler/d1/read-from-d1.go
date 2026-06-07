@@ -82,7 +82,7 @@ var POST_D1 = func(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	id := result.Meta.LastRowId
+	id := result.Meta.LastRowID
 	_ = json.NewEncoder(w).Encode(map[string]any{
 		"error": nil,
 		"data": map[string]int64{

@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoInternalHttp(in *jlexer.Lexer, out *JSRequest) {
+func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoInternalHttp(in *jlexer.Lexer, out *JSRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -30,14 +30,13 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoInternalHttp(in *jlexer.Le
 	for !in.IsDelim('}') {
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
-		if in.IsNull() {
-			in.Skip()
-			in.WantComma()
-			continue
-		}
 		switch key {
 		case "method":
-			out.Method = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Method = string(in.String())
+			}
 		case "headers":
 			if in.IsNull() {
 				in.Skip()
@@ -52,14 +51,22 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoInternalHttp(in *jlexer.Le
 					key := string(in.String())
 					in.WantColon()
 					var v1 string
-					v1 = string(in.String())
+					if in.IsNull() {
+						in.Skip()
+					} else {
+						v1 = string(in.String())
+					}
 					(out.Headers)[key] = v1
 					in.WantComma()
 				}
 				in.Delim('}')
 			}
 		case "url":
-			out.Url = string(in.String())
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.URL = string(in.String())
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -70,7 +77,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoInternalHttp(in *jlexer.Le
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoInternalHttp(out *jwriter.Writer, in JSRequest) {
+func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoInternalHttp(out *jwriter.Writer, in JSRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -104,7 +111,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoInternalHttp(out *jwriter.
 			out.RawByte('}')
 		}
 	}
-	if in.Url != "" {
+	if in.URL != "" {
 		const prefix string = ",\"url\":"
 		if first {
 			first = false
@@ -112,17 +119,17 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoInternalHttp(out *jwriter.
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.Url))
+		out.String(string(in.URL))
 	}
 	out.RawByte('}')
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v JSRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoInternalHttp(w, v)
+	easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoInternalHttp(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *JSRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoInternalHttp(l, v)
+	easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoInternalHttp(l, v)
 }

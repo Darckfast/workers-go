@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package tail is the glue code for Cloudflare's Worker Tail handler
+*/
 package tail
 
 import (

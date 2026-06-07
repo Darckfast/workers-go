@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package sockets is the glue code for Cloudflare's Socket bindings
+*/
 package sockets
 
 import (

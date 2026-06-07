@@ -2,7 +2,7 @@ package tail
 
 //easyjson:json
 type ScriptVersion struct {
-	Id      string `json:"id,omitempty"`
+	ID      string `json:"id,omitempty"`
 	Tag     string `json:"tag,omitempty"`
 	Message string `json:"message,omitempty"`
 }
@@ -22,32 +22,24 @@ type TraceItemFetchEventInfoRequest struct {
 	Cf      map[string]any    `json:"cf,omitempty"`
 	Headers map[string]string `json:"headers,omitempty"`
 	Method  string            `json:"method,omitempty"`
-	Url     string            `json:"url,omitempty"`
+	URL     string            `json:"url,omitempty"`
 }
 
 //easyjson:json
 type TraceItemEvent struct {
-	Type string `json:"-"`
-	//rpc
-	RpcMethod string `json:"rpcMethod,omitempty"`
-	//email
-	MailFrom string `json:"mailFrom,omitempty"`
-	RcptTo   string `json:"rcptTo,omitempty"`
-	RawSize  int    `json:"rawSize,omitempty"`
-	//queue
-	Queue     string `json:"queue,omitempty"`
-	BatchSize int    `json:"batchSize,omitempty"`
-	// cron and alarm
-	ScheduledTime int64 `json:"scheduledTime,omitempty"`
-	// cron
-	Cron string `json:"cron,omitempty"`
-	// tail
-	ConsumedEvents *[]TraceItemTailEventInfoTailItem `json:"consumedEvents,omitempty"`
-	// fetch
-	Response *TraceItemFetchEventInfoResponse `json:"response,omitempty"`
-	Request  *TraceItemFetchEventInfoRequest  `json:"request,omitempty"`
-	// websocket
-	GetWebSocketEvent *TraceItemGetWebSocketEvent `json:"getWebSocketEvent,omitempty"`
+	ConsumedEvents    *[]TraceItemTailEventInfoTailItem `json:"consumedEvents,omitempty"`
+	GetWebSocketEvent *TraceItemGetWebSocketEvent       `json:"getWebSocketEvent,omitempty"`
+	Request           *TraceItemFetchEventInfoRequest   `json:"request,omitempty"`
+	Response          *TraceItemFetchEventInfoResponse  `json:"response,omitempty"`
+	RcptTo            string                            `json:"rcptTo,omitempty"`
+	Queue             string                            `json:"queue,omitempty"`
+	Cron              string                            `json:"cron,omitempty"`
+	Type              string                            `json:"-"`
+	MailFrom          string                            `json:"mailFrom,omitempty"`
+	RPCMethod         string                            `json:"rpcMethod,omitempty"`
+	BatchSize         int                               `json:"batchSize,omitempty"`
+	ScheduledTime     int64                             `json:"scheduledTime,omitempty"`
+	RawSize           int                               `json:"rawSize,omitempty"`
 }
 
 //easyjson:json
@@ -59,43 +51,43 @@ type TraceItemGetWebSocketEvent struct {
 
 //easyjson:json
 type TraceLog struct {
-	Timestamp int64  `json:"timestamp,omitempty"`
 	Level     string `json:"level,omitempty"`
 	Message   []any  `json:"message"`
+	Timestamp int64  `json:"timestamp,omitempty"`
 }
 
 //easyjson:json
 type TraceException struct {
-	Timestamp int64  `json:"timestamp,omitempty"`
 	Message   string `json:"message,omitempty"`
 	Name      string `json:"name,omitempty"`
 	Stack     string `json:"stack,omitempty"`
+	Timestamp int64  `json:"timestamp,omitempty"`
 }
 
 //easyjson:json
 type TraceDiagnosticeChannelEvent struct {
-	Timestamp int64  `json:"timestamp,omitempty"`
 	Channel   string `json:"channel,omitempty"`
 	Message   string `json:"message,omitempty"`
+	Timestamp int64  `json:"timestamp,omitempty"`
 }
 
 //easyjson:json
 type TraceItem struct {
-	ScriptName               string                         `json:"scriptName"`
-	Entrypoint               string                         `json:"entrypoint,omitempty"`
 	Event                    *TraceItemEvent                `json:"event,omitempty"`
-	EventTimeStamp           int64                          `json:"eventTimestamp,omitempty"`
+	ScriptVersion            *ScriptVersion                 `json:"scriptVersion,omitempty"`
+	ExecutionModel           string                         `json:"executionModel,omitempty"`
+	Entrypoint               string                         `json:"entrypoint,omitempty"`
+	ScriptName               string                         `json:"scriptName"`
+	Outcome                  string                         `json:"outcome,omitempty"`
+	DispatchNamespace        string                         `json:"dispatchNamespace,omitempty"`
 	Logs                     []TraceLog                     `json:"logs"`
 	Exceptions               []TraceException               `json:"exceptions"`
 	DiagnosticsChannelEvents []TraceDiagnosticeChannelEvent `json:"diagnosticsChannelEvents"`
-	Outcome                  string                         `json:"outcome,omitempty"`
-	Truncated                bool                           `json:"truncated"`
-	CpuTime                  int64                          `json:"cpuTime"`
-	WallTime                 int64                          `json:"wallTime"`
-	ExecutionModel           string                         `json:"executionModel,omitempty"`
 	ScriptTags               []string                       `json:"scriptTags,omitempty"`
-	DispatchNamespace        string                         `json:"dispatchNamespace,omitempty"`
-	ScriptVersion            *ScriptVersion                 `json:"scriptVersion,omitempty"`
+	EventTimeStamp           int64                          `json:"eventTimestamp,omitempty"`
+	WallTime                 int64                          `json:"wallTime"`
+	CPUTime                  int64                          `json:"cpuTime"`
+	Truncated                bool                           `json:"truncated"`
 }
 
 //easyjson:json

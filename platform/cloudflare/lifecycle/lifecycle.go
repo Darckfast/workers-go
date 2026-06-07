@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package lifecycle is the glue code for Cloudflare's Env and Ctx
+*/
 package lifecycle
 
 import (
