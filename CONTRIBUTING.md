@@ -12,3 +12,7 @@ mise //_apps/_worker:dev
 `_apps/_worker` is the only app fully integrated with `workers-go` lib
 
 At the moment, there is no live-reload for changes outside the workers own dir, meaning every change made inside the lib itself will require a recompile before being usable in dev
+
+# Issues
+
+Feel free to open issues on either Github or Codeberg
