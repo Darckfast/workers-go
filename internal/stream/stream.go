@@ -109,7 +109,7 @@ func ReadCloserToReadableStream(reader io.ReadCloser) js.Value {
 				}
 
 				if n > 0 {
-					uint8Array := js.Global().Get("Uint8Array").New(n)
+					uint8Array := jsclass.Uint8Array.New(n)
 					js.CopyBytesToJS(uint8Array, chunk[:n])
 					controller.Call("enqueue", uint8Array)
 				}
