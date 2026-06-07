@@ -14,9 +14,9 @@ run = "wrangler --port 5173 --ip 0.0.0.0 --show-interactive-dev-session false de
 [tasks.build]
 depends = ["install"]
 run = """
+#!/usr/bin/env bash
 mkdir -p bin
 
-#!/usr/bin/env bash
 if [ "$1" = "--tiny" ]; then
   # build binary
   GOOS=js GOARCH=wasm tinygo build -o ./bin/app.wasm ./pkg/main.go

@@ -3,6 +3,7 @@ experimental_monorepo_root=true
 [tools]
 bun = "1.3.14"
 go = "1.24"
+node = "26"
 
 [env]
 MISE_EXPERIMENTAL=true
