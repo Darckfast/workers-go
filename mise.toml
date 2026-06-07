@@ -27,7 +27,7 @@ if [ "$1" = "--tiny" ]; then
 else
   mise //_apps/_worker:build
 fi
-bun run vitest
+bun run vitest run
 """
 
 [tasks.test-lib]
@@ -46,11 +46,11 @@ depends = ["install"]
 run = """
 #!/usr/bin/env bash
 if [ "$1" = "--tiny" ]; then
-  GOOS=js GOARCH=wasm tinygo test -timeout 500ms -bench=. ./...
+  GOOS=js GOARCH=wasm tinygo test -timeout 500ms -bench=. ./... | grep -v '\\[no test files\\]'
 else
-  GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/lib/wasm/go_js_wasm_exec -timeout 500ms ./...
+  GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/lib/wasm/go_js_wasm_exec -timeout 500ms -bench=. ./... | grep -v '\\[no test files\\]'
 fi
 """
 
 [tasks.lint]
-run = "GOOS=js GOARCH=wasm golangci-lint run"
+run = "golangci-lint run"

@@ -21,7 +21,6 @@ describe("produces and consumers queue message", () => {
         const text = await response.json();
         if (response.ok) return text;
       },
-      { timeout: 7000 },
     );
 
     expect(result.result).toHaveProperty("queue:result", "VALUE");

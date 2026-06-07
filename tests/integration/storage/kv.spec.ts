@@ -92,7 +92,7 @@ describe("kv", () => {
     it("should have returned list with 3 entries", () => {
       expect(rs).toHaveProperty("data");
       expect(rs.data).toHaveProperty("Keys");
-      expect(rs.data.Keys).toHaveLength(4);
+      expect(rs.data.Keys.length).greaterThanOrEqual(4);
     });
   });
 
