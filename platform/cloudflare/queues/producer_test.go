@@ -33,7 +33,7 @@ func validatingProducer(t *testing.T, validateFn func(message js.Value, options 
 						Metrics: QueueMetrics{
 							BacklogCount:           int64(len(sargs) - 1),
 							BacklogBytes:           int64(uint.Length()),
-							OldestMessageTimestamp: time.Now().Unix(),
+							OldestMessageTimestamp: startTime,
 						},
 					},
 				}
