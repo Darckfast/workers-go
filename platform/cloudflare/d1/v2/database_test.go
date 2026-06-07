@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
 	"github.com/stretchr/testify/assert"
 )
@@ -62,17 +63,17 @@ func TestMaxInt32Bind(t *testing.T) {
 	assert.Equal(t, math.MaxInt32, bindings)
 }
 
-// func TestMaxInt64Bind(t *testing.T) {
-// 	mock := setupEnv()
-//
-// 	db, _ := GetDB("BINDING")
-// 	n := int64(math.MaxInt64)
-// 	db.Prepare("").Bind(n)
-//
-// 	bindings := jsconv.MaybeInt64(mock.Get("values"))
-//
-// 	assert.Equal(t, int64(math.MaxInt64), bindings)
-// }
+func TestMaxInt64Bind(t *testing.T) {
+	mock := setupEnv()
+
+	db, _ := GetDB("BINDING")
+	n := int64(math.MaxInt64)
+	db.Prepare("").Bind(n)
+
+	bindings := jsconv.MaybeInt64(mock.Get("values"))
+
+	assert.Equal(t, int64(math.MaxInt64), bindings)
+}
 
 func TestReturnResultAsString(t *testing.T) {
 	setupEnv()
