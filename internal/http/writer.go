@@ -13,14 +13,14 @@ import (
 )
 
 type ResponseWriter struct {
-	HeaderValue http.Header
-	StatusCode  int
 	Reader      io.ReadCloser
+	HeaderValue http.Header
 	Writer      *io.PipeWriter
 	ReadyCh     chan struct{}
-	Once        sync.Once
 	RawJSBody   *js.Value
+	StatusCode  int
 	Length      int64
+	Once        sync.Once
 }
 
 var (

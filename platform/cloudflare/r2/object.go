@@ -13,6 +13,7 @@ import (
 
 // TODO: implement awsfetch for url signed => due was limitations with syscall, using the aws-sdk-go is not viable
 // afaik during init() it tries to access the home dir to load the local config, and this makes the process exit
+
 type Object struct {
 	instance js.Value
 	R2Object

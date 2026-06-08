@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package rpc is the glue code for Cloudflare's Worker RPC stubs
+*/
 package rpc
 
 import (
@@ -15,17 +18,17 @@ import (
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
 )
 
-var js_prototype js.Value
+var jsProto js.Value
 
-func init_prototype() {
-	if !js_prototype.Truthy() {
+func initProto() {
+	if !jsProto.Truthy() {
 		jsWorkerapp := js.Global().Get("workerapp")
 
 		if !jsWorkerapp.Truthy() {
 			log.Panicln("using RPC but globalThis.workerapp is undefined")
 		}
 
-		js_prototype = jsclass.Object.GetPrototypeOf(jsWorkerapp)
+		jsProto = jsclass.Object.GetPrototypeOf(jsWorkerapp)
 
 		err := env.LoadEnvs()
 		if err != nil {
@@ -38,7 +41,7 @@ type RPCStubStreamFunc func(c context.Context, w http.ResponseWriter, body io.Re
 type RPCStubFunc func(c context.Context, args [][]byte) [][]byte
 
 func RPCStubStream(name string, h RPCStubStreamFunc) {
-	init_prototype()
+	initProto()
 
 	var hrp = js.FuncOf(func(this js.Value, args []js.Value) any {
 		bufs := make([][]byte, len(args[1:]))
@@ -94,11 +97,11 @@ func RPCStubStream(name string, h RPCStubStreamFunc) {
 		return jsclass.Promise.New(cb)
 	})
 
-	js_prototype.Set(name, hrp)
+	jsProto.Set(name, hrp)
 }
 
 func RPCStub(name string, h RPCStubFunc) {
-	init_prototype()
+	initProto()
 
 	var hrp = js.FuncOf(func(this js.Value, args []js.Value) any {
 		bufs := make([][]byte, len(args))
@@ -138,5 +141,5 @@ func RPCStub(name string, h RPCStubFunc) {
 		return jsclass.Promise.New(cb)
 	})
 
-	js_prototype.Set(name, hrp)
+	jsProto.Set(name, hrp)
 }

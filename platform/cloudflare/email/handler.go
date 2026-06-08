@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package email is the glue code for Cloudflare's Worker Email bindings
+*/
 package email
 
 import (

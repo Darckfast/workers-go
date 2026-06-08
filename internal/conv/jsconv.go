@@ -101,7 +101,7 @@ func MaybeInt(v js.Value) int {
 
 func MaybeInt64(v js.Value) int64 {
 	if v.Truthy() {
-		vs := jsclass.String.Invoke(v)
+		vs := jsclass.JSON.Stringify(v)
 		vi, _ := strconv.ParseInt(vs.String(), 10, 64)
 
 		return vi

@@ -12,9 +12,9 @@ import (
 // ListOptions represents Cloudflare KV namespace list options.
 //   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L946
 type ListOptions struct {
-	Limit  int
 	Prefix string
 	Cursor string
+	Limit  int
 }
 
 func (opts *ListOptions) toJS() js.Value {
@@ -61,9 +61,9 @@ func toListKey(v js.Value) (*ListKey, error) {
 // ListResult represents Cloudflare KV namespace list result.
 //   - https://github.com/cloudflare/workers-types/blob/3012f263fb1239825e5f0061b267c8650d01b717/index.d.ts#L952
 type ListResult struct {
+	Cursor       string
 	Keys         []*ListKey
 	ListComplete bool
-	Cursor       string
 }
 
 // toListResult converts JavaScript side's KVNamespaceListResult to *ListResult.

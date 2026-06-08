@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package kv is the glue code for Cloudflare's KV Worker
+*/
 package kv
 
 import (

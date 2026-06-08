@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package fetch is the glue code for Cloudflare's Worker fetch handler
+*/
 package fetch
 
 import (

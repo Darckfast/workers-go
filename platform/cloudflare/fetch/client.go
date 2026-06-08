@@ -15,10 +15,10 @@ import (
 )
 
 type Client struct {
-	RedirectMode string
-	Timeout      time.Duration
 	namespace    js.Value
 	CF           *RequestInitCF
+	RedirectMode string
+	Timeout      time.Duration
 }
 
 type Transport struct{}
@@ -69,8 +69,8 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 		Credentials: "omit",
 	}
 
-	initJson, _ := easyjson.Marshal(initOptions)
-	initObj, _ := jsclass.JSON.Parse(string(initJson))
+	initJSON, _ := easyjson.Marshal(initOptions)
+	initObj, _ := jsclass.JSON.Parse(string(initJSON))
 
 	if c.Timeout != 0 {
 		timeoutSignal := jsclass.AbortSignal.Call("timeout", c.Timeout.Milliseconds())
@@ -81,8 +81,8 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	}
 
 	if c.CF != nil {
-		cfJson, _ := easyjson.Marshal(c.CF)
-		cfObj, _ := jsclass.JSON.Parse(string(cfJson))
+		cfJSON, _ := easyjson.Marshal(c.CF)
+		cfObj, _ := jsclass.JSON.Parse(string(cfJSON))
 		initObj.Set("cf", cfObj)
 	}
 

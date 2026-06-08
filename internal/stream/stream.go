@@ -11,9 +11,9 @@ import (
 )
 
 type ReadableStream struct {
-	buf    bytes.Buffer
 	stream js.Value
 	reader *js.Value
+	buf    bytes.Buffer
 }
 
 var (
@@ -71,12 +71,12 @@ func (rs *ReadableStream) Read(p []byte) (n int, err error) {
 	return rs.buf.Read(p)
 }
 
-func (sr *ReadableStream) Close() error {
-	if sr.reader == nil {
+func (rs *ReadableStream) Close() error {
+	if rs.reader == nil {
 		return nil
 	}
-	//this returns a promise, maybe it should be waited
-	sr.reader.Call("cancel")
+
+	rs.reader.Call("cancel")
 	return nil
 }
 

@@ -29,8 +29,8 @@ func (s *Container) ContainerFetch(req *http.Request) (*http.Response, error) {
 func GetContainer(binding string, id string) (*Container, error) {
 	inst := lifecycle.Env.Get(binding)
 	donamespace := &DurableObjectNamespace{instance: inst}
-	objId := donamespace.IdFromName(id)
-	obj, err := donamespace.Get(objId)
+	objID := donamespace.IdFromName(id)
+	obj, err := donamespace.Get(objID)
 
 	if err != nil {
 		return nil, err

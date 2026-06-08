@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package durableobjects is the glue code for Cloudflare's DurableObjects bindings
+*/
 package durableobjects
 
 import (
@@ -25,23 +28,26 @@ func NewDurableObjectNamespace(varName string) (*DurableObjectNamespace, error) 
 	return &DurableObjectNamespace{instance: inst}, nil
 }
 
-func (ns *DurableObjectNamespace) IdFromName(name string) *DurableObjectId {
+//nolint:staticcheck // drops error warning for ST1003
+func (ns *DurableObjectNamespace) IdFromName(name string) *DurableObjectID {
 	id := ns.instance.Call("idFromName", name)
-	return &DurableObjectId{val: id}
+	return &DurableObjectID{val: id}
 }
 
-func (ns *DurableObjectNamespace) IdFromString(id string) (*DurableObjectId, error) {
+//nolint:staticcheck // drops error warning for ST1003
+func (ns *DurableObjectNamespace) IdFromString(id string) (*DurableObjectID, error) {
 	idStr, err := jstry.TryCatch(ns.instance, "idFromString", id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &DurableObjectId{val: idStr}, nil
+	return &DurableObjectID{val: idStr}, nil
 }
 
-func (ns *DurableObjectNamespace) NewUniqueId() *DurableObjectId {
+//nolint:staticcheck // drops error warning for ST1003
+func (ns *DurableObjectNamespace) NewUniqueId() *DurableObjectID {
 	id := ns.instance.Call("newUniqueId")
-	return &DurableObjectId{val: id}
+	return &DurableObjectID{val: id}
 }
 
 func (ns *DurableObjectNamespace) Jurisdiction(jur string) *DurableObjectNamespace {
@@ -49,7 +55,7 @@ func (ns *DurableObjectNamespace) Jurisdiction(jur string) *DurableObjectNamespa
 	return &DurableObjectNamespace{instance: inst}
 }
 
-func (ns *DurableObjectNamespace) Get(id *DurableObjectId) (*DurableObjectStub, error) {
+func (ns *DurableObjectNamespace) Get(id *DurableObjectID) (*DurableObjectStub, error) {
 	if id == nil || id.val.IsUndefined() {
 		return nil, errors.New("invalid UniqueGlobalId")
 	}
@@ -57,7 +63,7 @@ func (ns *DurableObjectNamespace) Get(id *DurableObjectId) (*DurableObjectStub, 
 	return &DurableObjectStub{val: stub}, nil
 }
 
-type DurableObjectId struct {
+type DurableObjectID struct {
 	val js.Value
 }
 

@@ -14,17 +14,11 @@ import (
 // Message represents a message of the batch received by the consumer.
 //   - https://developers.cloudflare.com/queues/configuration/javascript-apis/#message
 type Message struct {
-	// instance - The underlying instance of the JS message object passed by the cloudflare
-	instance js.Value
-
-	// ID - The unique Cloudflare-generated identifier of the message
-	ID string
-	// Timestamp - The time when the message was enqueued
 	Timestamp time.Time
-	// Body - The message body. Could be accessed directly or using converting helpers as StringBody, BytesBody, IntBody, FloatBody.
-	Body js.Value
-	// Attempts - The number of times the message delivery has been retried.
-	Attempts int
+	instance  js.Value
+	Body      js.Value
+	ID        string
+	Attempts  int
 }
 
 func newMessage(obj js.Value) (*Message, error) {

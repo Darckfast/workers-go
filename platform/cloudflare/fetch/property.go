@@ -25,11 +25,11 @@ func NewIncomingBotManagementJsDetection(cf js.Value) *IncomingBotManagementJsDe
 }
 
 type IncomingBotManagement struct {
+	JsDetection    *IncomingBotManagementJsDetection
+	Score          int
 	CorporateProxy bool
 	VerifiedBot    bool
-	JsDetection    *IncomingBotManagementJsDetection
 	StaticResource bool
-	Score          int
 }
 
 func NewIncomingBotManagement(cf js.Value) *IncomingBotManagement {
@@ -110,28 +110,27 @@ func NewIncomingTLSExportedAuthenticator(cf js.Value) *IncomingTLSExportedAuthen
 }
 
 type IncomingProperties struct {
-	Longitude                string
-	Latitude                 string
-	TLSCipher                string
-	Continent                string
-	Asn                      int
+	TLSClientAuth            *IncomingTLSClientAuth
+	BotManagement            *IncomingBotManagement
+	TLSExportedAuthenticator *IncomingTLSExportedAuthenticator
+	Colo                     string
+	City                     string
 	ClientAcceptEncoding     string
 	Country                  string
-	TLSClientAuth            *IncomingTLSClientAuth
-	TLSExportedAuthenticator *IncomingTLSExportedAuthenticator
+	Continent                string
+	TLSCipher                string
 	TLSVersion               string
-	Colo                     string
+	Longitude                string
 	Timezone                 string
-	City                     string
+	Latitude                 string
 	VerifiedBotCategory      string
-	// EdgeRequestKeepAliveStatus int
-	RequestPriority string
-	HttpProtocol    string
-	Region          string
-	RegionCode      string
-	AsOrganization  string
-	PostalCode      string
-	BotManagement   *IncomingBotManagement
+	RequestPriority          string
+	HTTPProtocol             string
+	Region                   string
+	RegionCode               string
+	AsOrganization           string
+	PostalCode               string
+	Asn                      int
 }
 
 func NewIncomingProperties(ctx context.Context) (*IncomingProperties, error) {
@@ -157,7 +156,7 @@ func NewIncomingProperties(ctx context.Context) (*IncomingProperties, error) {
 		City:                     jsconv.MaybeString(cf.Get("city")),
 		VerifiedBotCategory:      jsconv.MaybeString(cf.Get("verifiedBotCategory")),
 		RequestPriority:          jsconv.MaybeString(cf.Get("requestPriority")),
-		HttpProtocol:             cf.Get("httpProtocol").String(),
+		HTTPProtocol:             cf.Get("httpProtocol").String(),
 		Region:                   jsconv.MaybeString(cf.Get("region")),
 		RegionCode:               jsconv.MaybeString(cf.Get("regionCode")),
 		AsOrganization:           cf.Get("asOrganization").String(),

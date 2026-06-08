@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package cron is the glue code for Cloudflare's Worker cron handler
+*/
 package cron
 
 import (
@@ -10,8 +13,8 @@ import (
 )
 
 type CronEvent struct {
-	Cron          string
 	ScheduledTime time.Time
+	Cron          string
 }
 
 func NewEvent(obj js.Value) *CronEvent {

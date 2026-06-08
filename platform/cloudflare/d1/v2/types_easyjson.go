@@ -17,7 +17,261 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V2(in *jlexer.Lexer, out *D1Result) {
+func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(in *jlexer.Lexer, out *Meta) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		switch key {
+		case "served_by":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.ServedBy = string(in.String())
+			}
+		case "served_by_region":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.ServedByRegion = string(in.String())
+			}
+		case "served_by_primary":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.ServedByPrimary = bool(in.Bool())
+			}
+		case "timings":
+			easyjson6601e8cdDecode(in, &out.Timings)
+		case "duration":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Duration = int64(in.Int64())
+			}
+		case "changes":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Changes = int64(in.Int64())
+			}
+		case "last_row_id":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.LastRowID = int64(in.Int64())
+			}
+		case "changed_db":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.ChangedDB = bool(in.Bool())
+			}
+		case "size_after":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.SizeAfter = int64(in.Int64())
+			}
+		case "rows_read":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.RowsRead = int64(in.Int64())
+			}
+		case "rows_written":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.RowsWritten = int64(in.Int64())
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(out *jwriter.Writer, in Meta) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.ServedBy != "" {
+		const prefix string = ",\"served_by\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.String(string(in.ServedBy))
+	}
+	if in.ServedByRegion != "" {
+		const prefix string = ",\"served_by_region\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.ServedByRegion))
+	}
+	if in.ServedByPrimary {
+		const prefix string = ",\"served_by_primary\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Bool(bool(in.ServedByPrimary))
+	}
+	if true {
+		const prefix string = ",\"timings\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		easyjson6601e8cdEncode(out, in.Timings)
+	}
+	if in.Duration != 0 {
+		const prefix string = ",\"duration\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int64(int64(in.Duration))
+	}
+	if in.Changes != 0 {
+		const prefix string = ",\"changes\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int64(int64(in.Changes))
+	}
+	if in.LastRowID != 0 {
+		const prefix string = ",\"last_row_id\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int64(int64(in.LastRowID))
+	}
+	if in.ChangedDB {
+		const prefix string = ",\"changed_db\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Bool(bool(in.ChangedDB))
+	}
+	if in.SizeAfter != 0 {
+		const prefix string = ",\"size_after\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int64(int64(in.SizeAfter))
+	}
+	if in.RowsRead != 0 {
+		const prefix string = ",\"rows_read\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int64(int64(in.RowsRead))
+	}
+	if in.RowsWritten != 0 {
+		const prefix string = ",\"rows_written\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int64(int64(in.RowsWritten))
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Meta) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Meta) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(l, v)
+}
+func easyjson6601e8cdDecode(in *jlexer.Lexer, out *struct {
+	SQLDurationMs int64 `json:"sql_duration_ms"`
+}) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		switch key {
+		case "sql_duration_ms":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.SQLDurationMs = int64(in.Int64())
+			}
+		default:
+			in.SkipRecursive()
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjson6601e8cdEncode(out *jwriter.Writer, in struct {
+	SQLDurationMs int64 `json:"sql_duration_ms"`
+}) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.SQLDurationMs != 0 {
+		const prefix string = ",\"sql_duration_ms\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.Int64(int64(in.SQLDurationMs))
+	}
+	out.RawByte('}')
+}
+func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(in *jlexer.Lexer, out *D1Result) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -66,14 +320,18 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V2(in 
 				}
 				in.Delim(']')
 			}
-		case "results_string":
+		case "ResultsString":
 			if in.IsNull() {
 				in.Skip()
 			} else {
 				out.ResultsString = string(in.String())
 			}
 		case "meta":
-			easyjson6601e8cdDecode(in, &out.Meta)
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				(out.Meta).UnmarshalEasyJSON(in)
+			}
 		default:
 			in.SkipRecursive()
 		}
@@ -84,7 +342,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V2(in 
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V2(out *jwriter.Writer, in D1Result) {
+func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(out *jwriter.Writer, in D1Result) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -120,7 +378,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V2(out
 		}
 	}
 	if in.ResultsString != "" {
-		const prefix string = ",\"results_string\":"
+		const prefix string = ",\"ResultsString\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
@@ -137,293 +395,21 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V2(out
 		} else {
 			out.RawString(prefix)
 		}
-		easyjson6601e8cdEncode(out, in.Meta)
+		(in.Meta).MarshalEasyJSON(out)
 	}
 	out.RawByte('}')
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v D1Result) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V2(w, v)
+	easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *D1Result) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V2(l, v)
+	easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(l, v)
 }
-func easyjson6601e8cdDecode(in *jlexer.Lexer, out *struct {
-	ServedBy        string `json:"served_by"`
-	ServedByRegion  string `json:"served_by_region"`
-	ServedByPrimary bool   `json:"served_by_primary"`
-	Timings         struct {
-		SqlDurationMs int64 `json:"sql_duration_ms"`
-	} `json:"timings"`
-	Duration    int64 `json:"duration"`
-	Changes     int64 `json:"changes"`
-	LastRowId   int64 `json:"last_row_id"`
-	ChangedDb   bool  `json:"changed_db"`
-	SizeAfter   int64 `json:"size_after"`
-	RowsRead    int64 `json:"rows_read"`
-	RowsWritten int64 `json:"rows_written"`
-}) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeFieldName(false)
-		in.WantColon()
-		switch key {
-		case "served_by":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.ServedBy = string(in.String())
-			}
-		case "served_by_region":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.ServedByRegion = string(in.String())
-			}
-		case "served_by_primary":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.ServedByPrimary = bool(in.Bool())
-			}
-		case "timings":
-			easyjson6601e8cdDecode1(in, &out.Timings)
-		case "duration":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.Duration = int64(in.Int64())
-			}
-		case "changes":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.Changes = int64(in.Int64())
-			}
-		case "last_row_id":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.LastRowId = int64(in.Int64())
-			}
-		case "changed_db":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.ChangedDb = bool(in.Bool())
-			}
-		case "size_after":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.SizeAfter = int64(in.Int64())
-			}
-		case "rows_read":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.RowsRead = int64(in.Int64())
-			}
-		case "rows_written":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.RowsWritten = int64(in.Int64())
-			}
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson6601e8cdEncode(out *jwriter.Writer, in struct {
-	ServedBy        string `json:"served_by"`
-	ServedByRegion  string `json:"served_by_region"`
-	ServedByPrimary bool   `json:"served_by_primary"`
-	Timings         struct {
-		SqlDurationMs int64 `json:"sql_duration_ms"`
-	} `json:"timings"`
-	Duration    int64 `json:"duration"`
-	Changes     int64 `json:"changes"`
-	LastRowId   int64 `json:"last_row_id"`
-	ChangedDb   bool  `json:"changed_db"`
-	SizeAfter   int64 `json:"size_after"`
-	RowsRead    int64 `json:"rows_read"`
-	RowsWritten int64 `json:"rows_written"`
-}) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if in.ServedBy != "" {
-		const prefix string = ",\"served_by\":"
-		first = false
-		out.RawString(prefix[1:])
-		out.String(string(in.ServedBy))
-	}
-	if in.ServedByRegion != "" {
-		const prefix string = ",\"served_by_region\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.String(string(in.ServedByRegion))
-	}
-	if in.ServedByPrimary {
-		const prefix string = ",\"served_by_primary\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Bool(bool(in.ServedByPrimary))
-	}
-	if true {
-		const prefix string = ",\"timings\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		easyjson6601e8cdEncode1(out, in.Timings)
-	}
-	if in.Duration != 0 {
-		const prefix string = ",\"duration\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Int64(int64(in.Duration))
-	}
-	if in.Changes != 0 {
-		const prefix string = ",\"changes\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Int64(int64(in.Changes))
-	}
-	if in.LastRowId != 0 {
-		const prefix string = ",\"last_row_id\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Int64(int64(in.LastRowId))
-	}
-	if in.ChangedDb {
-		const prefix string = ",\"changed_db\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Bool(bool(in.ChangedDb))
-	}
-	if in.SizeAfter != 0 {
-		const prefix string = ",\"size_after\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Int64(int64(in.SizeAfter))
-	}
-	if in.RowsRead != 0 {
-		const prefix string = ",\"rows_read\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Int64(int64(in.RowsRead))
-	}
-	if in.RowsWritten != 0 {
-		const prefix string = ",\"rows_written\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Int64(int64(in.RowsWritten))
-	}
-	out.RawByte('}')
-}
-func easyjson6601e8cdDecode1(in *jlexer.Lexer, out *struct {
-	SqlDurationMs int64 `json:"sql_duration_ms"`
-}) {
-	isTopLevel := in.IsStart()
-	if in.IsNull() {
-		if isTopLevel {
-			in.Consumed()
-		}
-		in.Skip()
-		return
-	}
-	in.Delim('{')
-	for !in.IsDelim('}') {
-		key := in.UnsafeFieldName(false)
-		in.WantColon()
-		switch key {
-		case "sql_duration_ms":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.SqlDurationMs = int64(in.Int64())
-			}
-		default:
-			in.SkipRecursive()
-		}
-		in.WantComma()
-	}
-	in.Delim('}')
-	if isTopLevel {
-		in.Consumed()
-	}
-}
-func easyjson6601e8cdEncode1(out *jwriter.Writer, in struct {
-	SqlDurationMs int64 `json:"sql_duration_ms"`
-}) {
-	out.RawByte('{')
-	first := true
-	_ = first
-	if in.SqlDurationMs != 0 {
-		const prefix string = ",\"sql_duration_ms\":"
-		first = false
-		out.RawString(prefix[1:])
-		out.Int64(int64(in.SqlDurationMs))
-	}
-	out.RawByte('}')
-}
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V21(in *jlexer.Lexer, out *D1RawResults) {
+func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V22(in *jlexer.Lexer, out *D1RawResults) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		in.Skip()
@@ -475,7 +461,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V21(in
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V21(out *jwriter.Writer, in D1RawResults) {
+func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V22(out *jwriter.Writer, in D1RawResults) {
 	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
@@ -514,14 +500,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V21(ou
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v D1RawResults) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V21(w, v)
+	easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V22(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *D1RawResults) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V21(l, v)
+	easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V22(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V22(in *jlexer.Lexer, out *D1FirstResult) {
+func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V23(in *jlexer.Lexer, out *D1FirstResult) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		in.Skip()
@@ -552,7 +538,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V22(in
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V22(out *jwriter.Writer, in D1FirstResult) {
+func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V23(out *jwriter.Writer, in D1FirstResult) {
 	if in == nil && (out.Flags&jwriter.NilMapAsEmpty) == 0 {
 		out.RawString(`null`)
 	} else {
@@ -580,14 +566,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V22(ou
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v D1FirstResult) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V22(w, v)
+	easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V23(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *D1FirstResult) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V22(l, v)
+	easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V23(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V23(in *jlexer.Lexer, out *D1ExecResult) {
+func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V24(in *jlexer.Lexer, out *D1ExecResult) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -623,7 +609,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V23(in
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V23(out *jwriter.Writer, in D1ExecResult) {
+func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V24(out *jwriter.Writer, in D1ExecResult) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -648,14 +634,14 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V23(ou
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v D1ExecResult) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V23(w, v)
+	easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V24(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *D1ExecResult) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V23(l, v)
+	easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V24(l, v)
 }
-func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V24(in *jlexer.Lexer, out *D1BatchResults) {
+func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V25(in *jlexer.Lexer, out *D1BatchResults) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		in.Skip()
@@ -687,7 +673,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V24(in
 		in.Consumed()
 	}
 }
-func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V24(out *jwriter.Writer, in D1BatchResults) {
+func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V25(out *jwriter.Writer, in D1BatchResults) {
 	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
@@ -704,10 +690,10 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V24(ou
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v D1BatchResults) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareD1V24(w, v)
+	easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V25(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *D1BatchResults) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareD1V24(l, v)
+	easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V25(l, v)
 }

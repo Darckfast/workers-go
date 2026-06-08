@@ -1,5 +1,8 @@
 //go:build js && wasm
 
+/*
+Package cache is the glue code for Cloudflare's Worker cache API
+*/
 package cache
 
 import (

@@ -8,13 +8,13 @@ type GetOptions struct {
 
 //easyjson:json
 type StringWithMetadata struct {
-	Value    string         `json:"value"`
 	Metadata map[string]any `json:"metadata"`
+	Value    string         `json:"value"`
 }
 
 //easyjson:json
 type PutOptions struct {
+	Metadata      map[string]any `json:"metadata,omitempty"`
 	Expiration    int            `json:"expiration,omitempty"`
 	ExpirationTTL int            `json:"expirationTtl,omitempty"`
-	Metadata      map[string]any `json:"metadata,omitempty"`
 }

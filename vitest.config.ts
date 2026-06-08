@@ -21,7 +21,7 @@ export default defineConfig({
           r2Buckets: ["TEST_BUCKET"],
           compatibilityFlags: ["service_binding_extra_handlers"],
           queueConsumers: {
-            queue: { maxBatchTimeout: 0.05 /* 10ms */ },
+            queue: { maxBatchTimeout: 0 },
           },
         },
       };
@@ -33,6 +33,9 @@ export default defineConfig({
     },
   },
   test: {
+    sequence: {
+      concurrent: true
+    },
     dir: "./tests",
     setupFiles: ["./tests/apply-migrations.ts"],
     testTimeout: 10000,

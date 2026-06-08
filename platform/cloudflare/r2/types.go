@@ -1,3 +1,6 @@
+/*
+Package r2 is the glue code for Cloudflare's R2 bindings
+*/
 package r2
 
 import (
@@ -8,10 +11,10 @@ import (
 
 //easyjson:json
 type R2Conditional struct {
-	EtagMatches      string    `json:"etagMatches"`
-	EtagDoesNotMatch string    `json:"etagDoesNotMatch"`
 	UploadedBefore   time.Time `json:"uploadedBefore"`
 	UploadedAfter    time.Time `json:"uploadedAfter"`
+	EtagMatches      string    `json:"etagMatches"`
+	EtagDoesNotMatch string    `json:"etagDoesNotMatch"`
 }
 
 type R2Range struct {
@@ -51,11 +54,11 @@ type MultipartOptions struct {
 
 //easyjson:json
 type ListOptions struct {
-	Limit     int64    `json:"limit,omitempty"`
 	Prefix    string   `json:"prefix,omitempty"`
 	Cursor    string   `json:"cursor,omitempty"`
 	Delimiter string   `json:"delimiter,omitempty"`
 	Include   []string `json:"include,omitempty"`
+	Limit     int64    `json:"limit,omitempty"`
 }
 
 //easyjson:json
@@ -66,21 +69,21 @@ type UploadedPart struct {
 
 //easyjson:json
 type R2Object struct {
-	Key            string            `json:"key"`
-	Version        string            `json:"version"`
-	Size           int               `json:"size"`
-	ETag           string            `json:"etag"`
-	HTTPETag       string            `json:"httpEtag"`
 	Uploaded       time.Time         `json:"uploaded"`
+	Body           io.Reader         `json:"-"`
 	HTTPMetadata   map[string]string `json:"httpMetadata"`
 	CustomMetadata map[string]string `json:"customMetadata"`
-	Body           io.Reader         `json:"-"`
+	Key            string            `json:"key"`
+	Version        string            `json:"version"`
+	ETag           string            `json:"etag"`
+	HTTPETag       string            `json:"httpEtag"`
+	Size           int               `json:"size"`
 }
 
 //easyjson:json
 type R2Objects struct {
-	Objects           []*R2Object `json:"objects,omitempty"`
-	Truncated         bool        `json:"truncated"`
 	Cursor            string      `json:"cursor,omitempty"`
+	Objects           []*R2Object `json:"objects,omitempty"`
 	DelimitedPrefixes []string    `json:"delimitedPrefixes,omitempty"`
+	Truncated         bool        `json:"truncated"`
 }

@@ -4,6 +4,7 @@ package fetch
 
 import (
 	json "encoding/json"
+
 	easyjson "github.com/mailru/easyjson"
 	jlexer "github.com/mailru/easyjson/jlexer"
 	jwriter "github.com/mailru/easyjson/jwriter"
@@ -444,7 +445,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(i
 			if in.IsNull() {
 				in.Skip()
 			} else {
-				out.CacheTtl = int(in.Int())
+				out.CacheTTL = int(in.Int())
 			}
 		case "cacheTtlByStatus":
 			if in.IsNull() {
@@ -452,9 +453,9 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(i
 			} else {
 				in.Delim('{')
 				if !in.IsDelim('}') {
-					out.CacheTtlByStatus = make(map[string]int)
+					out.CacheTTLByStatus = make(map[string]int)
 				} else {
-					out.CacheTtlByStatus = nil
+					out.CacheTTLByStatus = nil
 				}
 				for !in.IsDelim('}') {
 					key := string(in.String())
@@ -465,7 +466,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(i
 					} else {
 						v2 = int(in.Int())
 					}
-					(out.CacheTtlByStatus)[key] = v2
+					(out.CacheTTLByStatus)[key] = v2
 					in.WantComma()
 				}
 				in.Delim('}')
@@ -579,7 +580,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(o
 			out.RawByte(']')
 		}
 	}
-	if in.CacheTtl != 0 {
+	if in.CacheTTL != 0 {
 		const prefix string = ",\"cacheTtl\":"
 		if first {
 			first = false
@@ -587,9 +588,9 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(o
 		} else {
 			out.RawString(prefix)
 		}
-		out.Int(int(in.CacheTtl))
+		out.Int(int(in.CacheTTL))
 	}
-	if len(in.CacheTtlByStatus) != 0 {
+	if len(in.CacheTTLByStatus) != 0 {
 		const prefix string = ",\"cacheTtlByStatus\":"
 		if first {
 			first = false
@@ -600,7 +601,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch3(o
 		{
 			out.RawByte('{')
 			v5First := true
-			for v5Name, v5Value := range in.CacheTtlByStatus {
+			for v5Name, v5Value := range in.CacheTTLByStatus {
 				if v5First {
 					v5First = false
 				} else {
@@ -713,7 +714,7 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch4(i
 			if in.IsNull() {
 				in.Skip()
 			} else {
-				out.BucketColoId = int(in.Int())
+				out.BucketColoID = int(in.Int())
 			}
 		default:
 			in.SkipRecursive()
@@ -729,11 +730,11 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch4(o
 	out.RawByte('{')
 	first := true
 	_ = first
-	if in.BucketColoId != 0 {
+	if in.BucketColoID != 0 {
 		const prefix string = ",\"bucketColoId\":"
 		first = false
 		out.RawString(prefix[1:])
-		out.Int(int(in.BucketColoId))
+		out.Int(int(in.BucketColoID))
 	}
 	out.RawByte('}')
 }
@@ -823,13 +824,13 @@ func easyjson6601e8cdDecodeGithubComDarckfastWorkersGoPlatformCloudflareFetch6(i
 			if in.IsNull() {
 				in.Skip()
 			} else {
-				out.Css = bool(in.Bool())
+				out.CSS = bool(in.Bool())
 			}
 		case "html":
 			if in.IsNull() {
 				in.Skip()
 			} else {
-				out.Html = bool(in.Bool())
+				out.HTML = bool(in.Bool())
 			}
 		default:
 			in.SkipRecursive()
@@ -851,7 +852,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch6(o
 		out.RawString(prefix[1:])
 		out.Bool(bool(in.Javascript))
 	}
-	if in.Css {
+	if in.CSS {
 		const prefix string = ",\"css\":"
 		if first {
 			first = false
@@ -859,9 +860,9 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch6(o
 		} else {
 			out.RawString(prefix)
 		}
-		out.Bool(bool(in.Css))
+		out.Bool(bool(in.CSS))
 	}
-	if in.Html {
+	if in.HTML {
 		const prefix string = ",\"html\":"
 		if first {
 			first = false
@@ -869,7 +870,7 @@ func easyjson6601e8cdEncodeGithubComDarckfastWorkersGoPlatformCloudflareFetch6(o
 		} else {
 			out.RawString(prefix)
 		}
-		out.Bool(bool(in.Html))
+		out.Bool(bool(in.HTML))
 	}
 	out.RawByte('}')
 }

@@ -20,8 +20,8 @@ func (o *GetOptions) ToJS() js.Value {
 	return j
 }
 
-func (ns *Namespace) GetWithMetadata(key string, cacheTtl int) (*StringWithMetadata, error) {
-	opts := GetOptions{CacheTTL: cacheTtl, Type: "text"}
+func (ns *Namespace) GetWithMetadata(key string, cacheTTL int) (*StringWithMetadata, error) {
+	opts := GetOptions{CacheTTL: cacheTTL, Type: "text"}
 	p := ns.Call("getWithMetadata", key, opts.ToJS())
 	r, err := jsclass.Await(p)
 
@@ -41,13 +41,13 @@ func (ns *Namespace) GetWithMetadata(key string, cacheTtl int) (*StringWithMetad
 	return &sm, err
 }
 
-func (ns *Namespace) Get(keysRaw []string, cacheTtl int) (map[string]any, error) {
+func (ns *Namespace) Get(keysRaw []string, cacheTTL int) (map[string]any, error) {
 	keys := make([]any, len(keysRaw))
 	for i, v := range keysRaw {
 		keys[i] = v
 	}
 
-	opts := GetOptions{CacheTTL: cacheTtl, Type: "text"}
+	opts := GetOptions{CacheTTL: cacheTTL, Type: "text"}
 	p := ns.Call("get", keys, opts.ToJS())
 	v, err := jsclass.Await(p)
 
@@ -58,8 +58,8 @@ func (ns *Namespace) Get(keysRaw []string, cacheTtl int) (map[string]any, error)
 	return jsconv.JSMapToMap(v)
 }
 
-func (ns *Namespace) GetAsReader(key string, cacheTtl int) (io.ReadCloser, error) {
-	opts := GetOptions{CacheTTL: cacheTtl, Type: "stream"}
+func (ns *Namespace) GetAsReader(key string, cacheTTL int) (io.ReadCloser, error) {
+	opts := GetOptions{CacheTTL: cacheTTL, Type: "stream"}
 	p := ns.Call("get", key, opts.ToJS())
 	v, err := jsclass.Await(p)
 	if err != nil {
