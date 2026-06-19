@@ -9,9 +9,11 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"io"
 	"io/fs"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -157,6 +159,48 @@ func (a *argList) Set(value string) error {
 	return nil
 }
 
+func Duration(d time.Duration) string {
+	type unit struct {
+		dur  time.Duration
+		name string
+	}
+
+	units := []unit{
+		{time.Minute, "m"},
+		{time.Second, "s"},
+		{time.Millisecond, "ms"},
+		{time.Microsecond, "µs"},
+		{time.Nanosecond, "ns"},
+	}
+
+	abs := d
+	if abs < 0 {
+		abs = -abs
+	}
+
+	for _, u := range units {
+		if abs >= u.dur {
+			return strconv.FormatFloat(float64(d)/float64(u.dur), 'f', 2, 64) + " " + u.name
+		}
+	}
+
+	return "0 ns"
+}
+func Bytes(b int64) string {
+	const unit = 1024
+
+	units := []string{"B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"}
+
+	v := float64(b)
+	i := 0
+
+	for v >= unit && i < len(units)-1 {
+		v /= unit
+		i++
+	}
+
+	return strconv.FormatFloat(v, 'f', 2, 64) + " " + units[i]
+}
 func main() {
 	start := time.Now()
 	log.SetFlags(0)
@@ -165,6 +209,7 @@ func main() {
 	entry := flag.String("i", ".", "Root directory of your Go worker")
 	out := flag.String("o", "./bin", "Output directory")
 	silent := flag.Bool("s", false, "Hide info logs")
+	tiny := flag.Bool("tiny", false, "Use tinygo to compile the project")
 	flag.Var(&exports, "ex", "Include a exports * from directory - the directory must contain a index.js(ts) file with the desired exports")
 
 	flag.Parse()
@@ -237,10 +282,108 @@ func main() {
 		return
 	}
 
+	wasmOut := filepath.Join(fo, "app.wasm")
+	if *tiny {
+		log.Printf("%s%s⚠ [WARN] using tinygo might result in some unexpected bugs due compatibility issues ⚠%s\n", Bold, Yellow, Reset)
+		tinyroot, err := exec.Command("tinygo", "env", "TINYGOROOT").Output()
+		if err != nil {
+			log.Printf("%sError getting tinygo root path: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+
+		in, err := os.ReadFile(filepath.Join(strings.TrimSpace(string(tinyroot)), "targets/wasm_exec.js"))
+		if err != nil {
+			log.Printf("%sError reading wasm_exec.js file: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+
+		// Removes the global.require from the file, otherwise the worker wont startup
+		fixedIn := strings.Replace(string(in), "global\\.require = require;", "", 1)
+		err = os.WriteFile(filepath.Join(fp, "wasm_exec.js"), []byte(fixedIn), os.ModePerm)
+		if err != nil {
+			log.Printf("%sError writing wasm_exec.js file: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+
+		cmd := exec.Command("tinygo", "build", "-no-debug", "-o", wasmOut, fp)
+		cmd.Env = os.Environ()
+		cmd.Env = append(cmd.Env, "GOOS=js", "GOARCH=wasm")
+
+		err = cmd.Run()
+		if err != nil {
+			log.Printf("%sError compiling app.wasm: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+	} else {
+		goroot, err := exec.Command("go", "env", "GOROOT").Output()
+		if err != nil {
+			log.Printf("%sError getting go root path: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+
+		file, err := os.Open(filepath.Join(strings.TrimSpace(string(goroot)), "/lib/wasm/wasm_exec.js"))
+		if err != nil {
+			log.Printf("%sError reading wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+
+		defer file.Close()
+		dst, err := os.Create(filepath.Join(fo, "wasm_exec.js"))
+		if err != nil {
+			log.Printf("%sError opening wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+
+		defer dst.Close()
+		_, err = io.Copy(dst, file)
+
+		if err != nil {
+			log.Printf("%sError writing wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+
+		err = dst.Sync()
+		if err != nil {
+			log.Printf("%sError syncing wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+
+		cmd := exec.Command("go", "build", "-trimpath", "-ldflags", "-s -w -buildid=", "-o", wasmOut, fp)
+		cmd.Env = os.Environ()
+		cmd.Env = append(cmd.Env, "GOOS=js", "GOARCH=wasm")
+
+		err = cmd.Run()
+		if err != nil {
+			log.Printf("%sError compiling app.wasm: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+	}
+	_, err = exec.LookPath("wasm-opt")
+	if err != nil {
+		if errors.Is(err, exec.ErrNotFound) {
+			log.Printf("wasm-opt not found - skipping extra compression step\n")
+		} else {
+			log.Printf("Error looking for cmd wasm-opt: %s\n", err)
+		}
+	} else {
+		cmd := exec.Command("wasm-opt", "--all-features", "-Os", filepath.Join(fo, "app.wasm"), "-o", wasmOut)
+		err = cmd.Run()
+		if err != nil {
+			log.Printf("%sError compressing app.wasm: %s%s%s\n", Red, Bold, err, Reset)
+			return
+		}
+	}
+
 	if !*silent {
-		log.Printf("Output:\n")
+		imn, _ := os.Stat(filepath.Join(fo, "main.ts"))
+		iaw, _ := os.Stat(filepath.Join(fo, "app.wasm"))
+		iwe, _ := os.Stat(filepath.Join(fo, "wasm_exec.js"))
+
+		log.Printf("\nOutput:\n")
 		log.Printf("  %s/\n", fo)
-		log.Printf("  └─ main.ts\n")
-		log.Printf("Took %dμs\n", time.Since(start).Microseconds())
+		log.Printf("  ├─ main.ts (%s)\n", Bytes(imn.Size()))
+		log.Printf("  ├─ app.wasm (%s)\n", Bytes(iaw.Size()))
+		log.Printf("  └─ wasm_exec.js (%s)\n", Bytes(iwe.Size()))
+		log.Printf("\nTook %s\n", Duration(time.Since(start)))
 	}
 }
