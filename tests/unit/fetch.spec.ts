@@ -1,4 +1,4 @@
-import WorkerEntrypoint from "$wrk/main";
+import WorkerEntrypoint from "$wrk/bin/main";
 import {
   createExecutionContext,
   env,
