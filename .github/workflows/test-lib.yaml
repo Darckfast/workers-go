@@ -8,8 +8,6 @@ on:
       - "internal/**"
       - "cmd/**"
 env:
-  GOOS: js
-  GOARCH: wasm
   MISE_EXPERIMENTAL: true
 
 jobs:
