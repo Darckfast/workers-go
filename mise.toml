@@ -13,6 +13,9 @@ config_roots = [
     "_apps/*",
 ]
 
+[tasks.mod-download]
+run = "go mod download"
+
 [tasks.install]
 run = "bun i && go mod download"
 
@@ -29,7 +32,7 @@ bun run vitest run
 """
 
 [tasks.test-lib]
-depends = ["install"]
+depends = ["mod-download"]
 run = """
 #!/usr/bin/env bash
 if [ "$1" = "--tiny" ]; then
