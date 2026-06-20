@@ -25,5 +25,23 @@ Powered by Cloudflare Wrangler
 
 ---
 
+## Basic usage
 
-[Check the documentation](https://darckfast.com/docs/workers-go)
+### Using a template
+
+```sh
+# complete worker
+bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/_worker
+
+# dev
+wrangler dev
+```
+### Deploy
+
+```sh
+wrangler deploy
+```
+
+PS: If you are using TinyGo you will need to use `wrangler deploy` to deploy your app
+
+[Check the complete documentation for more](https://darckfast.com/docs/workers-go)
