@@ -1,10 +1,12 @@
-# Minimal Queues Consumer Worker
+# Minimal Worker
 
-While developing locally, this worker needs to run in the same process as the producer
+First install [mise](https://mise.jdx.dev/getting-started.html) then run:
 
 ```bash
-wrangler dev -c ../path-to-producer/wrangler.toml -c wrangler.toml --persist-to .wrangler/state
+wrangler dev
 ```
+
+*Access or cURL http://localhost:8787/hello*
 
 ## Deploy
 

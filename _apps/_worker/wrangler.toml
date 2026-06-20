@@ -6,7 +6,6 @@ compatibility_flags = [ "nodejs_compat" ]
 
 [build]
 command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go && workers-go -i ./pkg -o ./bin -ex ./durable_objects"
-watch_dir = ["pkg"]
 
 [vars]
 API_HOST = "example.com"

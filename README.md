@@ -25,21 +25,21 @@ Powered by Cloudflare Wrangler
 
 ---
 
-## Basic usage
+## Getting Started
 
 ### Using a template
-
 ```sh
-# complete worker
-bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/_worker
+# minimal worker with only GET /hello
+bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/_minimal_worker
 
 # dev
-wrangler dev
+bunx wrangler dev
 ```
+
 ### Deploy
 
 ```sh
-wrangler deploy
+bunx wrangler deploy
 ```
 
 PS: If you are using TinyGo you will need to use `wrangler deploy` to deploy your app
