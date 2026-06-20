@@ -28,5 +28,4 @@ jobs:
         run: |
           curl https://mise.run | sh
           echo "/root/.local/bin" >> $GITHUB_PATH
-      - run: mise //_apps/_worker:prepare
       - run: mise //:test-integration

@@ -24,9 +24,9 @@ depends = ["install"]
 run = """
 #!/usr/bin/env bash
 if [ "$1" = "--tiny" ]; then
-  mise //_apps/_worker:build --tiny
+  mise //_apps/_worker:prepare --tiny
 else
-  mise //_apps/_worker:build
+  mise //_apps/_worker:prepare
 fi
 bun run vitest run
 """
