@@ -35,4 +35,7 @@ bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/
 
 # dev
 bunx wrangler dev
+
+# deploy
+bunx wrangler deploy
 ```
