@@ -201,11 +201,10 @@ func scandir(e *string) *SafeMap[string, any] {
 										break
 									}
 
-									if _, ok := safem.Get(ident.Name); !ok {
-										safem.Set(ident.Name, []string{cstr})
-									} else {
-										val, _ := safem.Get(ident.Name)
+									if val, ok := safem.Get(ident.Name); ok {
 										safem.Set(ident.Name, append(val.([]string), cstr))
+									} else {
+										safem.Set(ident.Name, []string{cstr})
 									}
 								}
 							}
