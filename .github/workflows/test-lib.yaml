@@ -6,6 +6,7 @@ on:
     paths:
       - "platform/**"
       - "internal/**"
+      - "cmd/**"
 env:
   GOOS: js
   GOARCH: wasm
