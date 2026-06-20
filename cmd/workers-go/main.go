@@ -13,8 +13,10 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"text/template"
 	"time"
 )
@@ -43,98 +45,21 @@ var trgFuncs = map[string]bool{
 	"RPCStubStream":        true,
 }
 
-func scandir(e string) *map[string]any {
-	fset := token.NewFileSet()
-	results := make(map[string]any)
-	filepath.WalkDir(e, func(path string, d fs.DirEntry, err error) error {
-		if !d.IsDir() && strings.HasSuffix(d.Name(), ".go") && !strings.HasSuffix(d.Name(), "_test.go") {
-			file, err := parser.ParseFile(fset, path, nil, 0)
+type unit struct {
+	dur  time.Duration
+	name string
+}
 
-			if err != nil {
-				log.Printf("%sError parsing file: %s%s%s\n", Red, Bold, err, Reset)
-				return err
-			}
+var byteUnits = []string{"B", "KiB", "MiB"}
 
-			aliasToKind := make(map[handlerName]bool)
-			for _, imp := range file.Imports {
-				path := strings.Trim(imp.Path.Value, `"`)
-				parts := strings.Split(path, "/")
-				seg := handlerName(parts[len(parts)-1])
+const BYTE_SIZE = 1 << 10
 
-				switch seg {
-				case kindFetch:
-					aliasToKind[kindFetch] = true
-				case kindTail:
-					aliasToKind[kindTail] = true
-				case kindEmail:
-					aliasToKind[kindEmail] = true
-				case kindQueue:
-					aliasToKind[kindQueue] = true
-				case kindScheduled:
-					aliasToKind[kindScheduled] = true
-				case kindSocket:
-					aliasToKind[kindSocket] = true
-				case kindRPC:
-					aliasToKind[kindRPC] = true
-				}
-			}
-
-			ast.Inspect(file, func(n ast.Node) bool {
-				call, ok := n.(*ast.CallExpr)
-
-				if !ok {
-					return true
-				}
-
-				sel, ok := call.Fun.(*ast.SelectorExpr)
-
-				if !ok {
-					return true
-				}
-
-				ident, ok := sel.X.(*ast.Ident)
-				if !ok {
-					return true
-				}
-
-				if !trgFuncs[sel.Sel.Name] {
-					return true
-				}
-
-				if kind, ok := aliasToKind[handlerName(ident.Name)]; ok {
-					if ident.Name == "rpc" {
-						arg, ok := call.Args[0].(*ast.BasicLit)
-						if ok {
-							switch arg.Kind {
-							case token.STRING:
-								cstr, err := strconv.Unquote(arg.Value)
-								if err != nil {
-									log.Printf("%sError unquoting value: %s%s%s\n", Red, Bold, err, Reset)
-									break
-								}
-
-								if results[ident.Name] == nil {
-									results[ident.Name] = []string{
-										cstr,
-									}
-								} else {
-									results[ident.Name] = append(results[ident.Name].([]string), cstr)
-								}
-							}
-						}
-					} else {
-						results[ident.Name] = kind
-					}
-				}
-
-				return true
-			})
-		}
-
-		return nil
-	})
-
-	return &results
+var durationUnits = []unit{
+	{time.Minute, "m"},
+	{time.Second, "s"},
+	{time.Millisecond, "ms"},
+	{time.Microsecond, "µs"},
+	{time.Nanosecond, "ns"},
 }
 
 const (
@@ -157,54 +82,161 @@ func (a *argList) Set(value string) error {
 	return nil
 }
 
-func Duration(d time.Duration) string {
-	type unit struct {
-		dur  time.Duration
-		name string
-	}
+type SafeMap[K comparable, V any] struct {
+	mu sync.RWMutex
+	m  map[K]V
+}
 
-	units := []unit{
-		{time.Minute, "m"},
-		{time.Second, "s"},
-		{time.Millisecond, "ms"},
-		{time.Microsecond, "µs"},
-		{time.Nanosecond, "ns"},
-	}
+func (sm *SafeMap[K, V]) Set(key K, val V) {
+	sm.mu.Lock()
+	defer sm.mu.Unlock()
+	sm.m[key] = val
+}
 
-	abs := d
-	if abs < 0 {
-		abs = -abs
-	}
+func (sm *SafeMap[K, V]) Get(key K) (V, bool) {
+	sm.mu.RLock()
+	defer sm.mu.RUnlock()
+	val, ok := sm.m[key]
 
-	for _, u := range units {
-		if abs >= u.dur {
+	return val, ok
+}
+
+func FmtDuration(d time.Duration) string {
+	for _, u := range durationUnits {
+		if d >= u.dur {
 			return strconv.FormatFloat(float64(d)/float64(u.dur), 'f', 2, 64) + " " + u.name
 		}
 	}
 
 	return "0 ns"
 }
-func Bytes(b int64) string {
-	const unit = 1024
 
-	units := []string{"B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"}
-
+func FmtBytes(b int64) string {
 	v := float64(b)
 	i := 0
 
-	for v >= unit && i < len(units)-1 {
-		v /= unit
+	for v >= BYTE_SIZE && i < len(byteUnits)-1 {
+		v /= BYTE_SIZE
 		i++
 	}
 
-	return strconv.FormatFloat(v, 'f', 2, 64) + " " + units[i]
+	return strconv.FormatFloat(v, 'f', 2, 64) + " " + byteUnits[i]
 }
-func main() {
-	start := time.Now()
-	log.SetFlags(0)
 
+func scandir(e *string) *SafeMap[string, any] {
+	fset := token.NewFileSet()
+	safem := SafeMap[string, any]{m: make(map[string]any)}
+
+	filesChan := make(chan string, 100)
+	var wg sync.WaitGroup
+
+	for i := 0; i < runtime.NumCPU(); i++ {
+		wg.Add(1)
+
+		go func(i int) {
+			defer wg.Done()
+			for path := range filesChan {
+				file, err := parser.ParseFile(fset, path, nil, 0)
+
+				if err != nil {
+					log.Printf("%s[thread %d] Error parsing file: %s%s%s\n", Red, i, Bold, err, Reset)
+					continue
+				}
+
+				aliasToKind := make(map[handlerName]bool)
+				for _, imp := range file.Imports {
+					path := strings.Trim(imp.Path.Value, `"`)
+					parts := strings.Split(path, "/")
+					seg := handlerName(parts[len(parts)-1])
+
+					switch seg {
+					case kindFetch:
+						aliasToKind[kindFetch] = true
+					case kindTail:
+						aliasToKind[kindTail] = true
+					case kindEmail:
+						aliasToKind[kindEmail] = true
+					case kindQueue:
+						aliasToKind[kindQueue] = true
+					case kindScheduled:
+						aliasToKind[kindScheduled] = true
+					case kindSocket:
+						aliasToKind[kindSocket] = true
+					case kindRPC:
+						aliasToKind[kindRPC] = true
+					}
+				}
+
+				ast.Inspect(file, func(n ast.Node) bool {
+					call, ok := n.(*ast.CallExpr)
+
+					if !ok {
+						return true
+					}
+
+					sel, ok := call.Fun.(*ast.SelectorExpr)
+
+					if !ok {
+						return true
+					}
+
+					ident, ok := sel.X.(*ast.Ident)
+					if !ok {
+						return true
+					}
+
+					if !trgFuncs[sel.Sel.Name] {
+						return true
+					}
+
+					if kind, ok := aliasToKind[handlerName(ident.Name)]; ok {
+						if ident.Name == "rpc" {
+							arg, ok := call.Args[0].(*ast.BasicLit)
+							if ok {
+								switch arg.Kind {
+								case token.STRING:
+									cstr, err := strconv.Unquote(arg.Value)
+									if err != nil {
+										log.Printf("%s[thread %d] Error unquoting value: %s%s%s\n", Red, i, Bold, err, Reset)
+										break
+									}
+
+									if _, ok := safem.Get(ident.Name); !ok {
+										safem.Set(ident.Name, []string{cstr})
+									} else {
+										val, _ := safem.Get(ident.Name)
+										safem.Set(ident.Name, append(val.([]string), cstr))
+									}
+								}
+							}
+						} else {
+							safem.Set(ident.Name, kind)
+						}
+					}
+
+					return true
+				})
+			}
+		}(i)
+	}
+
+	filepath.WalkDir(*e, func(path string, d fs.DirEntry, err error) error {
+		if !d.IsDir() && strings.HasSuffix(d.Name(), ".go") && !strings.HasSuffix(d.Name(), "_test.go") {
+			filesChan <- path
+		}
+
+		return nil
+	})
+
+	close(filesChan)
+	wg.Wait()
+
+	return &safem
+}
+
+func parseAndValidateArgs() (*string, *string, *bool, *bool, *argList) {
 	exports := argList{}
-	entry := flag.String("i", ".", "Root directory of your Go worker")
+	entry := flag.String("i", "", "Root directory of your Go worker")
 	out := flag.String("o", "./bin", "Output directory")
 	silent := flag.Bool("s", false, "Hide info logs")
 	tiny := flag.Bool("tiny", false, "Use tinygo to compile the project")
@@ -212,42 +244,53 @@ func main() {
 
 	flag.Parse()
 
+	if *entry == "" {
+		log.Printf("%s%sRoot directory is required%s\n", Red, Bold, Reset)
+		os.Exit(1)
+	}
+
 	fp, _ := filepath.Abs(*entry)
 	if strings.HasSuffix(fp, ".go") {
 		fp = filepath.Join(fp, "..")
 	}
 
 	fo, _ := filepath.Abs(*out)
-
 	_, err := os.Stat(fp)
 	if err != nil && errors.Is(err, fs.ErrNotExist) {
 		log.Printf("%sRoot directory %s %sdoes not exist%s\n", Red, fp, Bold, Reset)
-		return
+		os.Exit(1)
 	}
 
+	return &fp, &fo, silent, tiny, &exports
+}
+
+func main() {
+	start := time.Now()
+	log.SetFlags(0)
+
+	fp, fo, silent, tiny, exports := parseAndValidateArgs()
 	handlers := scandir(fp)
 
-	if len(exports) > 0 {
-		for _, ex := range exports {
+	if len(*exports) > 0 {
+		for _, ex := range *exports {
 			fex, _ := filepath.Abs(ex)
-			rp, err := filepath.Rel(fo, fex)
+			rp, err := filepath.Rel(*fo, fex)
 
 			if err != nil {
 				log.Printf("%sError finding relative path: %s%s%s\n", Red, Bold, err, Reset)
 				continue
 			}
 
-			if (*handlers)["exports"] == nil {
-				(*handlers)["exports"] = []string{
-					rp,
-				}
+			if val, ok := handlers.Get("exports"); ok {
+				handlers.Set("exports", append(val.([]string), rp))
 			} else {
-				(*handlers)["exports"] = append((*handlers)["exports"].([]string), rp)
+				handlers.Set("exports", []string{rp})
 			}
 		}
 	}
+
 	if !*silent {
-		for key, v := range *handlers {
+		for key, v := range handlers.m {
 			switch v.(type) {
 			case bool:
 				log.Printf("* Found: %s%s%s [ok]%s\n", Bold, Green, key, Reset)
@@ -256,80 +299,78 @@ func main() {
 			}
 		}
 	}
-	if len(*handlers) == 0 {
-		log.Printf("* No `workers-go` usage found on: %s\n", fp)
-		return
+
+	if len(handlers.m) == 0 {
+		log.Printf("* No `workers-go` usage found on: %s\n", *fp)
+		os.Exit(0)
 	}
 
-	err = os.MkdirAll(fo, os.ModePerm)
+	err := os.MkdirAll(*fo, os.ModePerm)
+	maints := filepath.Join(*fo, "main.ts")
+	wasmexecjs := filepath.Join(*fo, "wasm_exec.js")
+	appwasm := filepath.Join(*fo, "app.wasm")
+
 	if err != nil {
 		log.Printf("%sError creating output directory: %s%s%s\n", Red, Bold, err, Reset)
-		return
+		os.Exit(1)
 	}
 
-	file, err := os.Create(filepath.Join(fo, "main.ts"))
+	file, err := os.Create(maints)
 	if err != nil {
 		log.Printf("%sError creating main.ts file: %s%s%s\n", Red, Bold, err, Reset)
-		return
+		os.Exit(1)
 	}
 
 	tmpl := template.Must(template.New("main.ts").Parse(mainTsTmpl))
-	err = tmpl.Execute(file, *handlers)
+	err = tmpl.Execute(file, handlers.m)
 	if err != nil {
 		log.Printf("%sError populating template file: %s%s%s\n", Red, Bold, err, Reset)
-		return
+		os.Exit(1)
 	}
 
-	wasmOut := filepath.Join(fo, "app.wasm")
-	if *tiny {
-		log.Printf("%s%s⚠ [WARN] using tinygo might result in some unexpected bugs due compatibility issues ⚠%s\n", Bold, Yellow, Reset)
+	var cmd *exec.Cmd
+	switch *tiny {
+	case true:
+		log.Printf("%s%s⚠  Using tinygo might result in some unexpected bugs due compatibility issues ⚠%s\n", Bold, Yellow, Reset)
 		tinyroot, err := exec.Command("tinygo", "env", "TINYGOROOT").Output()
 		if err != nil {
 			log.Printf("%sError getting tinygo root path: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			os.Exit(1)
 		}
 
 		in, err := os.ReadFile(filepath.Join(strings.TrimSpace(string(tinyroot)), "targets/wasm_exec.js"))
 		if err != nil {
 			log.Printf("%sError reading wasm_exec.js file: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			os.Exit(1)
 		}
 
 		// Removes the global.require from the file, otherwise the worker wont startup
 		fixedIn := strings.Replace(string(in), "global\\.require = require;", "", 1)
-		err = os.WriteFile(filepath.Join(fp, "wasm_exec.js"), []byte(fixedIn), os.ModePerm)
+		err = os.WriteFile(wasmexecjs, []byte(fixedIn), os.ModePerm)
 		if err != nil {
 			log.Printf("%sError writing wasm_exec.js file: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			os.Exit(1)
 		}
 
-		cmd := exec.Command("tinygo", "build", "-no-debug", "-o", wasmOut, fp)
-		cmd.Env = os.Environ()
-		cmd.Env = append(cmd.Env, "GOOS=js", "GOARCH=wasm")
-
-		err = cmd.Run()
-		if err != nil {
-			log.Printf("%sError compiling app.wasm: %s%s%s\n", Red, Bold, err, Reset)
-			return
-		}
-	} else {
+		cmd = exec.Command("tinygo", "build", "-no-debug", "-o", appwasm, *fp)
+	case false:
 		goroot, err := exec.Command("go", "env", "GOROOT").Output()
 		if err != nil {
 			log.Printf("%sError getting go root path: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			os.Exit(1)
 		}
 
 		file, err := os.Open(filepath.Join(strings.TrimSpace(string(goroot)), "/lib/wasm/wasm_exec.js"))
 		if err != nil {
 			log.Printf("%sError reading wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			os.Exit(1)
 		}
 
 		defer file.Close()
-		dst, err := os.Create(filepath.Join(fo, "wasm_exec.js"))
+		dst, err := os.Create(wasmexecjs)
 		if err != nil {
 			log.Printf("%sError opening wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			os.Exit(1)
 		}
 
 		defer dst.Close()
@@ -337,27 +378,30 @@ func main() {
 
 		if err != nil {
 			log.Printf("%sError writing wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			os.Exit(1)
 		}
 
 		err = dst.Sync()
 		if err != nil {
 			log.Printf("%sError syncing wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			os.Exit(1)
 		}
 
-		cmd := exec.Command("go", "build", "-trimpath", "-ldflags", "-s -w -buildid=", "-o", wasmOut, "./...")
-		cmd.Dir = fp
-		cmd.Env = os.Environ()
-		cmd.Env = append(cmd.Env, "GOWORK=off", "GOOS=js", "GOARCH=wasm")
-
-		out, err := cmd.CombinedOutput()
-		if err != nil {
-			log.Printf("%sError compiling app.wasm: %s%s%s%s\n", Red, Bold, err, string(out), Reset)
-			return
-		}
+		cmd = exec.Command("go", "build", "-trimpath", "-ldflags", "-s -w -buildid=", "-o", appwasm)
 	}
+
+	cmd.Dir = *fp
+	cmd.Env = os.Environ()
+	cmd.Env = append(cmd.Env, "GOOS=js", "GOARCH=wasm")
+
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("%sError compiling app.wasm: %s%s%s%s\n", Red, Bold, err, string(out), Reset)
+		os.Exit(1)
+	}
+
 	_, err = exec.LookPath("wasm-opt")
+
 	if err != nil {
 		if errors.Is(err, exec.ErrNotFound) {
 			log.Printf("wasm-opt not found - skipping extra compression step\n")
@@ -365,24 +409,24 @@ func main() {
 			log.Printf("Error looking for cmd wasm-opt: %s\n", err)
 		}
 	} else {
-		cmd := exec.Command("wasm-opt", "--all-features", "-Os", filepath.Join(fo, "app.wasm"), "-o", wasmOut)
-		err = cmd.Run()
+		cmd := exec.Command("wasm-opt", "--all-features", "-Os", appwasm, "-o", appwasm)
+		out, err = cmd.CombinedOutput()
 		if err != nil {
-			log.Printf("%sError compressing app.wasm: %s%s%s\n", Red, Bold, err, Reset)
-			return
+			log.Printf("%sError compressing app.wasm: %s%s%s%s\n", Red, Bold, err, string(out), Reset)
+			os.Exit(1)
 		}
 	}
 
 	if !*silent {
-		imn, _ := os.Stat(filepath.Join(fo, "main.ts"))
-		iaw, _ := os.Stat(filepath.Join(fo, "app.wasm"))
-		iwe, _ := os.Stat(filepath.Join(fo, "wasm_exec.js"))
+		imn, _ := os.Stat(maints)
+		iaw, _ := os.Stat(appwasm)
+		iwe, _ := os.Stat(wasmexecjs)
 
 		log.Printf("\nOutput:\n")
-		log.Printf("  %s/\n", fo)
-		log.Printf("  ├─ main.ts (%s)\n", Bytes(imn.Size()))
-		log.Printf("  ├─ app.wasm (%s)\n", Bytes(iaw.Size()))
-		log.Printf("  └─ wasm_exec.js (%s)\n", Bytes(iwe.Size()))
-		log.Printf("\nTook %s\n", Duration(time.Since(start)))
+		log.Printf("  %s/\n", *fo)
+		log.Printf("  ├─ main.ts (%s)\n", FmtBytes(imn.Size()))
+		log.Printf("  ├─ app.wasm (%s)\n", FmtBytes(iaw.Size()))
+		log.Printf("  └─ wasm_exec.js (%s)\n", FmtBytes(iwe.Size()))
+		log.Printf("\nTook %s\n", FmtDuration(time.Since(start)))
 	}
 }
