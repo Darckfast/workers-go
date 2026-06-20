@@ -1,10 +1,9 @@
 name = "workers-go"
-main = "main.ts"
+main = "bin/main.ts"
 compatibility_date = "2025-08-12"
 
 [build]
-command = "mise run build"
-watch_dir = [ "pkg" ]
+command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go && workers-go -i ./pkg -o ./bin"
 
 [[queues.consumers]]
 queue = "TEST-QUEUE"

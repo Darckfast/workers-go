@@ -2,29 +2,3 @@
 go = "1.24"
 tinygo = "0.41.1"
 wrangler = "4.95.0"
-
-[tasks]
-install = "go mod download"
-dev = "wrangler --show-interactive-dev-session false dev"
-
-[tasks.build]
-depends = ["install"]
-run = """
-#!/usr/bin/env bash
-mkdir -p bin
-if [ "$1" = "--tiny" ]; then
-  # build binary
-  GOOS=js GOARCH=wasm tinygo build -o ./bin/app.wasm ./pkg/main.go
-
-  # copy wasm_exec.js to ./bin
-  cp $(tinygo env TINYGOROOT)/targets/wasm_exec.js ./bin/wasm_exec.js
-  # it's necessary to remove this line or the worker breaks
-  sed -i 's/global\\.require = require;//g' ./bin/wasm_exec.js
-else
-  # build binary
-  GOOS=js GOARCH=wasm go build -trimpath -ldflags='-s -w -buildid=' -o ./bin/app.wasm ./pkg/main.go
-
-  # copy wasm_exec.js to ./bin
-  cp $(go env GOROOT)/lib/wasm/wasm_exec.js ./bin/wasm_exec.js
-fi
-"""
