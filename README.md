@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  workers-go is fork of <a href="https://github.com/syumai/workers">syumai's workers</a> ❤️ — a lightweight package for building and running Go on NodeJS, Bun, Deno and <a href="https://workers.cloudflare.com/">Cloudflare Workers</a> using WebAssembly (WASM).
+  workers-go is fork of <a href="https://github.com/syumai/workers">syumai's workers</a> ❤️ — a lightweight package for building and running Go on <a href="https://workers.cloudflare.com/">Cloudflare Workers</a> using WebAssembly (WASM). Also compatible with NodeJS, Bun, and Deno
 </p>
 
 <p align="center">
@@ -36,12 +36,3 @@ bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/
 bunx wrangler dev
 ```
 
-### Deploy
-
-```sh
-bunx wrangler deploy
-```
-
-PS: If you are using TinyGo you will need to use `wrangler deploy` to deploy your app
-
-[Check the complete documentation for more](https://darckfast.com/docs/workers-go)
