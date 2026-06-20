@@ -24,10 +24,9 @@ jobs:
     runs-on: codeberg-small-lazy
     steps:
       - uses: actions/checkout@v6
+      - run: echo "/root/.local/bin" >> $GITHUB_PATH
       - name: Install mise
         run: |
           curl https://mise.run | sh
-          echo "/root/.local/bin" >> $GITHUB_PATH
           echo 'eval "$(mise activate bash --shims)"' >> ~/.bash_profile
-          mise install
       - run: mise //:test-integration
