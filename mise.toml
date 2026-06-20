@@ -7,8 +7,6 @@ node = "26"
 
 [env]
 MISE_EXPERIMENTAL=true
-GOOS="js"
-GOARCH="wasm"
 
 [monorepo]
 config_roots = [
@@ -38,6 +36,7 @@ if [ "$1" = "--tiny" ]; then
   GOOS=js GOARCH=wasm tinygo test -timeout 500ms -bench=. ./...
 else
   GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/lib/wasm/go_js_wasm_exec -timeout 500ms ./...
+  go test -timeout 1000ms ./...
 fi
 """
 

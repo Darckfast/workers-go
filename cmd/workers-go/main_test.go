@@ -1,4 +1,4 @@
-//go:build js && wasm
+//go:build !js && !wasm
 
 package main
 
@@ -69,7 +69,7 @@ func TestCLICompile(t *testing.T) {
 	modf.Write([]byte(modfile))
 	sumf.Write([]byte(modsum))
 
-	os.Args = []string{"./worker-build", "-o", filepath.Join(tmpdir, "dist"), "-i", tmpdir}
+	os.Args = []string{"./workers-go", "-o", filepath.Join(tmpdir, "dist"), "-i", tmpdir}
 
 	main()
 
