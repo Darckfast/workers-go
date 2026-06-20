@@ -1,11 +1,7 @@
 name = "workers-go"
 main = "bin/main.ts"
 compatibility_date = "2025-08-12"
+compatibility_flags = [ "nodejs_compat" ]
 
 [build]
 command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go && workers-go -i ."
-
-[[queues.consumers]]
-queue = "TEST-QUEUE"
-max_batch_size = 10
-max_batch_timeout = 5

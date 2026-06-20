@@ -14,18 +14,17 @@ on:
       - "!Dockerfile"
       - "!**.d.ts"
 env:
-  GOOS: js
-  GOARCH: wasm
   MISE_EXPERIMENTAL: true
 
 jobs:
   test-go:
     name: Test Integration
-    runs-on: codeberg-small-lazy
+    runs-on: codeberg-medium-lazy
     steps:
       - uses: actions/checkout@v6
+      - run: echo "/root/.local/bin" >> $GITHUB_PATH
       - name: Install mise
         run: |
           curl https://mise.run | sh
-          echo "/root/.local/bin" >> $GITHUB_PATH
+          echo 'eval "$(mise activate bash --shims)"' >> ~/.bash_profile
       - run: mise //:test-integration

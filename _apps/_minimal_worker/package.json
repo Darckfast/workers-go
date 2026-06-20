@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
+  "name": "workers-go",
+  "main": "bin/main.ts",
+  "type": "module",
+  "engines": {
+    "node": "24"
+  },
+  "license": "MIT"
+}

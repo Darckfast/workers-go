@@ -1,19 +1,19 @@
 {
-	"$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
-	"name": "worker",
-	"version": "0.0.0",
-	"description": "",
-	"main": "main.ts",
-	"type": "module",
-	"engines": {
-		"node": "24"
-	},
-	"engineStrict": true,
-	"license": "MIT",
-	"devDependencies": {
-		"wrangler": "^4.33.0"
-	},
-	"dependencies": {
-		"@cloudflare/containers": "^0.0.26"
-	}
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/refs/heads/master/src/schemas/json/package.json",
+  "name": "worker",
+  "version": "0.0.0",
+  "description": "",
+  "main": "main.ts",
+  "type": "module",
+  "engines": {
+    "node": "24"
+  },
+  "engineStrict": true,
+  "license": "MIT",
+  "devDependencies": {
+    "wrangler": "^4.99.0"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "^0.0.26"
+  }
 }

@@ -3,13 +3,14 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/queues"
 )
 
 func main() {
-	queues.ConsumeNonBlock(func(batch *queues.MessageBatch) error {
+	queues.ConsumeNonBlock(func(ctx context.Context, batch *queues.MessageBatch) error {
 		for _, msg := range batch.Messages {
 
 			b, _ := msg.StringBody()
