@@ -4,5 +4,5 @@ go = "1.24"
 tinygo = "0.41.1"
 wrangler = "4.99.0"
 
-[tasks.install]
+[tasks.prepare]
 run = "bun install && go mod download"
