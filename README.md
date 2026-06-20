@@ -26,6 +26,7 @@ Powered by Cloudflare Wrangler
 ---
 
 ## Getting Started
+This lib uses [mise](https://mise.jdx.dev/) to prepare the dev env
 
 ### Using a template
 ```sh
@@ -35,4 +36,3 @@ bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/
 # dev
 bunx wrangler dev
 ```
-
