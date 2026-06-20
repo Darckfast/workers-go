@@ -19,7 +19,7 @@ env:
 jobs:
   test-go:
     name: Test Integration
-    runs-on: codeberg-small-lazy
+    runs-on: codeberg-medium-lazy
     steps:
       - uses: actions/checkout@v6
       - run: echo "/root/.local/bin" >> $GITHUB_PATH
