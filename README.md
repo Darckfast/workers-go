@@ -6,11 +6,7 @@
 </p>
 
 <p align="center">
-  workers-go is fork of <a href="https://github.com/syumai/workers">syumai's workers</a> ❤️ — a lightweight package for building and running Go on <a href="https://workers.cloudflare.com/">Cloudflare Workers</a> using WebAssembly (WASM). Also compatible with NodeJS, Bun, and Deno
-</p>
-
-<p align="center">
-Powered by Cloudflare Wrangler
+  workers-go is fork of <a href="https://github.com/syumai/workers">syumai's workers</a> ❤️ — a lightweight package for building and running Go on <a href="https://workers.cloudflare.com/">Cloudflare Workers</a> using WebAssembly. Also compatible with NodeJS, Bun, and Deno
 </p>
 
 <p align="center">
@@ -28,7 +24,6 @@ Powered by Cloudflare Wrangler
 ## Getting Started
 This lib uses [mise](https://mise.jdx.dev/) to prepare the dev env
 
-### Using a template
 ```sh
 # minimal worker with only GET /hello
 bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/_minimal_worker
