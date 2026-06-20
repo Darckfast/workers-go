@@ -1,5 +1,3 @@
-//go:build !js && !wasm
-
 package main
 
 import (
@@ -348,13 +346,14 @@ func main() {
 			return
 		}
 
-		cmd := exec.Command("go", "build", "-trimpath", "-ldflags", "-s -w -buildid=", "-o", wasmOut, fp)
+		cmd := exec.Command("go", "build", "-trimpath", "-ldflags", "-s -w -buildid=", "-o", wasmOut, "./...")
+		cmd.Dir = fp
 		cmd.Env = os.Environ()
-		cmd.Env = append(cmd.Env, "GOOS=js", "GOARCH=wasm")
+		cmd.Env = append(cmd.Env, "GOWORK=off", "GOOS=js", "GOARCH=wasm")
 
-		err = cmd.Run()
+		out, err := cmd.CombinedOutput()
 		if err != nil {
-			log.Printf("%sError compiling app.wasm: %s%s%s\n", Red, Bold, err, Reset)
+			log.Printf("%sError compiling app.wasm: %s%s%s%s\n", Red, Bold, err, string(out), Reset)
 			return
 		}
 	}
