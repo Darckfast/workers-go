@@ -7,13 +7,14 @@ node = "26"
 
 [env]
 MISE_EXPERIMENTAL=true
-GOOS="js"
-GOARCH="wasm"
 
 [monorepo]
 config_roots = [
     "_apps/*",
 ]
+
+[tasks.mod-download]
+run = "go mod download"
 
 [tasks.install]
 run = "bun i && go mod download"
@@ -31,12 +32,13 @@ bun run vitest run
 """
 
 [tasks.test-lib]
-depends = ["install"]
+depends = ["mod-download"]
 run = """
 #!/usr/bin/env bash
 if [ "$1" = "--tiny" ]; then
   GOOS=js GOARCH=wasm tinygo test -timeout 500ms -bench=. ./...
 else
+  go test -timeout 60000ms ./cmd/...
   GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/lib/wasm/go_js_wasm_exec -timeout 500ms ./...
 fi
 """
