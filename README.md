@@ -34,3 +34,5 @@ bunx wrangler dev
 # deploy
 bunx wrangler deploy
 ```
+
+[Check the complete documentation for more details](https://darckfast.com/docs/workers-go)
