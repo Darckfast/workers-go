@@ -3,7 +3,7 @@ main = "bin/main.ts"
 compatibility_date = "2025-08-12"
 
 [build]
-command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go && workers-go -i ."
+command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go@latest && workers-go -i ."
 
 [[queues.consumers]]
 queue = "TEST-QUEUE"

@@ -5,7 +5,7 @@ compatibility_flags = [ "nodejs_compat" ]
 # tail_consumers = [{ service = "workers-go" }]
 
 [build]
-command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go && workers-go -i . -ex ./durable_objects"
+command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go@latest && workers-go -i . -ex ./durable_objects"
 
 [vars]
 API_HOST = "example.com"
