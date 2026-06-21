@@ -26,7 +26,7 @@ This library uses [mise](https://mise.jdx.dev/) to prepare the dev environment, 
 
 ```sh
 # minimal worker with only GET /hello
-bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/_minimal_worker
+bun create cloudflare@latest --template=github.com/darckfast/workers-go/_apps/_minimal_worker
 
 # tidy modules
 go mod tidy
