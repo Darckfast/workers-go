@@ -11,7 +11,7 @@
   "engineStrict": true,
   "license": "MIT",
   "devDependencies": {
-    "wrangler": "^4.99.0"
+    "wrangler": "^4.100.0"
   },
   "dependencies": {
     "@cloudflare/containers": "^0.0.26"

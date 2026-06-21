@@ -3,6 +3,7 @@ experimental_monorepo_root=true
 [tools]
 bun = "1.3.14"
 go = "1.24"
+golangci-lint = "v2.12.2"
 node = "26"
 
 [env]
@@ -58,4 +59,4 @@ fi
 """
 
 [tasks.lint]
-run = "golangci-lint run"
+run = "GOOS=js GOARCH=wasm golangci-lint run"

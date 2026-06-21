@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="https://darckfast.com/docs/workers-go"><strong>📜 docs</strong></a>
-  <a href="https://codeberg.org/darckfast/workers-go"><strong>🧬 main repository</strong></a>
+  <a href="https://codeberg.org/darckfast/workers-go"><strong>⭐ main repository</strong></a>
   <a href="https://github.com/Darckfast/workers-go"><strong>🪞 mirror repository</strong></a>
 </p>
 
@@ -22,11 +22,14 @@
 ---
 
 ## Getting Started
-This lib uses [mise](https://mise.jdx.dev/) to prepare the dev env
+This library uses [mise](https://mise.jdx.dev/) to prepare the dev environment, otherwise you must install Go, Node +24, and TinyGo (if applicable)
 
 ```sh
 # minimal worker with only GET /hello
 bun create cloudflare@latest --template=codeberg.org/darckfast/workers-go/_apps/_minimal_worker
+
+# tidy modules
+go mod tidy
 
 # dev
 bunx wrangler dev

@@ -5,4 +5,4 @@ tinygo = "0.41.1"
 wrangler = "4.99.0"
 
 [tasks.prepare]
-run = "bun install && go mod download"
+run = "bun install --frozen-lockfile && go mod download"

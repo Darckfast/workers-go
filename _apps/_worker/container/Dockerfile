@@ -1,7 +1,7 @@
 # This Dockerfile is only used for the Cloudflare Container integration
 # syntax=docker/dockerfile:1
 
-FROM --platform=${BUILDPLATFORM} golang:1.24 AS build
+FROM --platform=${BUILDPLATFORM} golang:1.21 AS build
 # FROM --platform=linux/arm64 golang:1.24 AS build
 # Set destination for COPY
 WORKDIR /app

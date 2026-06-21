@@ -6,27 +6,19 @@ on:
       - main
     paths:
       - "platform/**"
+      - "cmd/**"
       - "internal/**"
-env:
-  GOOS: js
-  GOARCH: wasm
 
 permissions:
   contents: read
 
 jobs:
   lint:
-    strategy:
-      matrix:
-        go-version: [1.24]
-        os: [codeberg-tiny-lazy]
-    runs-on: ${{ matrix.os }}
+    runs-on: codeberg-small-lazy
     steps:
       - uses: actions/checkout@v6
-      - uses: actions/setup-go@v6
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: v2.12
+      - name: Install mise
+        run: |
+          curl https://mise.run | sh
+          echo "/root/.local/bin" >> $GITHUB_PATH
+      - run: mise lint

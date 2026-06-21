@@ -5,12 +5,10 @@
     "module": "esnext",
     "lib": [
       "esnext",
-      "dom"
     ],
     "moduleResolution": "bundler",
     "types": [
       "node",
-      "@cloudflare/workers-types",
       "@cloudflare/vitest-pool-workers"
     ],
     "paths": {
@@ -18,11 +16,5 @@
         "./worker/*"
       ]
     }
-  },
-  "include": [
-    "./**/*.ts",
-    "./worker/types/*.ts",
-    "./**/*.spec.ts"
-    // "worker/vite.config.ts",
-  ]
+  }
 }

@@ -1,4 +1,8 @@
 {
+  "minimumDependencyAge": "P7D",
+  "lock": {
+    "frozen": true
+  },
   "tasks": {
     "dev": "deno run --allow-net --sloppy-imports --allow-read --watch main.ts",
     "build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go",

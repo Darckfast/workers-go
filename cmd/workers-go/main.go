@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	_ "embed"
 	"errors"
 	"flag"
@@ -24,7 +25,7 @@ import (
 type handlerName string
 
 //go:embed main.ts.tmpl
-var mainTsTmpl string
+var mainTSTmpl string
 
 const (
 	kindFetch     handlerName = "fetch"
@@ -46,20 +47,20 @@ var trgFuncs = map[string]bool{
 }
 
 type unit struct {
-	dur  time.Duration
 	name string
+	dur  time.Duration
 }
 
 var byteUnits = []string{"B", "KiB", "MiB"}
 
-const BYTE_SIZE = 1 << 10
+const byteSize = 1 << 10
 
 var durationUnits = []unit{
-	{time.Minute, "m"},
-	{time.Second, "s"},
-	{time.Millisecond, "ms"},
-	{time.Microsecond, "µs"},
-	{time.Nanosecond, "ns"},
+	{"m", time.Minute},
+	{"s", time.Second},
+	{"ms", time.Millisecond},
+	{"µs", time.Microsecond},
+	{"ns", time.Nanosecond},
 }
 
 const (
@@ -83,8 +84,8 @@ func (a *argList) Set(value string) error {
 }
 
 type SafeMap[K comparable, V any] struct {
-	mu sync.RWMutex
 	m  map[K]V
+	mu sync.RWMutex
 }
 
 func (sm *SafeMap[K, V]) Set(key K, val V) {
@@ -115,8 +116,8 @@ func FmtBytes(b int64) string {
 	v := float64(b)
 	i := 0
 
-	for v >= BYTE_SIZE && i < len(byteUnits)-1 {
-		v /= BYTE_SIZE
+	for v >= byteSize && i < len(byteUnits)-1 {
+		v /= byteSize
 		i++
 	}
 
@@ -191,21 +192,17 @@ func scandir(e *string) *SafeMap[string, any] {
 
 					if kind, ok := aliasToKind[handlerName(ident.Name)]; ok {
 						if ident.Name == "rpc" {
-							arg, ok := call.Args[0].(*ast.BasicLit)
-							if ok {
-								switch arg.Kind {
-								case token.STRING:
-									cstr, err := strconv.Unquote(arg.Value)
-									if err != nil {
-										log.Printf("%s[thread %d] Error unquoting value: %s%s%s\n", Red, i, Bold, err, Reset)
-										break
-									}
+							if arg, ok := call.Args[0].(*ast.BasicLit); ok && arg.Kind == token.STRING {
+								cstr, err := strconv.Unquote(arg.Value)
+								if err != nil {
+									log.Printf("%s[thread %d] Error unquoting value: %s%s%s\n", Red, i, Bold, err, Reset)
+									return true
+								}
 
-									if val, ok := safem.Get(ident.Name); ok {
-										safem.Set(ident.Name, append(val.([]string), cstr))
-									} else {
-										safem.Set(ident.Name, []string{cstr})
-									}
+								if val, ok := safem.Get(ident.Name); ok {
+									safem.Set(ident.Name, append(val.([]string), cstr))
+								} else {
+									safem.Set(ident.Name, []string{cstr})
 								}
 							}
 						} else {
@@ -219,13 +216,18 @@ func scandir(e *string) *SafeMap[string, any] {
 		}(i)
 	}
 
-	filepath.WalkDir(*e, func(path string, d fs.DirEntry, err error) error {
+	err := filepath.WalkDir(*e, func(path string, d fs.DirEntry, err error) error {
 		if !d.IsDir() && strings.HasSuffix(d.Name(), ".go") && !strings.HasSuffix(d.Name(), "_test.go") {
 			filesChan <- path
 		}
 
 		return nil
 	})
+
+	if err != nil {
+		log.Printf("%s%sError walking on directories %s%s\n", Red, Bold, err, Reset)
+		os.Exit(1)
+	}
 
 	close(filesChan)
 	wg.Wait()
@@ -265,6 +267,7 @@ func parseAndValidateArgs() (*string, *string, *bool, *bool, *argList) {
 
 func main() {
 	start := time.Now()
+	ctx := context.Background()
 	log.SetFlags(0)
 
 	fp, fo, silent, tiny, exports := parseAndValidateArgs()
@@ -305,14 +308,14 @@ func main() {
 	}
 
 	err := os.MkdirAll(*fo, os.ModePerm)
-	maints := filepath.Join(*fo, "main.ts")
-	wasmexecjs := filepath.Join(*fo, "wasm_exec.js")
-	appwasm := filepath.Join(*fo, "app.wasm")
-
 	if err != nil {
 		log.Printf("%sError creating output directory: %s%s%s\n", Red, Bold, err, Reset)
 		os.Exit(1)
 	}
+
+	maints := filepath.Join(*fo, "main.ts")
+	wasmexecjs := filepath.Join(*fo, "wasm_exec.js")
+	appwasm := filepath.Join(*fo, "app.wasm")
 
 	file, err := os.Create(maints)
 	if err != nil {
@@ -320,7 +323,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	tmpl := template.Must(template.New("main.ts").Parse(mainTsTmpl))
+	tmpl := template.Must(template.New("main.ts").Parse(mainTSTmpl))
 	err = tmpl.Execute(file, handlers.m)
 	if err != nil {
 		log.Printf("%sError populating template file: %s%s%s\n", Red, Bold, err, Reset)
@@ -331,7 +334,8 @@ func main() {
 	switch *tiny {
 	case true:
 		log.Printf("%s%s⚠  Using tinygo might result in some unexpected bugs due compatibility issues ⚠%s\n", Bold, Yellow, Reset)
-		tinyroot, err := exec.Command("tinygo", "env", "TINYGOROOT").Output()
+		//nolint:govet
+		tinyroot, err := exec.CommandContext(ctx, "tinygo", "env", "TINYGOROOT").Output()
 		if err != nil {
 			log.Printf("%sError getting tinygo root path: %s%s%s\n", Red, Bold, err, Reset)
 			os.Exit(1)
@@ -351,9 +355,10 @@ func main() {
 			os.Exit(1)
 		}
 
-		cmd = exec.Command("tinygo", "build", "-no-debug", "-o", appwasm, *fp)
+		cmd = exec.CommandContext(ctx, "tinygo", "build", "-no-debug", "-o", appwasm, *fp)
 	case false:
-		goroot, err := exec.Command("go", "env", "GOROOT").Output()
+		//nolint:govet
+		goroot, err := exec.CommandContext(ctx, "go", "env", "GOROOT").Output()
 		if err != nil {
 			log.Printf("%sError getting go root path: %s%s%s\n", Red, Bold, err, Reset)
 			os.Exit(1)
@@ -365,14 +370,13 @@ func main() {
 			os.Exit(1)
 		}
 
-		defer file.Close()
 		dst, err := os.Create(wasmexecjs)
 		if err != nil {
 			log.Printf("%sError opening wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
+			_ = file.Close()
 			os.Exit(1)
 		}
 
-		defer dst.Close()
 		_, err = io.Copy(dst, file)
 
 		if err != nil {
@@ -383,10 +387,14 @@ func main() {
 		err = dst.Sync()
 		if err != nil {
 			log.Printf("%sError syncing wasm_exec file: %s%s%s\n", Red, Bold, err, Reset)
+			_ = dst.Close()
 			os.Exit(1)
 		}
 
-		cmd = exec.Command("go", "build", "-trimpath", "-ldflags", "-s -w -buildid=", "-o", appwasm)
+		_ = dst.Close()
+		_ = file.Close()
+
+		cmd = exec.CommandContext(ctx, "go", "build", "-trimpath", "-ldflags", "-s -w -buildid=", "-o", appwasm)
 	}
 
 	cmd.Dir = *fp
@@ -408,7 +416,7 @@ func main() {
 			log.Printf("Error looking for cmd wasm-opt: %s\n", err)
 		}
 	} else {
-		cmd := exec.Command("wasm-opt", "--all-features", "-Os", appwasm, "-o", appwasm)
+		cmd := exec.CommandContext(ctx, "wasm-opt", "--all-features", "-Os", appwasm, "-o", appwasm)
 		out, err = cmd.CombinedOutput()
 		if err != nil {
 			log.Printf("%sError compressing app.wasm: %s%s%s%s\n", Red, Bold, err, string(out), Reset)

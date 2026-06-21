@@ -34,7 +34,7 @@ func main() {
 const modfile = `
 module main
 
-go 1.23
+go 1.21
 
 require codeberg.org/darckfast/workers-go v0.4.2
 

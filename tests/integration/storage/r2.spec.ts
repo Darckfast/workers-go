@@ -1,4 +1,3 @@
-import { faker } from "@faker-js/faker";
 import { SELF } from "cloudflare:test";
 import { beforeAll, describe, expect, it, test } from "vitest";
 
@@ -11,7 +10,7 @@ describe("r2", () => {
     beforeAll(async () => {
       params = new URLSearchParams();
 
-      params.set("b64", faker.image.dataUri().split("base64,")[1]);
+      params.set("b64", "aGVsbG8=");
 
       rs = await SELF.fetch("http://service/r2", {
         method: "POST",
@@ -45,7 +44,7 @@ describe("r2", () => {
 
     beforeAll(async () => {
       params = new URLSearchParams();
-      params.set("b64", btoa(faker.lorem.paragraph()));
+      params.set("b64", "aGVsbG8=");
 
       await SELF.fetch("http://service/r2", {
         method: "POST",

@@ -1,4 +1,52 @@
 # Changelog
+## [0.4.3](https://codeberg.org/darckfast/workers-go/compare/v0.4.2...v0.4.3) (2026-06-20)
+
+### 🚀 Features
+
+- Add `workers-go` cli to create `wrangler` entrypoint typescript file with the expected typing for better integration, compile your Go project using
+either Go or TinyGo (`-tiny`), and compress using `wasm-opt` if available
+- Updated `_apps` to use the `workers-go` cli for building
+- Add `minimumReleaseAge` (and equivalents to each package manager), blocked scripts runs on by default in this repository, and modified all `mise`
+install shortcut to use frozen lockfile to help prevent supply chain attacks
+
+### 🐛 Bug Fixes
+
+- Replaced global call with `jsclass`
+- Removed envs `GOOS` and `GOARCH` from CI due issues with `workers-go` cli
+
+### 💼 Other
+
+- Add new linting rules, and fixed all warning and errors
+
+### 📚 Documentation
+
+- Updated README.md with a small snippet to get started using this library
+- Updated `_apps` with a cleaner templates using `workers-go` cli
+
+### 🧪 Testing
+
+- Updated tests commands, and queues to run with concurrency
+- Fixed test timestamp greater than it should be
+- Add basic compiling testing for `workers-go` cli
+
+### ⚙️ Miscellaneous Tasks
+
+- Add CI jobs/testing filtering according to its respective direct dependencies, so it runs only
+the necessary jobs according to what have changed in the PR
+- Add `node` on root mise for `ts_ls` lsp to work properly
+- Changed testing queue `batch_timeout` to 0
+- Renamed `DEVELOPING.md` to `CONTRIBUTING md`
+- Removed `bun install` when running `mise test-lib` which are only Go testing files
+- Increased tests timeout to 60s for CI due constraint with runners in Codeberg
+- Updated .gitignore file to include `bin/` diretory
+- Updated repository banner image
+- Change CI instance type due timeout when building
+- Removed `@faker` dependency that was used only for testing
+- Removed unnecessary configuration from root `tsonfig.json`
+- Add `GOOS=js` and `GOARCH=wasm` on linting command
+- Updated lock files
+- Add `cmd/` folder to the linting rules in CI
+
 
 ## [0.4.2](https://codeberg.org/darckfast/workers-go/compare/v0.4.1...v0.4.2) (2026-06-06)
 
