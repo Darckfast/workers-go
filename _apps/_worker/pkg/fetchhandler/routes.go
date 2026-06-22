@@ -27,6 +27,9 @@ func New() {
 	router := httprouter.New()
 
 	// HTTP
+	router.HandlerFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte("hello from workers-go"))
+	})
 	router.HandlerFunc("GET", "/hello", httpsimple.GET_HELLO)
 	router.HandlerFunc("GET", "/application/json", httpsimple.GET_JSON)
 	router.HandlerFunc("POST", "/application/json", httpsimple.POST_JSON)

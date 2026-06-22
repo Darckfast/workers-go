@@ -1,11 +1,11 @@
 name = "workers-go"
 main = "bin/main.ts"
-compatibility_date = "2025-08-12"
+compatibility_date = "2026-06-18"
 compatibility_flags = [ "nodejs_compat" ]
 # tail_consumers = [{ service = "workers-go" }]
 
 [build]
-command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go@latest && workers-go -i . -ex ./durable_objects"
+command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go@latest && workers-go -i ./pkg -ex ./durable_objects"
 
 [vars]
 API_HOST = "example.com"

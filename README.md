@@ -22,20 +22,22 @@
 ---
 
 ## Getting Started
-This library uses [mise](https://mise.jdx.dev/) to prepare the dev environment, otherwise you must install Go, Node +24, and TinyGo (if applicable)
+This library uses [mise](https://mise.jdx.dev/) to prepare the dev environment, otherwise you must install Go, Node +24, pnpm, and TinyGo (if applicable)
 
 ```sh
 # minimal worker with only GET /hello
-bun create cloudflare@latest --template=github.com/darckfast/workers-go/_apps/_minimal_worker
+pnpm create cloudflare@latest --template=github.com/darckfast/workers-go/_apps/_minimal_worker
 
 # tidy modules
 go mod tidy
 
 # dev
-bunx wrangler dev
+pnpx wrangler dev
 
 # deploy
-bunx wrangler deploy
+pnpx wrangler deploy
 ```
+
+---
 
 [Check the complete documentation for more details](https://darckfast.com/docs/workers-go)

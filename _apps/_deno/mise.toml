@@ -7,7 +7,7 @@ run = "deno ci && go mod download"
 
 [tasks.test]
 depends = ["build"]
-run = "deno run test"
+run = "deno run test --no-check --allow-read"
 
 [tasks.build]
 depends = ["install"]

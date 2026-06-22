@@ -98,3 +98,5 @@ app.all("*", async (req, res) => {
 app.listen(5173, () => {
   console.log("Server is running on port 5173");
 });
+
+export default app

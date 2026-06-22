@@ -1,17 +1,10 @@
 import assert from "node:assert/strict";
-import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
-import { after, before, describe, it } from "node:test";
+import { after, describe, it } from "node:test";
+import app from './index.ts';
 
 describe("GET /hello", () => {
-  let serverProcess: ChildProcessWithoutNullStreams;
-
-  before(() => {
-    serverProcess = spawn("bun", ["tsx", "index.ts"]);
-    return new Promise((resolve) => setTimeout(resolve, 1000));
-  });
-
   after(() => {
-    serverProcess.kill();
+    app.close();
   });
 
   it("should return hello from wasm", async () => {

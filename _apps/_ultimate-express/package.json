@@ -5,9 +5,9 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"dev": "bun run build:go && tsx watch index.ts",
+		"dev": "npm run build:go && tsx watch index.ts",
 		"build": "tsc --noCheck",
-		"test": "bun run build:go && node --test index.spec.ts",
+		"test": "npm run build:go && node --test index.spec.ts",
 		"build:go": "GOOS=js GOARCH=wasm go build -o ./bin/app.wasm ./main.go"
 	},
 	"keywords": [],

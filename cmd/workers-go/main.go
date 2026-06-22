@@ -348,7 +348,7 @@ func main() {
 		}
 
 		// Removes the global.require from the file, otherwise the worker wont startup
-		fixedIn := strings.Replace(string(in), "global\\.require = require;", "", 1)
+		fixedIn := strings.Replace(string(in), "global.require = require;", "// Polyfill removed due compatibility issues with Cloudflare Workers", 1)
 		err = os.WriteFile(wasmexecjs, []byte(fixedIn), os.ModePerm)
 		if err != nil {
 			log.Printf("%sError writing wasm_exec.js file: %s%s%s\n", Red, Bold, err, Reset)

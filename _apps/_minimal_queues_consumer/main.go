@@ -4,7 +4,6 @@ package main
 
 import (
 	"context"
-	"log"
 
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/queues"
 )
@@ -14,7 +13,7 @@ func main() {
 		for _, msg := range batch.Messages {
 
 			b, _ := msg.StringBody()
-			log.Println("message body:", b)
+			println("message body:" + b)
 
 			msg.Ack()
 		}

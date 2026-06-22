@@ -1,17 +1,8 @@
-import { afterAll, beforeAll, expect, test } from "bun:test";
+import { afterAll, expect, test } from "bun:test";
+import app from './index';
 
-let serverProcess: ReturnType<typeof Bun.spawn>;
-
-beforeAll(() => {
-  serverProcess = Bun.spawn(["bun", "run", "index.ts"], {
-    stdio: ["inherit", "inherit", "inherit"],
-  });
-
-  return new Promise((resolve) => setTimeout(resolve, 500));
-});
-
-afterAll(() => {
-  serverProcess.kill();
+afterAll(async () => {
+  await app.stop()
 });
 
 test("should return hello from wasm", async () => {

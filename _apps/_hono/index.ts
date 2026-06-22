@@ -64,9 +64,10 @@ app.all("*", async (c) => {
   return cf.fetch(c.req.raw);
 });
 
-serve({
+export default serve({
   fetch: app.fetch,
   port: 5173,
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`);
 });
+

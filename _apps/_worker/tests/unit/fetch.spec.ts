@@ -12,7 +12,7 @@ const IncomingRequest = Request;
 
 describe("fetch handler", () => {
   it("should return JSON body", async () => {
-    const request = new IncomingRequest("http://example.com/");
+    const request = new IncomingRequest("http://example.com/non-existing-url");
     // Create an empty context to pass to `worker.fetch()`
     const ctx = createExecutionContext();
     const worker = new WorkerEntrypoint(ctx, env);

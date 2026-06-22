@@ -1,25 +1,11 @@
 /// <reference lib="deno.ns" />
 import { assertEquals } from "jsr:@std/assert";
-import { afterAll, beforeAll, describe, it } from "jsr:@std/testing/bdd";
+import { afterAll, describe, it } from "jsr:@std/testing/bdd";
+import app from "./main.ts";
 
 describe("GET /hello", () => {
-  let serverProcess: Deno.ChildProcess;
-
-  beforeAll(() => {
-    serverProcess = new Deno.Command("deno", {
-      args: ["run", "dev"],
-      stdin: "piped",
-      stdout: "piped",
-    }).spawn();
-
-    return new Promise((resolve) => setTimeout(resolve, 500));
-  });
-
   afterAll(async () => {
-    serverProcess.stdin.close();
-    serverProcess.stdout.cancel();
-    serverProcess.kill();
-    await serverProcess.status;
+    await app.shutdown();
   });
 
   it("should return hello from wasm", async () => {

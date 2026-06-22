@@ -3,13 +3,13 @@
 While developing locally, this worker needs to run in the same process as the producer
 
 ```bash
-wrangler dev -c ../path-to-producer/wrangler.toml -c wrangler.toml --persist-to .wrangler/state
+pnpx wrangler dev -c ../path-to-producer/wrangler.toml -c wrangler.toml --persist-to .wrangler/state
 ```
 
 ## Deploy
 
 ```bash
-wrangler deploy
+pnpx wrangler deploy
 ```
 
 ## Using TinyGo

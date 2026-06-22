@@ -3,15 +3,15 @@
 First install [mise](https://mise.jdx.dev/getting-started.html) then run:
 
 ```bash
-wrangler dev
+pnpx wrangler dev
 ```
 
-*Access or cURL http://localhost:8787/hello*
+*Access or cURL http://localhost:8787*
 
 ## Deploy
 
 ```bash
-wrangler deploy
+pnpx wrangler deploy
 ```
 
 ## Using TinyGo

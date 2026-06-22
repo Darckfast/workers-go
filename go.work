@@ -5,6 +5,7 @@ use (
 	./_apps/_deno
 	./_apps/_hono
 	./_apps/_minimal_queues_consumer
+	./_apps/_minimal_worker
 	./_apps/_ultimate-express
 	./_apps/_worker
 )

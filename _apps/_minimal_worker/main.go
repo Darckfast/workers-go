@@ -11,8 +11,8 @@ import (
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /hello", func(w http.ResponseWriter, r *http.Request) {
-		_, _ = w.Write([]byte("hello"))
+	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+		_, _ = w.Write([]byte("hello from workers-go"))
 	})
 
 	fetch.ServeNonBlock(mux)

@@ -48,7 +48,7 @@ export async function init() {
 
 init();
 
-Deno.serve({ port: 5173 }, async (_req) => {
+export default Deno.serve({ port: 5173 }, async (_req) => {
   await init();
 
   return cf.fetch(_req);

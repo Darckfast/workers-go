@@ -8,12 +8,12 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   plugins: [
     cloudflareTest(async () => {
-      const migrationsPath = path.join(__dirname, "./_apps/_worker/migrations");
+      const migrationsPath = path.join(__dirname, "./migrations");
       const migrations = await readD1Migrations(migrationsPath);
 
       return {
         singleWorker: true,
-        wrangler: { configPath: "./_apps/_worker/wrangler.toml" },
+        wrangler: { configPath: "./wrangler.toml" },
         miniflare: {
           kvNamespaces: ["TEST_NAMESPACE"],
           bindings: { TEST_MIGRATIONS: migrations },
@@ -29,7 +29,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      $wrk: path.resolve(__dirname, "./_apps/_worker"),
+      $wrk: path.resolve(__dirname, "."),
     },
   },
   test: {

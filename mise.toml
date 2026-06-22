@@ -1,10 +1,8 @@
 experimental_monorepo_root=true
 
 [tools]
-bun = "1.3.14"
 go = "1.24"
 golangci-lint = "v2.12.2"
-node = "26"
 
 [env]
 MISE_EXPERIMENTAL=true
@@ -14,11 +12,8 @@ config_roots = [
     "_apps/*",
 ]
 
-[tasks.mod-download]
-run = "go mod download"
-
 [tasks.install]
-run = "bun i && go mod download"
+run = "go mod download"
 
 [tasks.test-integration]
 depends = ["install"]
@@ -32,11 +27,11 @@ else
   mise //_apps/_worker:prepare
   workers-go -i ./_apps/_worker/pkg -o ./_apps/_worker/bin -ex ./_apps/_worker/durable_objects
 fi
-bun run vitest run
+mise //_apps/_worker:test
 """
 
 [tasks.test-lib]
-depends = ["mod-download"]
+depends = ["install"]
 run = """
 #!/usr/bin/env bash
 if [ "$1" = "--tiny" ]; then
