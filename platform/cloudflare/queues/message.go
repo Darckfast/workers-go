@@ -61,10 +61,15 @@ func (m *Message) StringBody() (string, error) {
 }
 
 func (m *Message) BytesBody() ([]byte, error) {
+	if m.Body.InstanceOf(jsclass.ArrayBuffer) {
+		b := make([]byte, m.Body.Get("byteLength").Int())
+		js.CopyBytesToGo(b, jsclass.Uint8Array.New(m.Body))
+		return b, nil
+	}
+
 	if m.Body.Type() == js.TypeObject &&
 		(m.Body.InstanceOf(jsclass.Uint8Array) ||
-			m.Body.InstanceOf(jsclass.Uint8ClampedArray) ||
-			m.Body.InstanceOf(jsclass.ArrayBuffer)) {
+			m.Body.InstanceOf(jsclass.Uint8ClampedArray)) {
 		b := make([]byte, m.Body.Get("byteLength").Int())
 		js.CopyBytesToGo(b, m.Body)
 		return b, nil

@@ -11,16 +11,16 @@ type Meta struct {
 	ServedBy       string `json:"served_by"`
 	ServedByRegion string `json:"served_by_region"`
 	Timings        struct {
-		SQLDurationMs int64 `json:"sql_duration_ms"`
+		SQLDurationMs float64 `json:"sql_duration_ms"`
 	} `json:"timings"`
-	Duration        int64 `json:"duration"`
-	Changes         int64 `json:"changes"`
-	LastRowID       int64 `json:"last_row_id"`
-	SizeAfter       int64 `json:"size_after"`
-	RowsRead        int64 `json:"rows_read"`
-	RowsWritten     int64 `json:"rows_written"`
-	ServedByPrimary bool  `json:"served_by_primary"`
-	ChangedDB       bool  `json:"changed_db"`
+	Duration        float64 `json:"duration"`
+	Changes         int64   `json:"changes"`
+	LastRowID       int64   `json:"last_row_id"`
+	SizeAfter       int64   `json:"size_after"`
+	RowsRead        int64   `json:"rows_read"`
+	RowsWritten     int64   `json:"rows_written"`
+	ServedByPrimary bool    `json:"served_by_primary"`
+	ChangedDB       bool    `json:"changed_db"`
 }
 
 //easyjson:json

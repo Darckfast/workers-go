@@ -43,19 +43,13 @@ func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(i
 			} else {
 				out.ServedByRegion = string(in.String())
 			}
-		case "served_by_primary":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.ServedByPrimary = bool(in.Bool())
-			}
 		case "timings":
 			easyjson6601e8cdDecode(in, &out.Timings)
 		case "duration":
 			if in.IsNull() {
 				in.Skip()
 			} else {
-				out.Duration = int64(in.Int64())
+				out.Duration = float64(in.Float64())
 			}
 		case "changes":
 			if in.IsNull() {
@@ -68,12 +62,6 @@ func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(i
 				in.Skip()
 			} else {
 				out.LastRowID = int64(in.Int64())
-			}
-		case "changed_db":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.ChangedDB = bool(in.Bool())
 			}
 		case "size_after":
 			if in.IsNull() {
@@ -92,6 +80,18 @@ func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(i
 				in.Skip()
 			} else {
 				out.RowsWritten = int64(in.Int64())
+			}
+		case "served_by_primary":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.ServedByPrimary = bool(in.Bool())
+			}
+		case "changed_db":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.ChangedDB = bool(in.Bool())
 			}
 		default:
 			in.SkipRecursive()
@@ -123,16 +123,6 @@ func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(o
 		}
 		out.String(string(in.ServedByRegion))
 	}
-	if in.ServedByPrimary {
-		const prefix string = ",\"served_by_primary\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Bool(bool(in.ServedByPrimary))
-	}
 	if true {
 		const prefix string = ",\"timings\":"
 		if first {
@@ -151,7 +141,7 @@ func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(o
 		} else {
 			out.RawString(prefix)
 		}
-		out.Int64(int64(in.Duration))
+		out.Float64(float64(in.Duration))
 	}
 	if in.Changes != 0 {
 		const prefix string = ",\"changes\":"
@@ -172,16 +162,6 @@ func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(o
 			out.RawString(prefix)
 		}
 		out.Int64(int64(in.LastRowID))
-	}
-	if in.ChangedDB {
-		const prefix string = ",\"changed_db\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Bool(bool(in.ChangedDB))
 	}
 	if in.SizeAfter != 0 {
 		const prefix string = ",\"size_after\":"
@@ -213,6 +193,26 @@ func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(o
 		}
 		out.Int64(int64(in.RowsWritten))
 	}
+	if in.ServedByPrimary {
+		const prefix string = ",\"served_by_primary\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Bool(bool(in.ServedByPrimary))
+	}
+	if in.ChangedDB {
+		const prefix string = ",\"changed_db\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Bool(bool(in.ChangedDB))
+	}
 	out.RawByte('}')
 }
 
@@ -226,7 +226,7 @@ func (v *Meta) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V2(l, v)
 }
 func easyjson6601e8cdDecode(in *jlexer.Lexer, out *struct {
-	SQLDurationMs int64 `json:"sql_duration_ms"`
+	SQLDurationMs float64 `json:"sql_duration_ms"`
 }) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
@@ -245,7 +245,7 @@ func easyjson6601e8cdDecode(in *jlexer.Lexer, out *struct {
 			if in.IsNull() {
 				in.Skip()
 			} else {
-				out.SQLDurationMs = int64(in.Int64())
+				out.SQLDurationMs = float64(in.Float64())
 			}
 		default:
 			in.SkipRecursive()
@@ -258,7 +258,7 @@ func easyjson6601e8cdDecode(in *jlexer.Lexer, out *struct {
 	}
 }
 func easyjson6601e8cdEncode(out *jwriter.Writer, in struct {
-	SQLDurationMs int64 `json:"sql_duration_ms"`
+	SQLDurationMs float64 `json:"sql_duration_ms"`
 }) {
 	out.RawByte('{')
 	first := true
@@ -267,7 +267,7 @@ func easyjson6601e8cdEncode(out *jwriter.Writer, in struct {
 		const prefix string = ",\"sql_duration_ms\":"
 		first = false
 		out.RawString(prefix[1:])
-		out.Int64(int64(in.SQLDurationMs))
+		out.Float64(float64(in.SQLDurationMs))
 	}
 	out.RawByte('}')
 }
@@ -285,11 +285,11 @@ func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(
 		key := in.UnsafeFieldName(false)
 		in.WantColon()
 		switch key {
-		case "success":
+		case "results_string":
 			if in.IsNull() {
 				in.Skip()
 			} else {
-				out.Success = bool(in.Bool())
+				out.ResultsString = string(in.String())
 			}
 		case "results":
 			if in.IsNull() {
@@ -320,17 +320,17 @@ func easyjson6601e8cdDecodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(
 				}
 				in.Delim(']')
 			}
-		case "ResultsString":
-			if in.IsNull() {
-				in.Skip()
-			} else {
-				out.ResultsString = string(in.String())
-			}
 		case "meta":
 			if in.IsNull() {
 				in.Skip()
 			} else {
 				(out.Meta).UnmarshalEasyJSON(in)
+			}
+		case "success":
+			if in.IsNull() {
+				in.Skip()
+			} else {
+				out.Success = bool(in.Bool())
 			}
 		default:
 			in.SkipRecursive()
@@ -346,11 +346,11 @@ func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(
 	out.RawByte('{')
 	first := true
 	_ = first
-	if in.Success {
-		const prefix string = ",\"success\":"
+	if in.ResultsString != "" {
+		const prefix string = ",\"results_string\":"
 		first = false
 		out.RawString(prefix[1:])
-		out.Bool(bool(in.Success))
+		out.String(string(in.ResultsString))
 	}
 	if len(in.Results) != 0 {
 		const prefix string = ",\"results\":"
@@ -377,16 +377,6 @@ func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(
 			out.RawByte(']')
 		}
 	}
-	if in.ResultsString != "" {
-		const prefix string = ",\"ResultsString\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.String(string(in.ResultsString))
-	}
 	if true {
 		const prefix string = ",\"meta\":"
 		if first {
@@ -396,6 +386,16 @@ func easyjson6601e8cdEncodeCodebergOrgDarckfastWorkersGoPlatformCloudflareD1V21(
 			out.RawString(prefix)
 		}
 		(in.Meta).MarshalEasyJSON(out)
+	}
+	if in.Success {
+		const prefix string = ",\"success\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Bool(bool(in.Success))
 	}
 	out.RawByte('}')
 }
