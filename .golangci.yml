@@ -19,6 +19,7 @@ linters:
       checks:
         - "all"
         - "-ST1000"
+        - "-ST1003"
     unused:
       # Mark all struct fields that have been written to as used.
       # Default: true

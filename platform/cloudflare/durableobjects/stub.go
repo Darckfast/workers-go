@@ -55,6 +55,11 @@ func (ns *DurableObjectNamespace) Jurisdiction(jur string) *DurableObjectNamespa
 	return &DurableObjectNamespace{instance: inst}
 }
 
+func (ns *DurableObjectNamespace) GetByName(id string) *DurableObjectStub {
+	stub := ns.instance.Call("getByName", id)
+	return &DurableObjectStub{val: stub}
+}
+
 func (ns *DurableObjectNamespace) Get(id *DurableObjectID) (*DurableObjectStub, error) {
 	if id == nil || id.val.IsUndefined() {
 		return nil, errors.New("invalid UniqueGlobalId")
@@ -85,6 +90,7 @@ func (s *DurableObjectStub) Fetch(req *http.Request) (*http.Response, error) {
 
 func (s *DurableObjectStub) Call(funcName string, args ...any) (any, error) {
 	promise := s.val.Call(funcName, args...)
+	//TODO: stringify the return
 	jsRes, err := jsclass.Await(promise)
 	if err != nil {
 		return nil, err

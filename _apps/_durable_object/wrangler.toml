@@ -1,0 +1,19 @@
+name = "durable-object"
+main = "bin/main.ts"
+compatibility_date = "2026-06-23"
+upload_source_maps = true
+compatibility_flags = [ "nodejs_compat" ]
+
+[build]
+command = "go install codeberg.org/darckfast/workers-go/cmd/workers-go@latest && workers-go -i ."
+
+[[migrations]]
+new_sqlite_classes = [ "MyDurableObject" ]
+tag = "v1"
+
+[[durable_objects.bindings]]
+class_name = "MyDurableObject"
+name = "MY_DURABLE_OBJECT"
+
+[observability]
+enabled = true

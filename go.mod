@@ -1,6 +1,6 @@
 module codeberg.org/darckfast/workers-go
 
-go 1.21
+go 1.24
 
 require (
 	github.com/mailru/easyjson v0.9.2

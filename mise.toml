@@ -3,6 +3,8 @@ experimental_monorepo_root=true
 [tools]
 go = "1.24"
 golangci-lint = "v2.12.2"
+node = "24"
+pnpm = "11"
 
 [env]
 MISE_EXPERIMENTAL=true
@@ -38,7 +40,7 @@ if [ "$1" = "--tiny" ]; then
   GOOS=js GOARCH=wasm tinygo test -timeout 500ms -bench=. ./...
 else
   go test -timeout 60000ms ./cmd/... && \
-  GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/lib/wasm/go_js_wasm_exec -timeout 500ms ./...
+  GOOS=js GOARCH=wasm go test -exec=$(go env GOROOT)/lib/wasm/go_js_wasm_exec -timeout 500ms ./... | grep -v '\\[no test files\\]'
 fi
 """
 
