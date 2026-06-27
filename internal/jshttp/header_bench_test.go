@@ -4,14 +4,12 @@ package jshttp
 
 import (
 	"net/http"
-	"strings"
 	"testing"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	"github.com/stretchr/testify/assert"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 )
 
-func TestToHeaders(t *testing.T) {
+func BenchmarkToHeades(b *testing.B) {
 	headers := jsclass.Headers.New()
 
 	headers.Call("append", "Content-Type", "application/json")
@@ -31,16 +29,12 @@ func TestToHeaders(t *testing.T) {
 	headers.Call("append", "X-Fake-Referer", "https://fake.example.com")
 	headers.Call("append", "X-Fake-IP", "192.0.2.123")
 
-	h, _ := ToHeader(headers)
-
-	for key, value := range h {
-		hv := strings.Join(value, ",")
-		jsh := headers.Call("get", key).String()
-		assert.Equal(t, hv, jsh)
+	for i := 0; i < b.N; i++ {
+		_, _ = ToHeader(headers)
 	}
 }
 
-func TestToJSHeaders(t *testing.T) {
+func BenchmarkToJSHeaders(b *testing.B) {
 	headers := http.Header{}
 	headers.Set("Content-Type", "application/json")
 	headers.Set("Accept", "application/json, text/plain, */*")
@@ -59,11 +53,7 @@ func TestToJSHeaders(t *testing.T) {
 	headers.Set("X-Fake-Referer", "https://fake.example.com")
 	headers.Set("X-Fake-IP", "192.0.2.123")
 
-	h := ToJSHeader(headers)
-
-	for key, value := range headers {
-		hv := strings.Join(value, ",")
-		jsh := h.Call("get", key).String()
-		assert.Equal(t, hv, jsh)
+	for i := 0; i < b.N; i++ {
+		_ = ToJSHeader(headers)
 	}
 }

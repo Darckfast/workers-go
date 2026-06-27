@@ -6,7 +6,7 @@ Package kv is the glue code for Cloudflare's KV Worker
 package kv
 
 import (
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 )
 
 func (ns *Namespace) Delete(key string) error {

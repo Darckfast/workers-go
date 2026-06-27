@@ -5,9 +5,8 @@ package durableobjects
 import (
 	"net/http"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
 )
 
 type Container struct {
@@ -27,7 +26,7 @@ func (s *Container) ContainerFetch(req *http.Request) (*http.Response, error) {
 }
 
 func GetContainer(binding string, id string) (*Container, error) {
-	inst := lifecycle.Env.Get(binding)
+	inst := jsclass.Env.Get(binding)
 	donamespace := &DurableObjectNamespace{instance: inst}
 	objID := donamespace.IdFromName(id)
 	obj, err := donamespace.Get(objID)

@@ -5,7 +5,7 @@ package queues
 import (
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 )
 
 // MessageSendRequest is a wrapper type used for sending message batches.

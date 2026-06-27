@@ -9,8 +9,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"github.com/mailru/easyjson"
 )
 
@@ -19,7 +18,7 @@ type D1Db struct {
 }
 
 func GetDB(binding string) (*D1Db, error) {
-	v := lifecycle.Env.Get(binding)
+	v := jsclass.Env.Get(binding)
 
 	if !v.Truthy() {
 		return nil, errors.New("d1 binding not found " + binding)
@@ -81,7 +80,6 @@ func (s *D1PreparedStatment) First(columnName *string) (*D1FirstResult, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	var result D1FirstResult
 	str := jsclass.JSON.Stringify(r)
 	err = easyjson.Unmarshal([]byte(str.String()), &result)

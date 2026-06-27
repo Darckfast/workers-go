@@ -7,8 +7,8 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jsconv"
 )
 
 // Message represents a message of the batch received by the consumer.
@@ -61,15 +61,15 @@ func (m *Message) StringBody() (string, error) {
 }
 
 func (m *Message) BytesBody() ([]byte, error) {
-	if m.Body.InstanceOf(jsclass.ArrayBuffer) {
+	if m.Body.InstanceOf(jsclass.ArrayBuffer.Class()) {
 		b := make([]byte, m.Body.Get("byteLength").Int())
 		js.CopyBytesToGo(b, jsclass.Uint8Array.New(m.Body))
 		return b, nil
 	}
 
 	if m.Body.Type() == js.TypeObject &&
-		(m.Body.InstanceOf(jsclass.Uint8Array) ||
-			m.Body.InstanceOf(jsclass.Uint8ClampedArray)) {
+		(m.Body.InstanceOf(jsclass.Uint8Array.Class()) ||
+			m.Body.InstanceOf(jsclass.Uint8ClampedArray.Class())) {
 		b := make([]byte, m.Body.Get("byteLength").Int())
 		js.CopyBytesToGo(b, m.Body)
 		return b, nil

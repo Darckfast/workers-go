@@ -7,10 +7,9 @@ import (
 	"io"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
-	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
+	"codeberg.org/darckfast/workers-go/internal/jsstream"
 	"github.com/mailru/easyjson"
 )
 
@@ -27,7 +26,7 @@ type Bucket struct {
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewBucket(varName string) (*Bucket, error) {
-	inst := lifecycle.Env.Get(varName)
+	inst := jsclass.Env.Get(varName)
 	if inst.IsUndefined() {
 		return nil, errors.New("%s is undefined" + varName)
 	}
@@ -55,7 +54,7 @@ func (r *Bucket) Head(key string) (*R2Object, error) {
 //   - if a network error happens, returns error.
 func (r *Bucket) Get(key string, opts *GetOptions) (*R2Object, error) {
 	b, _ := easyjson.Marshal(opts)
-	optsJs := jsclass.JSON.Call("parse", string(b))
+	optsJs, _ := jsclass.JSON.Parse(string(b))
 
 	p := r.instance.Call("get", key, optsJs)
 	v, err := jsclass.Await(p)
@@ -107,7 +106,7 @@ func (r *Bucket) Delete(key string) error {
 //   - if a network error happens, returns error.
 func (r *Bucket) List(opts *ListOptions) (*R2Objects, error) {
 	b, _ := easyjson.Marshal(opts)
-	optsJs := jsclass.JSON.Call("parse", string(b))
+	optsJs, _ := jsclass.JSON.Parse(string(b))
 
 	p := r.instance.Call("list", optsJs)
 	v, err := jsclass.Await(p)

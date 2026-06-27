@@ -7,7 +7,7 @@ import (
 	"strings"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"github.com/mailru/easyjson"
 )
 
@@ -28,7 +28,7 @@ func ToHeader(headers js.Value) (http.Header, error) {
 	}
 
 	hObj := headers
-	if headers.InstanceOf(jsclass.Headers) {
+	if headers.InstanceOf(jsclass.Headers.Class()) {
 		hObj = jsclass.Object.FromEntries(headers)
 	}
 

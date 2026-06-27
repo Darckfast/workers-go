@@ -6,7 +6,7 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 )
 
 type sendOptions struct {

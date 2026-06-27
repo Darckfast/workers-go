@@ -10,10 +10,9 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
-	jstry "codeberg.org/darckfast/workers-go/internal/try"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
+	"codeberg.org/darckfast/workers-go/internal/jstry"
 )
 
 type DurableObjectNamespace struct {
@@ -21,7 +20,7 @@ type DurableObjectNamespace struct {
 }
 
 func NewDurableObjectNamespace(varName string) (*DurableObjectNamespace, error) {
-	inst := lifecycle.Env.Get(varName)
+	inst := jsclass.Env.Get(varName)
 	if inst.IsUndefined() {
 		return nil, errors.New("%s is undefined" + varName)
 	}
@@ -36,7 +35,7 @@ func (ns *DurableObjectNamespace) IdFromName(name string) *DurableObjectID {
 
 //nolint:staticcheck // drops error warning for ST1003
 func (ns *DurableObjectNamespace) IdFromString(id string) (*DurableObjectID, error) {
-	idStr, err := jstry.TryCatch(ns.instance, "idFromString", id)
+	idStr, err := jstry.And.Catch(ns.instance, "idFromString", id)
 	if err != nil {
 		return nil, err
 	}

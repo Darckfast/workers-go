@@ -7,9 +7,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 )
 
 type TailConsumer func(ctx context.Context, traces *Traces) error
@@ -44,17 +42,12 @@ func init() {
 		return jsclass.Promise.New(cb)
 	})
 
-	js.Global().Get("cf").Set("tail", promise)
+	jsclass.CF.Set("tail", promise)
 }
 
 func handler(eventsObj, envObj, ctxObj js.Value) error {
-	lifecycle.Env = envObj
-	lifecycle.Ctx = jsclass.ExecutionContextWrap{Ctx: ctxObj}
-
-	err := env.LoadEnvs()
-	if err != nil {
-		return err
-	}
+	jsclass.Ctx.Init(ctxObj)
+	jsclass.Env.LoadEnvs(envObj)
 
 	events, err := NewEvents(eventsObj)
 

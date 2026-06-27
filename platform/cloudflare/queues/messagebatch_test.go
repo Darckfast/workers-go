@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jsconv"
 )
 
 func TestNewConsumerMessageBatch(t *testing.T) {

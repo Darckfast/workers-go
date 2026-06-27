@@ -6,7 +6,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"github.com/mailru/easyjson"
 )
 

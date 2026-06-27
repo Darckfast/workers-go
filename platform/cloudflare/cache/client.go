@@ -10,27 +10,27 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
 )
 
 type Cache struct {
-	instance js.Value
+	i js.Value
 }
 
 func (c *Cache) Open(namespace string) error {
-	v, err := jsclass.Await(jsclass.Caches.Call("open", namespace))
+	v, err := jsclass.Await(jsclass.Caches.Open(namespace))
 	if err != nil {
 		return err
 	}
 
-	c.instance = v
+	c.i = v
 	return nil
 }
 
 func New() *Cache {
 	return &Cache{
-		instance: jsclass.Caches.Get("default"),
+		i: jsclass.Caches.Default(),
 	}
 }
 
@@ -43,7 +43,7 @@ func New() *Cache {
 func (c *Cache) Put(req *http.Request, res *http.Response) error {
 	r := jshttp.ToJSRequest(req)
 	rs := jshttp.ToJSResponse(res)
-	_, err := jsclass.Await(c.instance.Call("put", r, rs))
+	_, err := jsclass.Await(c.i.Call("put", r, rs))
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func (opts *MatchOptions) toJS() js.Value {
 // Match returns the response object keyed to that request.
 // docs: https://developers.cloudflare.com/workers/runtime-apis/cache/#match
 func (c *Cache) Match(req *http.Request, opts *MatchOptions) (*http.Response, error) {
-	res, err := jsclass.Await(c.instance.Call("match", jshttp.ToJSRequest(req), opts.toJS()))
+	res, err := jsclass.Await(c.i.Call("match", jshttp.ToJSRequest(req), opts.toJS()))
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (opts *DeleteOptions) toJS() js.Value {
 // This method only purges content of the cache in the data center that the Worker was invoked.
 // Returns ErrCacheNotFount if the response was not cached.
 func (c *Cache) Delete(req *http.Request, opts *DeleteOptions) error {
-	res, err := jsclass.Await(c.instance.Call("delete", jshttp.ToJSRequest(req), opts.toJS()))
+	res, err := jsclass.Await(c.i.Call("delete", jshttp.ToJSRequest(req), opts.toJS()))
 	if err != nil {
 		return err
 	}

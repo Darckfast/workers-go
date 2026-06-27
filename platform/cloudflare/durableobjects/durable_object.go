@@ -6,21 +6,19 @@ import (
 	"context"
 	"io"
 	"iter"
-	"log"
 	"net/http"
-	"sync"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
-	jsruntime "codeberg.org/darckfast/workers-go/internal/runtime"
-	jstry "codeberg.org/darckfast/workers-go/internal/try"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshelper"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
+	"codeberg.org/darckfast/workers-go/internal/jsruntime"
+	"codeberg.org/darckfast/workers-go/internal/jstry"
 	"github.com/mailru/easyjson"
 )
 
 type DurableObjectSQLApi struct {
-	v LazyJSVal
+	v jshelper.LazyJSVal
 }
 
 func (d *DurableObjectSQLApi) Exec(query string, bindings ...any) *SqlStorageCursor {
@@ -35,7 +33,7 @@ func (d *DurableObjectSQLApi) Exec(query string, bindings ...any) *SqlStorageCur
 }
 
 type DurableObjectStorage struct {
-	v   LazyJSVal
+	v   jshelper.LazyJSVal
 	sql DurableObjectSQLApi
 }
 
@@ -46,7 +44,7 @@ type SqlStorageCursor struct {
 // func (s *SqlStorageCursor) Raw() {}
 
 func (s *SqlStorageCursor) One() ([]byte, error) {
-	r, err := jstry.TryCatch(s.v, "one")
+	r, err := jstry.And.Catch(s.v, "one")
 	if err != nil {
 		return nil, err
 	}
@@ -86,13 +84,8 @@ func (d *DurableObjectStorage) Get(name string) {
 	d.v.Call("get", name)
 }
 
-type LazyJSVal struct {
-	js.Value
-	sync.Once
-}
-
 type CtxJS struct {
-	v       LazyJSVal
+	v       jshelper.LazyJSVal
 	storage DurableObjectStorage
 }
 
@@ -108,7 +101,7 @@ type DurableObject struct {
 	__prototype__ js.Value
 	class         js.Value
 	ctx           CtxJS
-	env           LazyJSVal
+	env           jshelper.LazyJSVal
 }
 
 func (d *DurableObject) Env() js.Value {
@@ -187,11 +180,7 @@ func (d *DurableObject) AddFetch(fetch FetchHandler) {
 			reject := pArgs[1]
 
 			go func(resolve js.Value, reject js.Value) {
-				err := env.LoadEnvs()
-				if err != nil {
-					reject.Invoke(jsclass.ToJSError(err))
-					return
-				}
+				jsclass.Env.LoadEnvs(js.Value{})
 
 				req := jshttp.ToRequest(reqObj)
 				ctx, cancel := context.WithCancel(context.Background())
@@ -231,7 +220,7 @@ func (d *DurableObject) AddFetch(fetch FetchHandler) {
 						err := writer.Close()
 
 						if err != nil {
-							log.Println("error closing response body writer", err.Error())
+							println("error closing response body writer", err.Error())
 						}
 					}()
 

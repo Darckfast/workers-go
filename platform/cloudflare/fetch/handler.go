@@ -8,21 +8,18 @@ package fetch
 import (
 	"context"
 	"io"
-	"log"
 	"net/http"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
-	jsruntime "codeberg.org/darckfast/workers-go/internal/runtime"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
+	"codeberg.org/darckfast/workers-go/internal/jsruntime"
 )
 
 var httpHandler http.Handler = http.DefaultServeMux
 
 func init() {
-	var handleRequestPromise = js.FuncOf(func(this js.Value, args []js.Value) any {
+	var promise = js.FuncOf(func(this js.Value, args []js.Value) any {
 		reqObj := args[0]
 		envObj := jsclass.Null
 		ctxObj := jsclass.Null
@@ -54,17 +51,12 @@ func init() {
 		return jsclass.Promise.New(cb)
 	})
 
-	js.Global().Get("cf").Set("fetch", handleRequestPromise)
+	jsclass.CF.Set("fetch", promise)
 }
 
 func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error) {
-	lifecycle.Env = envObj
-	lifecycle.Ctx = jsclass.ExecutionContextWrap{Ctx: ctxObj}
-
-	err := env.LoadEnvs()
-	if err != nil {
-		return js.Value{}, err
-	}
+	jsclass.Env.LoadEnvs(envObj)
+	jsclass.Ctx.Init(ctxObj)
 
 	req := jshttp.ToRequest(reqObj)
 	ctx, cancel := context.WithCancel(context.Background())
@@ -99,18 +91,18 @@ func handler(reqObj js.Value, envObj js.Value, ctxObj js.Value) (js.Value, error
 		ReadyCh:     make(chan struct{}),
 	}
 
-	go func() {
+	go func(w *jshttp.ResponseWriter, req *http.Request) {
 		defer func() {
 			w.Ready()
 			err := writer.Close()
 
 			if err != nil {
-				log.Println("error closing response body writer", err.Error())
+				println("error closing response body writer", err.Error())
 			}
 		}()
 
 		httpHandler.ServeHTTP(w, req)
-	}()
+	}(w, req)
 
 	<-w.ReadyCh
 

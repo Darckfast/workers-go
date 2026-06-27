@@ -7,10 +7,9 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
-	jsruntime "codeberg.org/darckfast/workers-go/internal/runtime"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
+	"codeberg.org/darckfast/workers-go/internal/jsruntime"
 	"github.com/mailru/easyjson"
 )
 
@@ -43,7 +42,7 @@ func (c *Client) ToHTTPClient() *http.Client {
 }
 
 func (c *Client) WithBinding(bindname string) *Client {
-	c.namespace = lifecycle.Env.Get(bindname)
+	c.namespace = jsclass.Env.Get(bindname)
 	return c
 }
 
@@ -73,9 +72,9 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	initObj, _ := jsclass.JSON.Parse(string(initJSON))
 
 	if c.Timeout != 0 {
-		timeoutSignal := jsclass.AbortSignal.Call("timeout", c.Timeout.Milliseconds())
+		timeoutSignal := jsclass.AbortSignal.Timeout(c.Timeout.Milliseconds())
 		reqSignal := req.Context().Value(jsruntime.CtxSignal{}).(js.Value)
-		initObj.Set("signal", jsclass.AbortSignal.Call("any", []any{timeoutSignal, reqSignal}))
+		initObj.Set("signal", jsclass.AbortSignal.Any([]any{timeoutSignal, reqSignal}))
 	} else {
 		initObj.Set("signal", req.Context().Value("signal"))
 	}

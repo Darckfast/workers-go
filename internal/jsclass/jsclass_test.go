@@ -9,14 +9,14 @@ import (
 )
 
 func TestAwaitOnResolve(t *testing.T) {
-	r, e := Await(Promise.Call("resolve", true))
+	r, e := Await(Promise.Resolve(true))
 
 	assert.Nil(t, e)
 	assert.True(t, r.Bool())
 }
 
 func TestAwaitOnReject(t *testing.T) {
-	r, e := Await(Promise.Call("reject", "Error message"))
+	r, e := Await(Promise.Reject("Error message"))
 
 	assert.NotNil(t, e)
 	assert.Equal(t, "JavaScript error: Error message", e.Error())

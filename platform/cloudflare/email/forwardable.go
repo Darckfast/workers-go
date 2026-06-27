@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
-	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
+	"codeberg.org/darckfast/workers-go/internal/jsstream"
 )
 
 type EmailMessage struct {

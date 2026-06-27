@@ -11,8 +11,8 @@ import (
 	"strings"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jsstream"
 	"github.com/mailru/easyjson"
 )
 

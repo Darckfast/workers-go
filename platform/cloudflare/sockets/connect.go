@@ -7,8 +7,8 @@ import (
 	"net"
 	"time"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jstry "codeberg.org/darckfast/workers-go/internal/try"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jstry"
 )
 
 type SecureTransport string
@@ -31,7 +31,7 @@ type SocketOptions struct {
 const defaultDeadline = 999999 * time.Hour
 
 func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, error) {
-	connect := jsclass.Connect
+	connect := jsclass.Connect.Get()
 	optionsObj := jsclass.Object.New()
 	if opts != nil {
 		if opts.AllowHalfOpen {
@@ -42,7 +42,7 @@ func Connect(ctx context.Context, addr string, opts *SocketOptions) (net.Conn, e
 		}
 	}
 
-	sockVal, err := jstry.TryCatch(connect, "", addr, optionsObj)
+	sockVal, err := jstry.And.Catch(connect, "", addr, optionsObj)
 	if err != nil {
 		return nil, err
 	}

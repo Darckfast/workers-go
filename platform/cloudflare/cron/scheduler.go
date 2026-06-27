@@ -7,9 +7,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 )
 
 type Task func(c context.Context, evt *CronEvent) error
@@ -19,12 +17,9 @@ var scheduledTask Task = func(c context.Context, _ *CronEvent) error {
 }
 
 func runScheduler(jsEvent js.Value, envObj js.Value, ctxObj js.Value) error {
-	lifecycle.Env = envObj
-	lifecycle.Ctx = jsclass.ExecutionContextWrap{Ctx: ctxObj}
-	err := env.LoadEnvs()
-	if err != nil {
-		return err
-	}
+	jsclass.Env.LoadEnvs(envObj)
+	jsclass.Ctx.Init(ctxObj)
+
 	event := NewEvent(jsEvent)
 
 	ctx := context.Background()
@@ -32,7 +27,7 @@ func runScheduler(jsEvent js.Value, envObj js.Value, ctxObj js.Value) error {
 }
 
 func init() {
-	runSchedulerCallback := js.FuncOf(func(_ js.Value, args []js.Value) any {
+	promise := js.FuncOf(func(_ js.Value, args []js.Value) any {
 		controllerObj := args[0]
 		envObj := args[1]
 		ctxObj := args[2]
@@ -57,8 +52,8 @@ func init() {
 
 		return jsclass.Promise.New(cb)
 	})
+	jsclass.CF.Set("scheduled", promise)
 
-	js.Global().Get("cf").Set("scheduled", runSchedulerCallback)
 }
 
 func ScheduleTaskNonBlock(task Task) {

@@ -8,14 +8,12 @@ package rpc
 import (
 	"context"
 	"io"
-	"log"
 	"net/http"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jshttp "codeberg.org/darckfast/workers-go/internal/http"
-	jsruntime "codeberg.org/darckfast/workers-go/internal/runtime"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jshttp"
+	"codeberg.org/darckfast/workers-go/internal/jsruntime"
 )
 
 var jsProto js.Value
@@ -25,15 +23,13 @@ func initProto() {
 		jsWorkerapp := js.Global().Get("workerapp")
 
 		if !jsWorkerapp.Truthy() {
-			log.Panicln("using RPC but globalThis.workerapp is undefined")
+			println("using RPC but globalThis.workerapp is undefined")
 		}
 
 		jsProto = jsclass.Object.GetPrototypeOf(jsWorkerapp)
 
-		err := env.LoadEnvs()
-		if err != nil {
-			log.Println("error loading envs: " + err.Error())
-		}
+		jsclass.Env.LoadEnvs(js.Value{})
+		jsclass.Ctx.Init(js.Value{})
 	}
 }
 
@@ -80,7 +76,7 @@ func RPCStubStream(name string, h RPCStubStreamFunc) {
 						err := writer.Close()
 
 						if err != nil {
-							log.Println("error closing response body writer", err.Error())
+							println("error closing response body writer", err.Error())
 						}
 					}()
 

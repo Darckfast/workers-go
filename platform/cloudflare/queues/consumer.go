@@ -10,9 +10,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 )
 
 // Consumer is a function that received a batch of messages from Cloudflare Queues.
@@ -27,7 +25,7 @@ var consumer Consumer = func(c context.Context, batch *MessageBatch) error {
 }
 
 func init() {
-	handleBatchCallback := js.FuncOf(func(this js.Value, args []js.Value) any {
+	promise := js.FuncOf(func(this js.Value, args []js.Value) any {
 		batch := args[0]
 		envObj := args[1]
 		ctxObj := args[2]
@@ -52,17 +50,12 @@ func init() {
 
 		return jsclass.Promise.New(cb)
 	})
-	js.Global().Get("cf").Set("queue", handleBatchCallback)
+	jsclass.CF.Set("queue", promise)
 }
 
 func consumeBatch(batch, envObj, ctxObj js.Value) error {
-	lifecycle.Env = envObj
-	lifecycle.Ctx = jsclass.ExecutionContextWrap{Ctx: ctxObj}
-
-	err := env.LoadEnvs()
-	if err != nil {
-		return err
-	}
+	jsclass.Env.LoadEnvs(envObj)
+	jsclass.Ctx.Init(ctxObj)
 
 	b, err := newMessageBatch(batch)
 

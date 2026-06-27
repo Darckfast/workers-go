@@ -7,8 +7,8 @@ import (
 	"errors"
 	"syscall/js"
 
-	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
-	jsruntime "codeberg.org/darckfast/workers-go/internal/runtime"
+	"codeberg.org/darckfast/workers-go/internal/jsconv"
+	"codeberg.org/darckfast/workers-go/internal/jsruntime"
 )
 
 type IncomingBotManagementJsDetection struct {

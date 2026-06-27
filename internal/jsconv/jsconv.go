@@ -7,12 +7,12 @@ import (
 	"syscall/js"
 	"time"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"github.com/mailru/easyjson"
 )
 
 func ArrayFrom(v js.Value) js.Value {
-	return jsclass.Array.Call("from", v)
+	return jsclass.Array.From(v)
 }
 
 func StrRecordToMap(v js.Value) jsclass.GenericStringMap {
@@ -30,7 +30,8 @@ func StrRecordToMap(v js.Value) jsclass.GenericStringMap {
 
 func MapToJSValue(v jsclass.GenericAnyMap) js.Value {
 	b, _ := easyjson.Marshal(v)
-	return jsclass.JSON.Call("parse", string(b))
+	v1, _ := jsclass.JSON.Parse(string(b))
+	return v1
 }
 
 func JSMapToMap(v js.Value) (map[string]any, error) {
@@ -118,7 +119,7 @@ func MaybeDate(v js.Value) time.Time {
 }
 
 func DateToTimestamp(v js.Value) int64 {
-	if v.InstanceOf(jsclass.Date) {
+	if v.InstanceOf(jsclass.Date.Class()) {
 		ms := MaybeInt64(v.Call("getTime"))
 
 		return ms

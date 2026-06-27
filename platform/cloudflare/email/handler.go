@@ -8,12 +8,9 @@ package email
 import (
 	"context"
 	"errors"
-	"log"
 	"syscall/js"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/env"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 )
 
 type EmailConsumer func(c context.Context, f *ForwardableEmailMessage) error
@@ -23,7 +20,7 @@ var consumer EmailConsumer = func(c context.Context, _ *ForwardableEmailMessage)
 }
 
 func init() {
-	var handleRequestPromise = js.FuncOf(func(this js.Value, args []js.Value) any {
+	var promise = js.FuncOf(func(this js.Value, args []js.Value) any {
 		fwrMsgObj := args[0]
 		envObj := args[1]
 		ctxObj := args[2]
@@ -48,22 +45,18 @@ func init() {
 		return jsclass.Promise.New(cb)
 	})
 
-	js.Global().Get("cf").Set("email", handleRequestPromise)
+	jsclass.CF.Set("email", promise)
 }
 
 func handler(emailObj, envObj, ctxObj js.Value) error {
-	lifecycle.Env = envObj
-	lifecycle.Ctx = jsclass.ExecutionContextWrap{Ctx: ctxObj}
+	jsclass.Env.LoadEnvs(envObj)
+	jsclass.Ctx.Init(ctxObj)
 
-	err := env.LoadEnvs()
-	if err != nil {
-		return err
-	}
 	email := NewForwardableEmailMessage(emailObj)
 	defer func() {
 		err := email.Raw.Close()
 		if err != nil {
-			log.Println("error closing email raw body reader", err.Error())
+			println("error closing email raw body reader", err.Error())
 		}
 	}()
 

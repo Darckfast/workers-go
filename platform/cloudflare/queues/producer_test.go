@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"github.com/mailru/easyjson"
 	"github.com/stretchr/testify/assert"
 )

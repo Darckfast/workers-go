@@ -8,14 +8,13 @@ package sockets
 import (
 	"context"
 	"io"
-	"log"
 	"net"
 	"os"
 	"syscall/js"
 	"time"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jsstream "codeberg.org/darckfast/workers-go/internal/stream"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jsstream"
 )
 
 func newSocket(ctx context.Context, sockVal js.Value, readDeadline, writeDeadline time.Time) *Socket {
@@ -38,7 +37,7 @@ func newSocket(ctx context.Context, sockVal js.Value, readDeadline, writeDeadlin
 		closeRead: func() {
 			err := readCloser.Close()
 			if err != nil {
-				log.Println("error closing reader on socket", err.Error())
+				println("error closing reader on socket", err.Error())
 			}
 		},
 		closeWrite: func() { writerVal.Call("close") },

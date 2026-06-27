@@ -7,9 +7,8 @@ import (
 	"syscall/js"
 	"testing"
 
-	jsclass "codeberg.org/darckfast/workers-go/internal/class"
-	jsconv "codeberg.org/darckfast/workers-go/internal/conv"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/lifecycle"
+	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/internal/jsconv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,8 +34,10 @@ func setupEnv() *js.Value {
     }
     `))
 
-	lifecycle.Env = jsclass.Object.New()
-	lifecycle.Env.Set("BINDING", mock)
+	v := jsclass.Object.New()
+	v.Set("BINDING", mock)
+	jsclass.Env = jsclass.EnvBinding{}
+	jsclass.Env.LoadEnvs(v)
 
 	return &mock
 }
