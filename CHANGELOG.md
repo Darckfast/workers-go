@@ -1,4 +1,24 @@
 # Changelog
+
+## [0.5.0](https://codeberg.org/darckfast/workers-go/compare/v0.4.3...v0.5.0) (2026-06-26)
+
+### 🚀 Features
+
+- Durable objects and types generation (https://codeberg.org/darckfast/workers-go/pulls/34)
+  - Durable Objects now can be interfaced through Go code. See `_apps/_durable_object` for an working exampls (Not all bindings were implemented yet)
+- All JavaScript classes and methods are now acquired through lazy unwrapping using `jshelper.LazyJSVal` (https://codeberg.org/darckfast/workers-go/pulls/35)
+- `Env` and `Ctx` now are loaded only once with `sync.Once` at its first usage (https://codeberg.org/darckfast/workers-go/pulls/35)
+
+### 🐛 Bug Fixes
+- When producers sends `Uint8Array` it gets transformed into `ArrayBuffer` on the receiving consumer, this checks and transforms it back to `Uint8Array`, this allows `CopyBytesToGo` to be used - fixed https://github.com/Darckfast/workers-go/issues/45 (https://codeberg.org/darckfast/workers-go/pulls/33)
+- `SQLDurationMs` and `Duration` were both using int64, while this works locally, when deployed on Cloudflare, D1 returns a float, which was resulting in a conversion error being returned - fixes https://github.com/Darckfast/workers-go/issues/46 (https://codeberg.org/darckfast/workers-go/pulls/33)
+- Remove legacy lifecycle functions and variables (https://codeberg.org/darckfast/workers-go/pulls/35)
+
+### ⚙️ Miscellaneous Tasks
+
+- Updated go install cmd to use @latest tag (https://codeberg.org/darckfast/workers-go/pulls/30)
+- Updated README.md to use github.com url for templates (https://codeberg.org/darckfast/workers-go/pulls/31)
+
 ## [0.4.3](https://codeberg.org/darckfast/workers-go/compare/v0.4.2...v0.4.3) (2026-06-20)
 
 ### 🚀 Features
