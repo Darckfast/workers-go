@@ -1,8 +1,6 @@
-import type { Buffer } from "node:buffer";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { Readable } from "node:stream";
-import { ReadableStream } from "node:stream/web";
 import { fileURLToPath } from "node:url";
 import express from "ultimate-express";
 import "./bin/wasm_exec.js";
@@ -59,40 +57,52 @@ init();
 
 const app = express();
 
-function bufferToUint8Array(buffer: Buffer) {
-  const uintArray = new Uint8Array(buffer.length);
-  for (let i = 0; i < buffer.length; ++i) {
-    uintArray[i] = buffer[i];
-  }
-
-  return uintArray;
-}
-
 // the body must be raw, the parsing will happen within
 // our Go code
 app.use(express.raw({ type: "*/*" }));
 
-app.all("*", async (req, res) => {
+let encoder = new TextEncoder()
+let decoder = new TextDecoder()
+
+app.all("/", async (_req, res) => {
   // if the first request comes before the initialization
   // is done, or if the Go process exit, this will guarantee
   // it's up and running
   await init();
-
-  // the express.raw gives us a buffer, but the lib expected a
-  // ReadableStream of UInt8Array
-  req.body = ReadableStream.from([bufferToUint8Array(req.body)]);
-
-  const gores = await cf.fetch(req);
+  let stream = Readable.toWeb(_req)
+  let { writable, readable } = new TransformStream();
+  let keys = Object.keys(_req.headers);
+  let selHeaders = "";
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const value = _req.headers[key];
+    selHeaders += `${key}: ${value}\n`;
+  }
+  let rawHeaders = await cf.fetch(
+    stream,
+    encoder.encode(_req.method),
+    encoder.encode(_req.url),
+    encoder.encode(selHeaders),
+    writable,
+    _req.signal,
+  );
+  let parts = decoder.decode(rawHeaders).split("\n");
+  let [, status, statusText] = parts[0].split(" ");
+  let headers = new Headers();
+  for (let i = 1; i < parts.length; i++) {
+    let [key, val] = parts[i].split(":");
+    if (key) {
+      headers.append(key, val);
+    }
+  }
 
   res.writeHead(
-    gores.status,
-    gores.statusText,
-    Object.fromEntries(gores.headers),
+    status,
+    statusText,
+    Object.fromEntries(headers),
   );
 
-  if (gores.body !== null) {
-    Readable.fromWeb(gores.body as ReadableStream<any>).pipe(res);
-  }
+  Readable.fromWeb(readable).pipe(res);
 });
 
 app.listen(5173, () => {

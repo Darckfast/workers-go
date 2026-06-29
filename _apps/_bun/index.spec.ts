@@ -6,7 +6,7 @@ afterAll(async () => {
 });
 
 test("should return hello from wasm", async () => {
-  const response = await fetch("http://localhost:5173/hello");
+  const response = await fetch("http://localhost:5173/");
   expect(response.status).toBe(200);
   expect(await response.text()).toBe("hello");
 });

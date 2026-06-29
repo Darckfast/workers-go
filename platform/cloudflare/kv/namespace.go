@@ -6,7 +6,7 @@ import (
 	"errors"
 	"syscall/js"
 
-	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 )
 
 type Namespace struct {
@@ -14,7 +14,7 @@ type Namespace struct {
 }
 
 func NewNamespace(binding string) (*Namespace, error) {
-	inst := jsclass.Env.Get(binding)
+	inst := bind.Env.Get(binding)
 	if !inst.Truthy() {
 		return nil, errors.New(binding + " is undefined")
 	}

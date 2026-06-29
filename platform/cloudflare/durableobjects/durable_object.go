@@ -3,17 +3,24 @@
 package durableobjects
 
 import (
+	"bufio"
+	"bytes"
 	"context"
+	"errors"
 	"io"
 	"iter"
 	"net/http"
+	"net/textproto"
+	"net/url"
+	"strconv"
+	"strings"
 	"syscall/js"
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"codeberg.org/darckfast/workers-go/internal/jshelper"
 	"codeberg.org/darckfast/workers-go/internal/jshttp"
-	"codeberg.org/darckfast/workers-go/internal/jsruntime"
 	"codeberg.org/darckfast/workers-go/internal/jstry"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 	"github.com/mailru/easyjson"
 )
 
@@ -171,25 +178,64 @@ func (d *DurableObject) AddRPC(name string, h rpcfunc) {
 type FetchHandler = func(w http.ResponseWriter, r *http.Request)
 
 func (d *DurableObject) AddFetch(fetch FetchHandler) {
-	var handleRequestPromise = js.FuncOf(func(this js.Value, args []js.Value) any {
-		reqObj := args[0]
+	var promise = js.FuncOf(func(this js.Value, args []js.Value) any {
+		reqBody := args[0]
+		reqMethod := args[1]
+		reqUrl := args[2]
+		reqHeaders := args[3]
+		writable := args[4]
+
+		signal := js.Value{}
+		nodeSignal := js.Value{}
+
+		if len(args) >= 6 {
+			signal = args[5]
+		}
+
+		if len(args) >= 7 {
+			nodeSignal = args[6]
+		}
+
+		bind.Env.LoadEnvs(d.Env())
+		bind.Ctx.Init(d.ctx.v.Value)
 		var cb js.Func
 		cb = js.FuncOf(func(_ js.Value, pArgs []js.Value) any {
 			defer cb.Release()
 			resolve := pArgs[0]
-			reject := pArgs[1]
 
-			go func(resolve js.Value, reject js.Value) {
-				jsclass.Env.LoadEnvs(js.Value{})
+			go func(resolve js.Value) {
+				var urlBytes = make([]byte, reqUrl.Length())
+				js.CopyBytesToGo(urlBytes, reqUrl)
 
-				req := jshttp.ToRequest(reqObj)
+				var headersBytes = make([]byte, reqHeaders.Length())
+				js.CopyBytesToGo(headersBytes, reqHeaders)
+
+				var methodBytes = make([]byte, reqMethod.Length())
+				js.CopyBytesToGo(methodBytes, reqMethod)
+
+				reader := textproto.NewReader(bufio.NewReader(strings.NewReader(string(headersBytes))))
+				headers, err := reader.ReadMIMEHeader()
+				if err != nil && !errors.Is(err, io.EOF) {
+					println("error decoding headers: ", err.Error())
+				}
+
+				url, _ := url.Parse(string(urlBytes))
+				contentLength, _ := strconv.ParseInt(headers.Get("Content-Length"), 10, 64)
+				req := &http.Request{
+					Method:           string(methodBytes),
+					URL:              url,
+					Header:           http.Header(headers),
+					Body:             jshttp.ToBody(reqBody),
+					ContentLength:    contentLength,
+					TransferEncoding: strings.Split(headers.Get("Transfer-Encoding"), ","),
+					Host:             headers.Get("Host"),
+				}
+
 				ctx, cancel := context.WithCancel(context.Background())
 				defer cancel()
 
-				signal := reqObj.Get("signal")
 				var cbCancel js.Func
 				defer cbCancel.Release()
-
 				cbCancel = js.FuncOf(func(this js.Value, args []js.Value) any {
 					cancel()
 					return nil
@@ -197,39 +243,44 @@ func (d *DurableObject) AddFetch(fetch FetchHandler) {
 
 				if signal.Truthy() {
 					signal.Call("addEventListener", "abort", cbCancel)
-				} else {
-					reqObj.Call("on", "close", cbCancel)
+				} else if nodeSignal.Truthy() {
+					nodeSignal.Call("on", "close", cbCancel)
 				}
-
-				ctx = context.WithValue(ctx, jsruntime.CtxSignal{}, signal)
-				ctx = jsruntime.New(ctx, reqObj)
 				req = req.WithContext(ctx)
-				reader, writer := io.Pipe()
 
 				w := &jshttp.ResponseWriter{
 					HeaderValue: http.Header{},
 					StatusCode:  http.StatusOK,
-					Reader:      reader,
-					Writer:      writer,
 					ReadyCh:     make(chan struct{}),
+					V:           writable,
 				}
 
-				go func(w *jshttp.ResponseWriter, r *http.Request) {
-					defer func() {
+				go func(w *jshttp.ResponseWriter, req *http.Request) {
+					defer func(w *jshttp.ResponseWriter) {
 						w.Ready()
-						err := writer.Close()
-
-						if err != nil {
-							println("error closing response body writer", err.Error())
-						}
-					}()
+					}(w)
 
 					fetch(w, req)
 				}(w, req)
 
+				// Once the writable is about to to written, we can
+				// return the http.headers and wait for the readable to
+				// start pulling
 				<-w.ReadyCh
-				resolve.Invoke(w.ToJSResponse())
-			}(resolve, reject)
+
+				buf := new(bytes.Buffer)
+				buf.WriteString("HTTP/1.1 ")
+				buf.WriteString(strconv.Itoa(w.StatusCode))
+				buf.WriteString(" ")
+				buf.WriteString(http.StatusText(w.StatusCode))
+				buf.WriteString("\n")
+
+				_ = w.HeaderValue.Write(buf)
+				b := jsclass.Uint8Array.New(buf.Len())
+				js.CopyBytesToJS(b, buf.Bytes())
+
+				resolve.Invoke(b)
+			}(resolve)
 
 			return nil
 		})
@@ -237,5 +288,5 @@ func (d *DurableObject) AddFetch(fetch FetchHandler) {
 		return jsclass.Promise.New(cb)
 	})
 
-	d.__prototype__.Set("fetch", handleRequestPromise)
+	d.__prototype__.Set("_fetch", promise)
 }

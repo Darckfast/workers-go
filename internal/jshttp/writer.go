@@ -9,71 +9,62 @@ import (
 	"syscall/js"
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
-	"codeberg.org/darckfast/workers-go/internal/jsstream"
 )
 
 type ResponseWriter struct {
-	Reader      io.ReadCloser
+	Writer      io.Writer
+	V           js.Value
+	w           js.Value
 	HeaderValue http.Header
-	Writer      *io.PipeWriter
 	ReadyCh     chan struct{}
-	RawJSBody   *js.Value
 	StatusCode  int
-	Length      int64
 	Once        sync.Once
 }
 
 var (
 	_ http.ResponseWriter = (*ResponseWriter)(nil)
-	_ http.Flusher        = (*ResponseWriter)(nil)
 )
 
 // Ready indicates that ResponseWriter is ready to be converted to Response.
-func (w *ResponseWriter) Ready() {
-	w.Once.Do(func() {
-		close(w.ReadyCh)
+// If we start writing to the TransformStream() while the readable is not pulling,
+// this will cause a deadlock and the JS loop will hang
+func (rw *ResponseWriter) Ready() {
+	rw.Once.Do(func() {
+		close(rw.ReadyCh)
+		rw.w = rw.V.Call("getWriter")
 	})
 }
 
-func (w *ResponseWriter) Write(data []byte) (n int, err error) {
-	w.Ready()
-	n, e := w.Writer.Write(data)
-	w.Length += int64(n)
-	return n, e
-}
-
-func (w *ResponseWriter) Header() http.Header {
-	return w.HeaderValue
-}
-
-func (w *ResponseWriter) WriteHeader(statusCode int) {
-	w.StatusCode = statusCode
-}
-
-// Flush is a no-op implementation of http.Flusher.
-//
-// * PipeWriter does not have buffer, and JS-side Response does not have flush method.
-// * But some libraries like `mcp-go` requires this method.
-// * So implement this method as a workaround.
-func (w *ResponseWriter) Flush() {
-	// no-op
-}
-
-func (w *ResponseWriter) ToReadableStream() js.Value {
-	if jsclass.MaybeFixedLengthStream.Truthy() && w.Length > 0 {
-		return jsstream.ReadCloserToFixedLengthStream(w.Reader, w.Length)
-	} else {
-		return jsstream.ReadCloserToReadableStream(w.Reader)
+func (rw *ResponseWriter) Write(data []byte) (n int, err error) {
+	rw.Ready()
+	_, err = jsclass.Await(rw.w.Get("ready"))
+	if err != nil {
+		rw.w.Call("abort", "writable ready promise returned error: "+err.Error())
+		return 0, err
 	}
+
+	n = len(data)
+	if n > 0 {
+		b := jsclass.Uint8Array.New(n)
+		js.CopyBytesToJS(b, data)
+		rw.w.Call("write", b)
+	}
+
+	rw.Close()
+
+	return n, nil
 }
 
-func (w *ResponseWriter) ToJSResponse() js.Value {
-	// JSON.parse would be faster
-	respInit := jsclass.Object.New()
-	respInit.Set("status", w.StatusCode)
-	respInit.Set("statusText", http.StatusText(w.StatusCode))
-	respInit.Set("headers", ToJSHeader(w.HeaderValue))
-	var readableStream = w.ToReadableStream()
+func (rw *ResponseWriter) Close() {
+	rw.Ready()
+	_, _ = jsclass.Await(rw.w.Get("ready"))
+	rw.w.Call("close")
+}
 
-	return jsclass.Response.New(readableStream, respInit)
+func (rw *ResponseWriter) Header() http.Header {
+	return rw.HeaderValue
+}
+
+func (rw *ResponseWriter) WriteHeader(statusCode int) {
+	rw.StatusCode = statusCode
 }

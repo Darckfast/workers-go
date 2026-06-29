@@ -8,6 +8,7 @@ import (
 	"syscall/js"
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 )
 
 type Task func(c context.Context, evt *CronEvent) error
@@ -17,8 +18,8 @@ var scheduledTask Task = func(c context.Context, _ *CronEvent) error {
 }
 
 func runScheduler(jsEvent js.Value, envObj js.Value, ctxObj js.Value) error {
-	jsclass.Env.LoadEnvs(envObj)
-	jsclass.Ctx.Init(ctxObj)
+	bind.Env.LoadEnvs(envObj)
+	bind.Ctx.Init(ctxObj)
 
 	event := NewEvent(jsEvent)
 

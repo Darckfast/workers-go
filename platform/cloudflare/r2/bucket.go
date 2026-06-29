@@ -10,6 +10,7 @@ import (
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"codeberg.org/darckfast/workers-go/internal/jshttp"
 	"codeberg.org/darckfast/workers-go/internal/jsstream"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 	"github.com/mailru/easyjson"
 )
 
@@ -26,7 +27,7 @@ type Bucket struct {
 //   - if the given variable name doesn't exist on runtime context, returns error.
 //   - This function panics when a runtime context is not found.
 func NewBucket(varName string) (*Bucket, error) {
-	inst := jsclass.Env.Get(varName)
+	inst := bind.Env.Get(varName)
 	if inst.IsUndefined() {
 		return nil, errors.New("%s is undefined" + varName)
 	}

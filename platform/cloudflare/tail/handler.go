@@ -8,6 +8,7 @@ import (
 	"syscall/js"
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 )
 
 type TailConsumer func(ctx context.Context, traces *Traces) error
@@ -46,8 +47,8 @@ func init() {
 }
 
 func handler(eventsObj, envObj, ctxObj js.Value) error {
-	jsclass.Ctx.Init(ctxObj)
-	jsclass.Env.LoadEnvs(envObj)
+	bind.Ctx.Init(ctxObj)
+	bind.Env.LoadEnvs(envObj)
 
 	events, err := NewEvents(eventsObj)
 

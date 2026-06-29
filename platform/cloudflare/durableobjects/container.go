@@ -7,6 +7,7 @@ import (
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"codeberg.org/darckfast/workers-go/internal/jshttp"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 )
 
 type Container struct {
@@ -26,7 +27,7 @@ func (s *Container) ContainerFetch(req *http.Request) (*http.Response, error) {
 }
 
 func GetContainer(binding string, id string) (*Container, error) {
-	inst := jsclass.Env.Get(binding)
+	inst := bind.Env.Get(binding)
 	donamespace := &DurableObjectNamespace{instance: inst}
 	objID := donamespace.IdFromName(id)
 	obj, err := donamespace.Get(objID)

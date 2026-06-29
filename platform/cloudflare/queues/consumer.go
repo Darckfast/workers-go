@@ -11,6 +11,7 @@ import (
 	"syscall/js"
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 )
 
 // Consumer is a function that received a batch of messages from Cloudflare Queues.
@@ -54,8 +55,8 @@ func init() {
 }
 
 func consumeBatch(batch, envObj, ctxObj js.Value) error {
-	jsclass.Env.LoadEnvs(envObj)
-	jsclass.Ctx.Init(ctxObj)
+	bind.Env.LoadEnvs(envObj)
+	bind.Ctx.Init(ctxObj)
 
 	b, err := newMessageBatch(batch)
 

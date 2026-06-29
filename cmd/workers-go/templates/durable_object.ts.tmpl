@@ -16,12 +16,11 @@ import "./wasm_exec.js";
 import {{$k}}_binary from "./{{$k}}.wasm";
 {{- end}}
 globalThis._durableobjects ||= new Map()
-globalThis.tryCatch ||= (o, fn, args) => {
+globalThis.tryCatch = (o, fn, args) => {
   try {
     if (fn) {
       return { data: o[fn](...args) };
     }
-
     return { data: o(...args) };
   } catch (err) {
     if (!(err instanceof Error)) {
@@ -33,17 +32,29 @@ globalThis.tryCatch ||= (o, fn, args) => {
     return { error: err };
   }
 };
+let initiliazed = false;
+let go: Go
+let decoder = new TextDecoder()
+let encoder = new TextEncoder()
+
 {{- range $k, $v := . }}
+let {{$k}}_instance: WebAssembly.WebAssemblyInstantiatedSource
+async function loadAsync_{{$k}}() {
+  if (!initiliazed || go.exited) {
+    go ||= new Go();
+    {{$k}}_instance = await WebAssembly.instantiate({{$k}}_binary, go.importObject)
+    go.run({{$k}}_instance).finally(() => {
+      initiliazed = false;
+    });
+    initiliazed = true;
+  }
+}
 export class {{$k}} extends DurableObject<Env> {
-  #go = new Go()
-  #instance: WebAssembly.Instance
-  #encoder = new TextEncoder()
-  #decoder = new TextDecoder()
+  #ready: Promise<void>;
   constructor(ctx:DurableObjectState, env:Env) {
     super(ctx, env);
     globalThis._durableobjects.set("{{$k}}", this)
-    this.#instance = new WebAssembly.Instance({{$k}}_binary, this.#go.importObject);
-    this.#go.run(this.#instance);
+    this.#ready = loadAsync_{{$k}}()
     if (this._init) {
       this._init()
     }
@@ -51,7 +62,32 @@ export class {{$k}} extends DurableObject<Env> {
 {{- range $v }}
 {{- if eq .FuncName "fetch" }}
   async fetch(_: Request): Promise<Response> {
-    return new Response()
+    await this.#ready
+    let { writable, readable } = new TransformStream()
+    let keys = Object.keys(request.headers)
+    let selHeaders = ""
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const value = request.headers.get(key);
+      selHeaders += `${key}: ${value}\n`
+    }
+    let rawHeaders = await this._fetch(request.body,
+      encoder.encode(request.method),
+      encoder.encode(request.url),
+      encoder.encode(selHeaders),
+      writable,
+      request.signal,
+    )
+    let parts = decoder.decode(rawHeaders).split('\n')
+    let [, status,] = parts[0].split(' ')
+    let headers = new Headers()
+    for (let i = 1; i < parts.length; i++) {
+      let [key, val] = parts[i].split(':')
+      if (key) {
+        headers.append(key, val)
+      }
+    }
+    return new Response(readable, { status, headers })
   }
 {{- else if ne .FuncName "init" }}
   {{- $v :=  .TSArgs }}
@@ -59,18 +95,18 @@ export class {{$k}} extends DurableObject<Env> {
   async {{.FuncName}}({{- inlinetypes "a" $v .Args }}): Promise<{{- typereturn  $returnType}}> {
   {{- range $i, $_ := .Args}}
     let b{{$i}} =  JSON.stringify(a{{$i}})
-    let e{{$i}} = this.#encoder.encode(b{{$i}})
+    let e{{$i}} = encoder.encode(b{{$i}})
   {{- end}}
     let r = await this._{{.FuncName}}( {{- inline "e" .Args}})
     {{- range $i, $type := .TSRarg }}
     {{- if eq $type "string" }}
-    let r{{$i}} = this.#decoder.decode(r[{{$i}}])
+    let r{{$i}} = decoder.decode(r[{{$i}}])
     {{- else if eq $type "number" }}
-    let r{{$i}} = Number(this.#decoder.decode(r[{{$i}}]))
+    let r{{$i}} = Number(decoder.decode(r[{{$i}}]))
     {{- else if eq $type "boolean" }}
-    let r{{$i}} = Boolean(this.#decoder.decode(r[{{$i}}]))
+    let r{{$i}} = Boolean(decoder.decode(r[{{$i}}]))
     {{- else }}
-    let r{{$i}}:{{index $returnType $i}}=JSON.parse(this.#decoder.decode(r[{{$i}}]))
+    let r{{$i}}:{{index $returnType $i}}=JSON.parse(decoder.decode(r[{{$i}}]))
     {{- end}}
     {{- end}}
     {{- if gt (len .Rargs) 1}}

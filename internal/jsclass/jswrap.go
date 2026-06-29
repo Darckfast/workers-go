@@ -81,17 +81,16 @@ func (e *EnvBinding) LoadEnvs(j js.Value) {
 			e.v.Value = j
 		}
 
-		if e.v.Truthy() {
-			envs, err := JSValueToMapString(e.v.Value)
+		env := js.Global().Get("process").Get("env")
+		envs, err := JSValueToMapString(env)
+		if err != nil {
+			println("error parsing envs: " + err.Error())
+		}
+
+		for key, e := range envs {
+			err = os.Setenv(key, e)
 			if err != nil {
 				println("error setting envs: " + err.Error())
-			}
-
-			for key, e := range envs {
-				err = os.Setenv(key, e)
-				if err != nil {
-					println("error setting envs: " + err.Error())
-				}
 			}
 		}
 	})

@@ -10,6 +10,7 @@ import (
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"codeberg.org/darckfast/workers-go/internal/jshttp"
 	"codeberg.org/darckfast/workers-go/internal/jsruntime"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 	"github.com/mailru/easyjson"
 )
 
@@ -42,7 +43,7 @@ func (c *Client) ToHTTPClient() *http.Client {
 }
 
 func (c *Client) WithBinding(bindname string) *Client {
-	c.namespace = jsclass.Env.Get(bindname)
+	c.namespace = bind.Env.Get(bindname)
 	return c
 }
 

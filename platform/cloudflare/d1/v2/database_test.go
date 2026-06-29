@@ -9,6 +9,7 @@ import (
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"codeberg.org/darckfast/workers-go/internal/jsconv"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,8 +37,8 @@ func setupEnv() *js.Value {
 
 	v := jsclass.Object.New()
 	v.Set("BINDING", mock)
-	jsclass.Env = jsclass.EnvBinding{}
-	jsclass.Env.LoadEnvs(v)
+	bind.Env = jsclass.EnvBinding{}
+	bind.Env.LoadEnvs(v)
 
 	return &mock
 }

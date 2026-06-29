@@ -7,6 +7,7 @@ import (
 	"syscall/js"
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 	"github.com/mailru/easyjson"
 )
 
@@ -20,7 +21,7 @@ type Producer struct {
 // In Cloudflare API documentation, this object represents the Queue.
 //   - https://developers.cloudflare.com/queues/configuration/javascript-apis/#producer
 func NewProducer(queueName string) (*Producer, error) {
-	inst := jsclass.Env.Get(queueName)
+	inst := bind.Env.Get(queueName)
 	if inst.IsUndefined() {
 		return nil, errors.New(queueName + " is undefined")
 	}

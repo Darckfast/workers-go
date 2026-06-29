@@ -44,6 +44,18 @@ func ToRequest(req js.Value) *http.Request {
 		Host:             headers.Get("Host"),
 	}
 }
+func ToBodylessJSRequest(req *http.Request) js.Value {
+	jsReq := JSRequest{
+		URL:     req.URL.String(),
+		Method:  req.Method,
+		Headers: HeaderToMap(req.Header),
+	}
+
+	jsReqB, _ := easyjson.Marshal(jsReq)
+	jsReqOptions, _ := jsclass.JSON.Parse(string(jsReqB))
+
+	return jsclass.Request.New(req.URL.String(), jsReqOptions)
+}
 
 func ToJSRequest(req *http.Request) js.Value {
 	jsReq := JSRequest{

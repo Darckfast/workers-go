@@ -6,12 +6,15 @@ import (
 	"net/http"
 
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/fetch"
+	"github.com/julienschmidt/httprouter"
 )
 
 func main() {
-	mux := http.NewServeMux()
+	mux := httprouter.New()
 
-	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandlerFunc("GET", "/", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(201)
+		w.Header().Add("content-type", "text/plain")
 		_, _ = w.Write([]byte("hello from workers-go"))
 	})
 

@@ -58,10 +58,37 @@ export async function init() {
 init();
 
 const app = new Hono();
+let encoder = new TextEncoder()
+let decoder = new TextDecoder()
 
 app.all("*", async (c) => {
   await init();
-  return cf.fetch(c.req.raw);
+  let { writable, readable } = new TransformStream();
+  let keys = Object.keys(c.req.raw.headers);
+  let selHeaders = "";
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const value = c.req.raw.headers.get(key);
+    selHeaders += `${key}: ${value}\n`;
+  }
+  let rawHeaders = await cf.fetch(
+    c.body,
+    encoder.encode(c.req.method),
+    encoder.encode(c.req.url),
+    encoder.encode(selHeaders),
+    writable,
+    c.req.raw.signal,
+  );
+  let parts = decoder.decode(rawHeaders).split("\n");
+  let [, status] = parts[0].split(" ");
+  let headers = new Headers();
+  for (let i = 1; i < parts.length; i++) {
+    let [key, val] = parts[i].split(":");
+    if (key) {
+      headers.append(key, val);
+    }
+  }
+  return new Response(readable, { status, headers });
 });
 
 export default serve({

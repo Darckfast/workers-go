@@ -68,7 +68,7 @@ func (opts *MatchOptions) toJS() js.Value {
 // Match returns the response object keyed to that request.
 // docs: https://developers.cloudflare.com/workers/runtime-apis/cache/#match
 func (c *Cache) Match(req *http.Request, opts *MatchOptions) (*http.Response, error) {
-	res, err := jsclass.Await(c.i.Call("match", jshttp.ToJSRequest(req), opts.toJS()))
+	res, err := jsclass.Await(c.i.Call("match", jshttp.ToBodylessJSRequest(req), opts.toJS()))
 	if err != nil {
 		return nil, err
 	}

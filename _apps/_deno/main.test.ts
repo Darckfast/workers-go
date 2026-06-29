@@ -9,7 +9,7 @@ describe("GET /hello", () => {
   });
 
   it("should return hello from wasm", async () => {
-    const res = await fetch("http://localhost:5173/hello");
+    const res = await fetch("http://localhost:5173/");
     const data = await res.text();
     assertEquals(res.status, 200);
     assertEquals(data, "hello");

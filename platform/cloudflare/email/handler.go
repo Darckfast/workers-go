@@ -11,6 +11,7 @@ import (
 	"syscall/js"
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 )
 
 type EmailConsumer func(c context.Context, f *ForwardableEmailMessage) error
@@ -49,8 +50,8 @@ func init() {
 }
 
 func handler(emailObj, envObj, ctxObj js.Value) error {
-	jsclass.Env.LoadEnvs(envObj)
-	jsclass.Ctx.Init(ctxObj)
+	bind.Env.LoadEnvs(envObj)
+	bind.Ctx.Init(ctxObj)
 
 	email := NewForwardableEmailMessage(emailObj)
 	defer func() {

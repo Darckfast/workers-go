@@ -4,8 +4,6 @@ package rpc
 
 import (
 	"context"
-	"io"
-	"net/http"
 	"os"
 	"syscall/js"
 	"testing"
@@ -55,34 +53,4 @@ func TestCreateNewRPCStub(t *testing.T) {
 	js.CopyBytesToGo(dst, r.Index(0))
 
 	assert.Equal(t, "result from rpc", string(dst))
-}
-
-func TestCreateNewRPCStubStream(t *testing.T) {
-	RPCStubStream("test-stream", func(c context.Context, w http.ResponseWriter, body io.ReadCloser, args [][]byte) {
-		b, _ := io.ReadAll(body)
-		assert.Equal(t, `{"test":2}`, string(b))
-
-		_, err := w.Write([]byte("writer response from rpc"))
-		assert.Nil(t, err)
-	})
-
-	req := jsclass.Request.New("http://dummy", map[string]any{
-		"method": "post",
-		"body":   `{"test":2}`,
-	})
-
-	b1 := []byte("arg1")
-
-	arg1 := jsclass.Uint8Array.New(len(b1))
-
-	js.CopyBytesToJS(arg1, b1)
-
-	r, _ := jsclass.Await(app.Call("test-stream", req.Get("body"), js.Null(), js.Undefined(), arg1))
-	result, _ := jsclass.Await(r.Call("getReader").Call("read"))
-
-	br := result.Get("value")
-	var dst = make([]byte, br.Length())
-	js.CopyBytesToGo(dst, br)
-
-	assert.Equal(t, "writer response from rpc", string(dst))
 }

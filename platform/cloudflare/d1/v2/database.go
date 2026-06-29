@@ -10,6 +10,7 @@ import (
 	"syscall/js"
 
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 	"github.com/mailru/easyjson"
 )
 
@@ -18,7 +19,7 @@ type D1Db struct {
 }
 
 func GetDB(binding string) (*D1Db, error) {
-	v := jsclass.Env.Get(binding)
+	v := bind.Env.Get(binding)
 
 	if !v.Truthy() {
 		return nil, errors.New("d1 binding not found " + binding)

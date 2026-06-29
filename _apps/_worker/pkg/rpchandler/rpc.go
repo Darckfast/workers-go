@@ -4,8 +4,6 @@ package rpchandler
 
 import (
 	"context"
-	"io"
-	"net/http"
 
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/rpc"
 )
@@ -17,17 +15,5 @@ func New() {
 	 */
 	rpc.RPCStub("echo", func(c context.Context, args [][]byte) [][]byte {
 		return args
-	})
-
-	/*
-	* RPCStubStream works similar to RPCStub, using ReadableStream and Writers
-	* to handle better large payloads, but its slower
-	 */
-	rpc.RPCStubStream("echoStream", func(c context.Context, w http.ResponseWriter, body io.ReadCloser, args [][]byte) {
-		defer body.Close()
-
-		b, _ := io.ReadAll(body)
-
-		w.Write(b)
 	})
 }

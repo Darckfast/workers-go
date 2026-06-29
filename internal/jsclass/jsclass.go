@@ -36,8 +36,6 @@ var (
 	JSON                   = JSONJS{}
 	Object                 = ObjectWrap{}
 	Console                = ConsoleWrap{}
-	Ctx                    = ExecutionContextWrap{}
-	Env                    = EnvBinding{}
 	Caches                 = jshelper.CacheInterface{}
 	Promise                = jshelper.PromiseClass{}
 	AbortSignal            = jshelper.AbortSignal{}

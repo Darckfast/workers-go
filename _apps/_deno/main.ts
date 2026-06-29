@@ -47,9 +47,35 @@ export async function init() {
 }
 
 init();
+let decoder = new TextDecoder();
+let encoder = new TextEncoder();
 
 export default Deno.serve({ port: 5173 }, async (_req) => {
   await init();
-
-  return cf.fetch(_req);
+  let { writable, readable } = new TransformStream();
+  let keys = Object.keys(_req.headers);
+  let selHeaders = "";
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const value = _req.headers.get(key);
+    selHeaders += `${key}: ${value}\n`;
+  }
+  let rawHeaders = await cf.fetch(
+    _req.body,
+    encoder.encode(_req.method),
+    encoder.encode(_req.url),
+    encoder.encode(selHeaders),
+    writable,
+    _req.signal,
+  );
+  let parts = decoder.decode(rawHeaders).split("\n");
+  let [, status] = parts[0].split(" ");
+  let headers = new Headers();
+  for (let i = 1; i < parts.length; i++) {
+    let [key, val] = parts[i].split(":");
+    if (key) {
+      headers.append(key, val);
+    }
+  }
+  return new Response(readable, { status, headers });
 });

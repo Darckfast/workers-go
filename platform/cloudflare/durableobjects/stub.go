@@ -13,6 +13,7 @@ import (
 	"codeberg.org/darckfast/workers-go/internal/jsclass"
 	"codeberg.org/darckfast/workers-go/internal/jshttp"
 	"codeberg.org/darckfast/workers-go/internal/jstry"
+	"codeberg.org/darckfast/workers-go/platform/cloudflare/bind"
 )
 
 type DurableObjectNamespace struct {
@@ -20,7 +21,7 @@ type DurableObjectNamespace struct {
 }
 
 func NewDurableObjectNamespace(varName string) (*DurableObjectNamespace, error) {
-	inst := jsclass.Env.Get(varName)
+	inst := bind.Env.Get(varName)
 	if inst.IsUndefined() {
 		return nil, errors.New("%s is undefined" + varName)
 	}
