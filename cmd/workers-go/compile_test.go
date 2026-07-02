@@ -128,7 +128,7 @@ func TestCompileGo_OutputEntries(t *testing.T) {
 		{In: srcDir, Out: filepath.Join(outDir, "b.wasm")},
 	}
 
-	entries, err := compileGo(context.Background(), outDir, outDir, comps, false)
+	entries, err := compileGo(context.Background(), &Args{EntryDir: outDir, OutDir: outDir}, comps)
 	assert.NoError(t, err)
 
 	assert.Len(t, entries, 2)
@@ -140,6 +140,6 @@ func TestCompileGo_CompileFailureReturnsError(t *testing.T) {
 
 	comps := []compile{{In: srcDir, Out: filepath.Join(outDir, "app.wasm")}}
 
-	_, err := compileGo(context.Background(), outDir, outDir, comps, false)
+	_, err := compileGo(context.Background(), &Args{EntryDir: outDir, OutDir: outDir}, comps)
 	assert.Error(t, err)
 }

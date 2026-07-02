@@ -21,13 +21,13 @@ run = "go mod download"
 depends = ["install"]
 run = """
 #!/usr/bin/env bash
-go install codeberg.org/darckfast/workers-go/cmd/workers-go
+go install ./cmd/workers-go
 if [ "$1" = "--tiny" ]; then
   mise //_apps/_worker:prepare --tiny
-  workers-go -i ./_apps/_worker/pkg -o ./_apps/_worker/bin -ex ./_apps/_worker/durable_objects -tiny
+  workers-go -i ./_apps/_worker/pkg -o ./_apps/_worker/bin -ex ./_apps/_worker/durable_objects -tiny -nocompression
 else
   mise //_apps/_worker:prepare
-  workers-go -i ./_apps/_worker/pkg -o ./_apps/_worker/bin -ex ./_apps/_worker/durable_objects
+  workers-go -i ./_apps/_worker/pkg -o ./_apps/_worker/bin -ex ./_apps/_worker/durable_objects -nocompression
 fi
 mise //_apps/_worker:test
 """

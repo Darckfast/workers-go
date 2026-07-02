@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "platform/**"
+      - "cmd/**"
       - "internal/**"
       - "tests/**"
       - "_apps/_worker/**"

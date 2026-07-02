@@ -7,7 +7,6 @@ import (
 	_ "embed"
 	"os"
 	"path/filepath"
-	"strings"
 	"text/template"
 	"time"
 )
@@ -25,20 +24,20 @@ func main() {
 	start := time.Now()
 	ctx := context.Background()
 
-	indir, outdir, silent, tiny, exports, err := args()
+	a, err := args()
 	if err != nil {
 		os.Exit(1)
 	}
 
-	handlers, dos, err := scandir(indir)
+	handlers, dos, err := scandir(&a.EntryDir)
 	if err != nil {
 		os.Exit(1)
 	}
 
-	if len(*exports) > 0 {
-		for _, ex := range *exports {
+	if len(a.Exports) > 0 {
+		for _, ex := range a.Exports {
 			fex, _ := filepath.Abs(ex)
-			rp, err := filepath.Rel(*outdir, fex)
+			rp, err := filepath.Rel(a.OutDir, fex)
 
 			if err != nil {
 				erro("Error finding relative path: %s", err)
@@ -53,24 +52,18 @@ func main() {
 		}
 	}
 
-	if !*silent {
-		for _, v := range handlers.m {
-			info("[worker] {Bold}{Green}%s", strings.Join(v, ", "))
-		}
-	}
-
-	err = os.MkdirAll(*outdir, os.ModePerm)
+	err = os.MkdirAll(a.OutDir, os.ModePerm)
 	if err != nil {
 		erro("Error creating output directory: {Bold}%s", err)
 		os.Exit(1)
 	}
 
-	compileList, outputfiles, err := genDurableObjects(*indir, *outdir, dos)
+	compileList, outputfiles, err := genDurableObjects(a.EntryDir, a.OutDir, dos)
 	if err != nil {
 		os.Exit(1)
 	}
 	if len(handlers.m) == 0 && len(dos.m) == 0 {
-		warn("* No `workers-go` handlers usage found on: %s", *indir)
+		warn("* No `workers-go` handlers usage found on: %s", a.EntryDir)
 		os.Exit(0)
 	}
 
@@ -82,8 +75,8 @@ func main() {
 		}
 	}
 
-	maints := filepath.Join(*outdir, "main.ts")
-	compileList = append(compileList, compile{In: *indir, Out: filepath.Join(*outdir, "app.wasm")})
+	maints := filepath.Join(a.OutDir, "main.ts")
+	compileList = append(compileList, compile{In: a.EntryDir, Out: filepath.Join(a.OutDir, "app.wasm")})
 
 	file, err := os.Create(maints)
 	if err != nil {
@@ -99,10 +92,10 @@ func main() {
 	}
 
 	s, _ := file.Stat()
-	rl, _ := filepath.Rel(*indir, file.Name())
+	rl, _ := filepath.Rel(a.EntryDir, file.Name())
 	outputfiles = append(outputfiles, "  ├─ "+rl+" ("+fmtBytes(s.Size())+")")
 
-	o, err := compileGo(ctx, *indir, *outdir, compileList, *tiny)
+	o, err := compileGo(ctx, a, compileList)
 	if err != nil {
 		os.Exit(1)
 	}

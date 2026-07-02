@@ -23,35 +23,47 @@ func (a *arglist) Set(value string) error {
 	return nil
 }
 
-func args() (*string, *string, *bool, *bool, *arglist, error) {
-	exports := arglist{}
-	entry := flag.String("i", "", "Root directory of your Go worker")
-	out := flag.String("o", "./bin", "Output directory")
-	silent := flag.Bool("s", false, "Hide info logs")
-	tiny := flag.Bool("tiny", false, "Use tinygo to compile the project")
-	flag.Var(&exports, "ex", "Include a exports * from directory - the directory must contain a index.js(ts) file with the desired exports")
+type Args struct {
+	EntryDir      string
+	OutDir        string
+	Tiny          bool
+	Exports       arglist
+	NoCompression bool
+}
+
+func args() (*Args, error) {
+	a := Args{}
+
+	flag.StringVar(&a.EntryDir, "i", "", "Root directory of your Go worker")
+	flag.StringVar(&a.OutDir, "o", "./bin", "Output directory")
+	flag.BoolVar(&a.Tiny, "tiny", false, "Use tinygo to compile the project")
+	flag.BoolVar(&a.NoCompression, "nocompression", false, "Skips wams-opt compression step")
+	flag.Var(&a.Exports, "ex", "Include a exports * from directory - the directory must contain a index.js(ts) file with the desired exports")
 
 	flag.Parse()
 
-	if *entry == "" {
+	if a.EntryDir == "" {
 		erro("Root directory is {Bold}required")
-		return nil, nil, nil, nil, nil, errors.New("root is required")
+		return nil, errors.New("root is required")
 	}
 
-	fp, _ := filepath.Abs(*entry)
+	fp, _ := filepath.Abs(a.EntryDir)
 	if strings.HasSuffix(fp, ".go") {
 		fp = filepath.Join(fp, "..")
 	}
 
-	fo, _ := filepath.Abs(*out)
+	fo, _ := filepath.Abs(a.OutDir)
 	_, err := os.Stat(fp)
 	if err != nil && errors.Is(err, fs.ErrNotExist) {
 		erro("Root directory {Bold}%s{Reset} does not exist", fp)
 		os.Exit(1)
 	} else if err != nil {
 		erro("Error probing directory {Bold}%s{Reset}\n%s", fp, err)
-		return nil, nil, nil, nil, nil, err
+		return nil, err
 	}
 
-	return &fp, &fo, silent, tiny, &exports, err
+	a.EntryDir = fp
+	a.OutDir = fo
+
+	return &a, nil
 }

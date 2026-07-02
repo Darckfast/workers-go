@@ -90,21 +90,21 @@ func copyWasmExecJs(ctx context.Context, tiny bool, out []compile) error {
 	return nil
 }
 
-func compileGo(ctx context.Context, fp, fo string, comp []compile, tiny bool) ([]string, error) {
+func compileGo(ctx context.Context, a *Args, comp []compile) ([]string, error) {
 	outputfiles := []string{}
 	var cmd *exec.Cmd
 
-	err := copyWasmExecJs(ctx, tiny, comp)
+	err := copyWasmExecJs(ctx, a.Tiny, comp)
 	if err != nil {
 		return nil, err
 	}
 
-	if tiny {
+	if a.Tiny {
 		warn("⚠  Using TinyGo might result in some unexpected bugs due compatibility issues ⚠")
 	}
 
 	for i, c := range comp {
-		if tiny {
+		if a.Tiny {
 			cmd = execCommand(ctx, "tinygo", "build", "-no-debug", "-o", c.Out)
 		} else {
 			cmd = execCommand(ctx, "go", "build", "-trimpath", "-ldflags", "-s -w -buildid=", "-o", c.Out)
@@ -123,9 +123,11 @@ func compileGo(ctx context.Context, fp, fo string, comp []compile, tiny bool) ([
 			return nil, err
 		}
 
-		err = compress(ctx, c.Out)
-		if err != nil {
-			return nil, err
+		if !a.NoCompression {
+			err = compress(ctx, c.Out)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		s, _ := os.Stat(c.Out)
@@ -133,7 +135,7 @@ func compileGo(ctx context.Context, fp, fo string, comp []compile, tiny bool) ([
 		if i == len(comp)-1 {
 			ch = "└─"
 		}
-		rl, _ := filepath.Rel(fp, c.Out)
+		rl, _ := filepath.Rel(a.EntryDir, c.Out)
 		outputfiles = append(outputfiles, "  "+ch+" "+rl+" ("+fmtBytes(s.Size())+")")
 	}
 
