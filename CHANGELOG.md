@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.5.2](https://codeberg.org/darckfast/workers-go/compare/v0.5.1...v0.5.2) (2026-07-02)
+
+### 🚀 Features
+
+- Refactored `workers-go` client/transport to be compatible with Go `net/http` module (https://codeberg.org/darckfast/workers-go/pulls/39)
+- Add -nocompression opt in the workers-go` cli (https://codeberg.org/darckfast/workers-go/pulls/40)
+
+### 🐛 Bug Fixes
+
+- Fixed workers not restarting in wasm after a crash (https://codeberg.org/darckfast/workers-go/pulls/38)
+
+## [0.5.1](https://codeberg.org/darckfast/workers-go/compare/v0.5.0...v0.5.1) (2026-06-28)
+
+### 🚀 Features
+- `bind.Ctx` and `bind.Env` are accessible everywhere (https://codeberg.org/darckfast/workers-go/pulls/37)
+- Fetch now uses a wriatable passed from Js to minimize the serialization and deserialization overhead when transferring data between JS -> Go (https://codeberg.org/darckfast/workers-go/pulls/37)
+- Removed `RPCStream()` _this stub will be reworked_
+
+### 🐛 Bug Fixes
+- `procces.env` copy to `os.Environ()` now copies only env variables (https://codeberg.org/darckfast/workers-go/pulls/37)
+
 ## [0.5.0](https://codeberg.org/darckfast/workers-go/compare/v0.4.3...v0.5.0) (2026-06-26)
 
 ### 🚀 Features
