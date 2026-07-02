@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"codeberg.org/darckfast/workers-go/platform/cloudflare/cache"
-	"codeberg.org/darckfast/workers-go/platform/cloudflare/fetch"
 )
 
 var GET_CACHE = func(w http.ResponseWriter, r *http.Request) {
@@ -18,7 +17,7 @@ var GET_CACHE = func(w http.ResponseWriter, r *http.Request) {
 	if res == nil {
 		w.Header().Add("x-cache", xcache)
 		rs, _ := http.NewRequest("GET", "https://darckfast.com", nil)
-		res, _ := fetch.NewClient().Do(rs)
+		res, _ := http.DefaultClient.Do(rs)
 
 		defer res.Body.Close()
 		bodyBytes, _ := io.ReadAll(res.Body)

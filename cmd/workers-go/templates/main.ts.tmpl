@@ -65,30 +65,35 @@ export default class extends WorkerEntrypoint {
 
   {{- if index . "email"}}
   async email(message: ForwardableEmailMessage) {
+    await this.#ready
     await loadAsync()
     return await cf.email(message, this.env, this.ctx);
   }
   {{- end}}
   {{- if index . "cron"}}
   async scheduled(controler: ScheduledController) {
+    await this.#ready
     await loadAsync()
     return await cf.scheduled(controler, this.env, this.ctx);
   }
   {{- end}}
   {{- if index . "queues"}}
   async queue(batch: MessageBatch) {
+    await this.#ready
     await loadAsync()
     return await cf.queue(batch, this.env, this.ctx);
   }
   {{- end}}
   {{- if index . "tail"}}
   async tail(events: TraceItem[]) {
+    await this.#ready
     await loadAsync()
     return await cf.tail(events, this.env, this.ctx);
   }
   {{- end}}
   {{- if index . "fetch"}}
   async fetch(request: Request): Promise<Response> {
+    await this.#ready
     await loadAsync()
     let { writable, readable } = new TransformStream()
     let selHeaders = ""

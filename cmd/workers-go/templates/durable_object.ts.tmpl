@@ -63,6 +63,7 @@ export class {{$k}} extends DurableObject<Env> {
 {{- range $v }}
 {{- if eq .FuncName "fetch" }}
   async fetch(_: Request): Promise<Response> {
+    await this.#ready
     await loadAsync_{{$k}}()
     let { writable, readable } = new TransformStream()
     let keys = Object.keys(request.headers)
@@ -94,6 +95,7 @@ export class {{$k}} extends DurableObject<Env> {
   {{- $v :=  .TSArgs }}
   {{- $returnType :=  .TSRarg }}
   async {{.FuncName}}({{- inlinetypes "a" $v .Args }}): Promise<{{- typereturn  $returnType}}> {
+    await this.#ready
     await loadAsync_{{$k}}()
   {{- range $i, $_ := .Args}}
     let b{{$i}} =  JSON.stringify(a{{$i}})
