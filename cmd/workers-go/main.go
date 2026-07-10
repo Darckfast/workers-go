@@ -7,6 +7,7 @@ import (
 	_ "embed"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 	"time"
 )
@@ -50,6 +51,10 @@ func main() {
 				handlers.Set("exports", []string{rp})
 			}
 		}
+	}
+
+	for _, v := range handlers.m {
+		info("[worker] {Bold}{Green}%s", strings.Join(v, ", "))
 	}
 
 	err = os.MkdirAll(a.OutDir, os.ModePerm)

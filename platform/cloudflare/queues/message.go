@@ -53,6 +53,14 @@ func (m *Message) Retry(opts ...RetryOption) {
 	m.instance.Call("retry", o.toJS())
 }
 
+func (m *Message) JsonBody() (string, error) {
+	if m.Body.Type() != js.TypeObject {
+		return "", errors.New("message body is not a object: " + m.Body.Type().String())
+	}
+
+	return jsclass.JSON.Stringify(m.Body).String(), nil
+}
+
 func (m *Message) StringBody() (string, error) {
 	if m.Body.Type() != js.TypeString {
 		return "", errors.New("message body is not a string: " + m.Body.Type().String())
